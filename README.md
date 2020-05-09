@@ -4,6 +4,8 @@
 
 kTree 是一个移动端树组件，可作为企业组织通讯录，课程目录 etc.
 
+![快照](./src/assets/screenshot.jpg)
+
 ## 代码演示
 
 ### 基础用法
