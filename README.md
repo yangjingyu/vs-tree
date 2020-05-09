@@ -1,29 +1,57 @@
-# mobile-tree
+# 移动端树组件
 
-## Project setup
-```
-yarn install
-```
+### 介绍
 
-### Compiles and hot-reloads for development
-```
-yarn run serve
-```
+kTree 是一个移动端树组件，可作为企业组织通讯录，课程目录 etc.
 
-### Compiles and minifies for production
-```
-yarn run build
-```
+## 代码演示
 
-### Run your tests
-```
-yarn run test
+### 基础用法
+
+```html
+<k-tree
+  :data="data"
+  :options="options"
+  @click="onClick"
+  @change="onChange"
+  @selected="onSelected"
+/>
 ```
 
-### Lints and fixes files
-```
-yarn run lint
+```html
+<k-tree
+  :data="data"
+  :options="options"
+  @click="onClick"
+  @change="onChange"
+  @selected="onSelected"
+>
+  <template #label="{ node }">
+    <span>{{node.title}}</span>
+    <span v-if="!node.isLeaf">({{node.origin.count}})</span>
+  </template>
+</k-tree>
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## API
+
+### Props
+
+| 参数    | 说明     | 类型     | 默认值    |
+| ------- | -------- | -------- | --------- |
+| data    | 原始数据 | _Array_  | `[]` |
+| options | 配置信息 | _Object_ | `{default: [], rootId: -1}` |
+
+### Events
+
+| 事件名   | 说明                  | 回调参数     |
+| -------- | --------------------- | ------------ |
+| click    | 点击右侧 Label 时触发 | event: Event |
+| change   | 状态改变时触发        | event: Event |
+| selected | 选中列表改变          | event: Event |
+
+### Slots
+
+| 名称  | 说明            |
+| ----- | --------------- |
+| label | 右侧 Title 区域 |

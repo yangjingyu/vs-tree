@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import Tree from '../core';
+import Tree from '../../core';
 import breadcrumb from '../breadcrumb';
 import checkbox from '../checkbox';
 
