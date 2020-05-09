@@ -1,0 +1,65 @@
+[
+  {
+    "departmentid": 100001,
+    "departmentname": "XX公司",
+    "parentid": -1,
+    "leve": 0,
+    "departmentPCount": 143
+  },
+  {
+    "departmentid": 100002,
+    "departmentname": "北京分公司",
+    "parentid": 100001,
+    "leve": 1,
+    "departmentPCount": 100
+  },
+  {
+    "departmentid": 100003,
+    "departmentname": "上海分公司",
+    "parentid": 100001,
+    "leve": 1,
+    "departmentPCount": 120
+  },
+  {
+    "departmentid": 100007,
+    "departmentname": "财务部",
+    "parentid": 100001,
+    "leve": 1,
+    "departmentPCount": 2
+  },
+  {
+    "departmentid": 100008,
+    "departmentname": "后勤部",
+    "parentid": 100001,
+    "leve": 1,
+    "departmentPCount": 2
+  },
+  {
+    "departmentid": 100009,
+    "departmentname": "销售部",
+    "parentid": 100001,
+    "leve": 1,
+    "departmentPCount": 60
+  },
+  {
+    "departmentid": 100004,
+    "departmentname": "研发部",
+    "parentid": 100002,
+    "leve": 2,
+    "departmentPCount": 40
+  },
+  {
+    "departmentid": 100005,
+    "departmentname": "测试部",
+    "parentid": 100002,
+    "leve": 2,
+    "departmentPCount": 30
+  },
+  {
+    "departmentid": 100006,
+    "departmentname": "产品部",
+    "parentid": 100002,
+    "leve": 2,
+    "departmentPCount": 10
+  }
+]
