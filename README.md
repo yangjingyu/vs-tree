@@ -12,8 +12,8 @@ kTree 是一个移动端树组件，可作为企业组织通讯录，课程目�
 
 ```js
 // main.js
-import mTree from "mobile-tree"
-import "mobile-tree/lib/mobile-tree.css";
+import mTree from "vue-mobile-tree"
+import "vue-mobile-tree/lib/vue-mobile-tree.css";
 Vue.use(mTree);
 ```
 

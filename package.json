@@ -1,5 +1,5 @@
 {
-  "name": "mobile-tree",
+  "name": "vue-mobile-tree",
   "version": "1.0.0",
   "description": "Mobile tree component for Vue",
   "keywords": [
@@ -12,21 +12,21 @@
   "private": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/yangjingyu/mobile-tree"
+    "url": "https://github.com/yangjingyu/vue-mobile-tree"
   },
-  "bugs": "https://github.com/yangjingyu/mobile-tree/issues",
+  "bugs": "https://github.com/yangjingyu/vue-mobile-tree/issues",
   "author": {
     "name": "Yangjingyu",
     "url": "https://github.com/yangjingyu"
   },
-  "main": "lib/mobile-tree.umd.js",
-  "module": "lib/mobile-tree.common.js",
-  "browser": "lib/mobile-tree.umd.js",
+  "main": "lib/vue-mobile-tree.umd.js",
+  "module": "lib/vue-mobile-tree.common.js",
+  "browser": "lib/vue-mobile-tree.umd.js",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "lib": "vue-cli-service build --target lib --name mobile-tree --dest lib src/components/index.js"
+    "lib": "vue-cli-service build --target lib --name vue-mobile-tree --dest lib src/components/index.js"
   },
   "dependencies": {
     "core-js": "^3.6.4",
