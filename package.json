@@ -14,6 +14,7 @@
     "type": "git",
     "url": "https://github.com/yangjingyu/vue-mobile-tree"
   },
+  "homepage": "https://github.com/yangjingyu/vue-mobile-tree#readme",
   "bugs": "https://github.com/yangjingyu/vue-mobile-tree/issues",
   "author": {
     "name": "Yangjingyu",
@@ -27,6 +28,9 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "lib": "vue-cli-service build --target lib --name vue-mobile-tree --dest lib src/components/index.js"
+  },
+  "peerDependecies": {
+    "vue": "^2.0.0"
   },
   "dependencies": {
     "core-js": "^3.6.4",
