@@ -1,9 +1,9 @@
 <template>
-  <div class="k-checkbox" :class="{ 'k-checkbox__half': halfChecked }">
-    <div class="k-checkbox__icon" @click="$emit('change', $event)">
+  <div class="m-checkbox" :class="{ 'm-checkbox__half': halfChecked }">
+    <div class="m-checkbox__icon" @click="$emit('change', $event)">
       <i :class="{'isChecked': value, 'isDisabled': disabled}"></i>
     </div>
-    <span class="k-checkbox__label" @click="$emit('label-click', $event)">
+    <span class="m-checkbox__label" @click="$emit('label-click', $event)">
       <slot>{{title}}</slot>
     </span>
   </div>
@@ -11,7 +11,7 @@
 
 <script>
 export default {
-  name: 'k-checkbox',
+  name: 'm-checkbox',
   model: {
     prop: "value",
     event: "change"
@@ -26,7 +26,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.k-checkbox {
+.m-checkbox {
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -69,7 +69,7 @@ export default {
   }
 
   &__half {
-    .k-checkbox__icon i {
+    .m-checkbox__icon i {
       display: flex;
       align-items: center;
       justify-content: center;

@@ -1,24 +1,20 @@
 <template>
   <div>
-    <k-tree :data="data" :options="options" @click="onClick" @change="onChange" @selected="onSelected">
+    <m-tree :data="data" :options="options" @click="onClick" @change="onChange" @selected="onSelected">
       <template #label="{ node }">
         <span>{{node.title}}</span>
         <span v-if="!node.isLeaf">({{node.origin.departmentPCount}})</span>
       </template>
-    </k-tree>
+    </m-tree>
   </div>
 </template>
 
 <script>
-import kTree from "./components/tree/index.vue";
 import deptData from "./mock/departments.json";
 import userData from "./mock/departments-users.json";
 
 export default {
-  name: "k-tree-demo",
-  components: {
-    kTree
-  },
+  name: "tree-demo",
   data() {
     return {
       data: [],

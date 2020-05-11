@@ -10,8 +10,15 @@ kTree 是一个移动端树组件，可作为企业组织通讯录，课程目�
 
 ### 基础用法
 
+```js
+// main.js
+import mTree from "mobile-tree"
+import "mobile-tree/lib/mobile-tree.css";
+Vue.use(mTree);
+```
+
 ```html
-<k-tree
+<m-tree
   :data="data"
   :options="options"
   @click="onClick"
@@ -21,7 +28,7 @@ kTree 是一个移动端树组件，可作为企业组织通讯录，课程目�
 ```
 
 ```html
-<k-tree
+<m-tree
   :data="data"
   :options="options"
   @click="onClick"
@@ -32,7 +39,7 @@ kTree 是一个移动端树组件，可作为企业组织通讯录，课程目�
     <span>{{node.title}}</span>
     <span v-if="!node.isLeaf">({{node.origin.count}})</span>
   </template>
-</k-tree>
+</m-tree>
 ```
 
 ## API

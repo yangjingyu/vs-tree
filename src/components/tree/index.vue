@@ -1,8 +1,8 @@
 <template>
   <div>
-    <k-breadcrumb :data="crumb" @change="onCrumbChange" />
-    <div class="k-tree">
-      <k-checkbox
+    <m-breadcrumb :data="crumb" @change="onCrumbChange" />
+    <div class="m-tree">
+      <m-checkbox
         v-for="n of current.children"
         :key="n.key"
         :title="n.title"
@@ -13,8 +13,8 @@
         @change="onClick(n, $event)"
       >
         <slot name="label" :node="n"></slot>
-      </k-checkbox>
-      <div class="k-tree__nodata" v-if="current.children && !current.children.length">
+      </m-checkbox>
+      <div class="m-tree__nodata" v-if="current.children && !current.children.length">
         <slot name="nodata" />
       </div>
     </div>
@@ -27,7 +27,7 @@ import breadcrumb from '../breadcrumb';
 import checkbox from '../checkbox';
 
 export default {
-  name: 'k-tree',
+  name: 'm-tree',
   components: {
     [checkbox.name]: checkbox,
     [breadcrumb.name]: breadcrumb
@@ -89,8 +89,8 @@ export default {
 </script>
 
 <style lang="less">
-.k-tree {
-  & ~ .k-tree {
+.m-tree {
+  & ~ .m-tree {
     margin-top: 10px;
   }
 
@@ -99,7 +99,7 @@ export default {
   }
 }
 
-.k-checkbox {
+.m-checkbox {
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -142,7 +142,7 @@ export default {
   }
 
   &__half {
-    .k-checkbox__icon i {
+    .m-checkbox__icon i {
       display: flex;
       align-items: center;
       justify-content: center;
@@ -157,8 +157,8 @@ export default {
   }
 }
 
-.k-tree {
-  .k-checkbox {
+.m-tree {
+  .m-checkbox {
     height: 50px;
     padding: 0 16px;
     background-color: white;

@@ -1,7 +1,7 @@
 <template>
-  <ul class="k-breadcrumb">
+  <ul class="m-breadcrumb">
     <li
-      class="k-breadcrumb-item"
+      class="m-breadcrumb-item"
       v-for="(item, index) in data"
       :key="item[unid]"
       @click.stop="$emit('change', item, index)"
@@ -13,7 +13,7 @@
 
 <script>
 export default {
-  name: "k-breadcrumb",
+  name: "m-breadcrumb",
 
   props: {
     label: {
@@ -33,7 +33,7 @@ export default {
 </script>
 
 <style scoped lang="less">
-.k-breadcrumb {
+.m-breadcrumb {
   padding: 0 0 0.4rem 1rem;
   line-height: 2rem;
   text-align: left;

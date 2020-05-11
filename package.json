@@ -1,11 +1,32 @@
 {
   "name": "mobile-tree",
-  "version": "0.1.0",
-  "private": true,
+  "version": "1.0.0",
+  "description": "Mobile tree component for Vue",
+  "keywords": [
+    "Organize contacts",
+    "vue mobile tree",
+    "mobile tree",
+    "tree"
+  ],
+  "license": "MIT",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yangjingyu/mobile-tree"
+  },
+  "bugs": "https://github.com/yangjingyu/mobile-tree/issues",
+  "author": {
+    "name": "Yangjingyu",
+    "url": "https://github.com/yangjingyu"
+  },
+  "main": "lib/mobile-tree.umd.js",
+  "module": "lib/mobile-tree.common.js",
+  "browser": "lib/mobile-tree.umd.js",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "lib": "vue-cli-service build --target lib --name mobile-tree --dest lib src/components/index.js"
   },
   "dependencies": {
     "core-js": "^3.6.4",
