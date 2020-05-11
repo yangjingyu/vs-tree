@@ -54,8 +54,11 @@ export default {
     }
   },
   watch: {
-    data() {
-      this.init();
+    data: {
+      handler() {
+        this.init();
+      },
+      immediate: true
     }
   },
   methods: {

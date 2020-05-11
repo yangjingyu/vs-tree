@@ -34,7 +34,7 @@ export default class Tree {
       return list.reduce((itemArr, node) => {
         if (node.parentid === parentId) {
           const newNode = node;
-          newNode.children = parse(list, node.departmentid, node);
+          newNode.children = parse(list, node.key, node);
           itemArr.push(newNode);
         }
         return itemArr;

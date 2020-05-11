@@ -12,8 +12,8 @@ kTree 是一个移动端树组件，可作为企业组织通讯录，课程目�
 
 ```js
 // main.js
-import mTree from "vue-mobile-tree"
-import "vue-mobile-tree/lib/vue-mobile-tree.css";
+import mTree from 'vue-mobile-tree';
+import 'vue-mobile-tree/lib/vue-mobile-tree.css';
 Vue.use(mTree);
 ```
 
@@ -42,13 +42,56 @@ Vue.use(mTree);
 </m-tree>
 ```
 
+```js
+data() {
+  return {
+    options: {},
+    data: [
+      {
+        key: 100001,
+        title: 'XX公司',
+        parentid: -1,
+      },
+      {
+        key: 100002,
+        title: '北京分公司',
+        parentid: 100001,
+      },
+      {
+        key: 100003,
+        title: '上海分公司',
+        parentid: 100001,
+      },
+      {
+        key: 100003100001,
+        title: '张三',
+        parentid: 100001,
+        isLeaf: true
+      },
+      {
+        key: 100001100002,
+        title: '李四',
+        parentid: 100001,
+        isLeaf: true
+      },
+      {
+        key: 100002100001,
+        title: '王五',
+        parentid: 100002,
+        isLeaf: true
+      },
+    ],
+  };
+}
+```
+
 ## API
 
 ### Props
 
-| 参数    | 说明     | 类型     | 默认值    |
-| ------- | -------- | -------- | --------- |
-| data    | 原始数据 | _Array_  | `[]` |
+| 参数    | 说明     | 类型     | 默认值                      |
+| ------- | -------- | -------- | --------------------------- |
+| data    | 原始数据 | _Array_  | `[]`                        |
 | options | 配置信息 | _Object_ | `{default: [], rootId: -1}` |
 
 ### Events
