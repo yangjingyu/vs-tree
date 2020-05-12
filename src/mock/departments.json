@@ -32,7 +32,8 @@
     "departmentname": "后勤部",
     "parentid": 100001,
     "leve": 1,
-    "departmentPCount": 2
+    "departmentPCount": 2,
+    "disabled": true
   },
   {
     "departmentid": 100009,
