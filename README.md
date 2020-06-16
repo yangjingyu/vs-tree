@@ -1,109 +1,15 @@
-# 移动端树组件
+# vs-tree
 
-### 介绍
+> 项目改与: [element-ui](https://element.eleme.cn/#/zh-CN/component/tree);<br />
+> 虚拟列表使用: [vue-virtual-scroll-list](https://github.com/tangbc/vue-virtual-scroll-list);
 
-vue-moile-tree 是一个移动端树组件，可作为企业组织通讯录，课程目录 etc.
+## 具有和element-ui tree组件所有功能另添加面包屑和虚拟列表
 
-![快照](./src/assets/screenshot.jpg)
+  简单易用同时满足pc和移动端的Tree结构需求：
+  详情见: [使用说明](./examples/docs/tree.md).
 
-## 代码演示
+### PC Tree
+  ![pc](./examples/assets/images/pc.jpg)
 
-### 基础用法
-
-```js
-// main.js
-import mTree from 'vue-mobile-tree';
-import 'vue-mobile-tree/lib/vue-mobile-tree.css';
-Vue.use(mTree);
-```
-
-```html
-<m-tree
-  :data="data"
-  :options="options"
-  @click="onClick"
-  @change="onChange"
-  @selected="onSelected"
-/>
-```
-
-```html
-<m-tree
-  :data="data"
-  :options="options"
-  @click="onClick"
-  @change="onChange"
-  @selected="onSelected"
->
-  <template #label="{ node }">
-    <span>{{node.title}}</span>
-    <span v-if="!node.isLeaf">({{node.origin.count}})</span>
-  </template>
-</m-tree>
-```
-
-```js
-data() {
-  return {
-    options: {},
-    data: [
-      {
-        key: 100001,
-        title: 'XX公司',
-        parentid: -1,
-      },
-      {
-        key: 100002,
-        title: '北京分公司',
-        parentid: 100001,
-      },
-      {
-        key: 100003,
-        title: '上海分公司',
-        parentid: 100001,
-      },
-      {
-        key: 100003100001,
-        title: '张三',
-        parentid: 100001,
-        isLeaf: true
-      },
-      {
-        key: 100001100002,
-        title: '李四',
-        parentid: 100001,
-        isLeaf: true
-      },
-      {
-        key: 100002100001,
-        title: '王五',
-        parentid: 100002,
-        isLeaf: true
-      },
-    ],
-  };
-}
-```
-
-## API
-
-### Props
-
-| 参数    | 说明     | 类型     | 默认值                      |
-| ------- | -------- | -------- | --------------------------- |
-| data    | 原始数据 | _Array_  | `[]`                        |
-| options | 配置信息 | _Object_ | `{default: [], rootId: -1}` |
-
-### Events
-
-| 事件名   | 说明                  | 回调参数     |
-| -------- | --------------------- | ------------ |
-| click    | 点击右侧 Label 时触发 | event: Event |
-| change   | 状态改变时触发        | event: Event |
-| selected | 选中列表改变          | event: Event |
-
-### Slots
-
-| 名称  | 说明            |
-| ----- | --------------- |
-| label | 右侧 Title 区域 |
+### 面包屑
+  ![mobile](./examples/assets/images/mobile.jpg)

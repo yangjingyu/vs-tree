@@ -1,0 +1,763 @@
+{
+  "timestamp": "2020-06-09 10:05:38",
+  "status": 0,
+  "message": "",
+  "data": [
+    {
+      "departmentid": 421214,
+      "departmentname": "批量导入验证客户",
+      "parentid": -1,
+      "departmentorder": 0,
+      "leve": 0,
+      "status": 1,
+      "departmentPCount": 26139
+    },
+    {
+      "departmentid": 421215,
+      "departmentname": "批量一级",
+      "parentid": 421214,
+      "departmentorder": 0,
+      "leve": 1,
+      "status": 1,
+      "departmentPCount": 2002
+    },
+    {
+      "departmentid": 421216,
+      "departmentname": "批量二级",
+      "parentid": 421214,
+      "departmentorder": 0,
+      "leve": 1,
+      "status": 1,
+      "departmentPCount": 2288
+    },
+    {
+      "departmentid": 421217,
+      "departmentname": "删除部门1",
+      "parentid": 421214,
+      "departmentorder": 0,
+      "leve": 1,
+      "status": 1,
+      "departmentPCount": 19
+    },
+    {
+      "departmentid": 421218,
+      "departmentname": "删除部门2级",
+      "parentid": 421217,
+      "departmentorder": 0,
+      "leve": 2,
+      "status": 1,
+      "departmentPCount": 13
+    },
+    {
+      "departmentid": 421221,
+      "departmentname": "测试增加",
+      "parentid": 421214,
+      "departmentorder": 0,
+      "leve": 1,
+      "status": 1,
+      "departmentPCount": 9
+    },
+    {
+      "departmentid": 421254,
+      "departmentname": "部门导入1",
+      "parentid": 421214,
+      "departmentorder": 0,
+      "leve": 1,
+      "status": 1,
+      "departmentPCount": 2
+    },
+    {
+      "departmentid": 421255,
+      "departmentname": "部门导入2",
+      "parentid": 421254,
+      "departmentorder": 0,
+      "leve": 2,
+      "status": 1,
+      "departmentPCount": 1
+    },
+    {
+      "departmentid": 421256,
+      "departmentname": "部门导入a1",
+      "parentid": 421214,
+      "departmentorder": 0,
+      "leve": 1,
+      "status": 1,
+      "departmentPCount": 4
+    },
+    {
+      "departmentid": 421257,
+      "departmentname": "部门导入a2",
+      "parentid": 421256,
+      "departmentorder": 0,
+      "leve": 2,
+      "status": 1,
+      "departmentPCount": 2
+    },
+    {
+      "departmentid": 421258,
+      "departmentname": "部门导入a3",
+      "parentid": 421257,
+      "departmentorder": 0,
+      "leve": 3,
+      "status": 1,
+      "departmentPCount": 1
+    },
+    {
+      "departmentid": 421259,
+      "departmentname": "部门导入b",
+      "parentid": 421214,
+      "departmentorder": 0,
+      "leve": 1,
+      "status": 1,
+      "departmentPCount": 4
+    },
+    {
+      "departmentid": 421261,
+      "departmentname": "删除部门3",
+      "parentid": 421218,
+      "departmentorder": 0,
+      "leve": 3,
+      "status": 1,
+      "departmentPCount": 10
+    },
+    {
+      "departmentid": 421262,
+      "departmentname": "删除部门4",
+      "parentid": 421261,
+      "departmentorder": 0,
+      "leve": 4,
+      "status": 1,
+      "departmentPCount": 7
+    },
+    {
+      "departmentid": 421263,
+      "departmentname": "删除部门5",
+      "parentid": 421262,
+      "departmentorder": 0,
+      "leve": 5,
+      "status": 1,
+      "departmentPCount": 5
+    },
+    {
+      "departmentid": 421264,
+      "departmentname": "删除部门6",
+      "parentid": 421263,
+      "departmentorder": 0,
+      "leve": 6,
+      "status": 1,
+      "departmentPCount": 3
+    },
+    {
+      "departmentid": 421265,
+      "departmentname": "删除部门7",
+      "parentid": 421264,
+      "departmentorder": 0,
+      "leve": 7,
+      "status": 1,
+      "departmentPCount": 1
+    },
+    {
+      "departmentid": 421266,
+      "departmentname": "删除部门8",
+      "parentid": 421265,
+      "departmentorder": 0,
+      "leve": 8,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421267,
+      "departmentname": "删除部门9",
+      "parentid": 421266,
+      "departmentorder": 0,
+      "leve": 9,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421268,
+      "departmentname": "删除部门10",
+      "parentid": 421267,
+      "departmentorder": 0,
+      "leve": 10,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421269,
+      "departmentname": "删除部门10",
+      "parentid": 421267,
+      "departmentorder": 0,
+      "leve": 10,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421270,
+      "departmentname": "删除部门11",
+      "parentid": 421268,
+      "departmentorder": 0,
+      "leve": 11,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421271,
+      "departmentname": "删除部门11",
+      "parentid": 421269,
+      "departmentorder": 0,
+      "leve": 11,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421272,
+      "departmentname": "删除部门12",
+      "parentid": 421270,
+      "departmentorder": 0,
+      "leve": 12,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421273,
+      "departmentname": "删除部门12",
+      "parentid": 421271,
+      "departmentorder": 0,
+      "leve": 12,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421274,
+      "departmentname": "删除部门13",
+      "parentid": 421272,
+      "departmentorder": 0,
+      "leve": 13,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421275,
+      "departmentname": "删除部门13",
+      "parentid": 421273,
+      "departmentorder": 0,
+      "leve": 13,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421276,
+      "departmentname": "删除部门14",
+      "parentid": 421274,
+      "departmentorder": 0,
+      "leve": 14,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421277,
+      "departmentname": "删除部门14",
+      "parentid": 421275,
+      "departmentorder": 0,
+      "leve": 14,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421278,
+      "departmentname": "删除部门15",
+      "parentid": 421276,
+      "departmentorder": 0,
+      "leve": 15,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421279,
+      "departmentname": "删除部门15",
+      "parentid": 421277,
+      "departmentorder": 0,
+      "leve": 15,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421452,
+      "departmentname": "二级部门1",
+      "parentid": 421259,
+      "departmentorder": 0,
+      "leve": 2,
+      "status": 1,
+      "departmentPCount": 1
+    },
+    {
+      "departmentid": 421453,
+      "departmentname": "部门导入a2",
+      "parentid": 421257,
+      "departmentorder": 0,
+      "leve": 3,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421454,
+      "departmentname": "部门导入a3",
+      "parentid": 421256,
+      "departmentorder": 0,
+      "leve": 2,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421455,
+      "departmentname": "aaaaaa",
+      "parentid": 421214,
+      "departmentorder": 0,
+      "leve": 1,
+      "status": 1,
+      "departmentPCount": 5200
+    },
+    {
+      "departmentid": 421456,
+      "departmentname": "a111111",
+      "parentid": 421455,
+      "departmentorder": 0,
+      "leve": 2,
+      "status": 1,
+      "departmentPCount": 3200
+    },
+    {
+      "departmentid": 421457,
+      "departmentname": "bbbbbb",
+      "parentid": 421214,
+      "departmentorder": 0,
+      "leve": 1,
+      "status": 1,
+      "departmentPCount": 4019
+    },
+    {
+      "departmentid": 421466,
+      "departmentname": "日程测试",
+      "parentid": 421214,
+      "departmentorder": 0,
+      "leve": 1,
+      "status": 1,
+      "departmentPCount": 2
+    },
+    {
+      "departmentid": 421794,
+      "departmentname": "测试增加",
+      "parentid": 421215,
+      "departmentorder": 0,
+      "leve": 2,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421829,
+      "departmentname": "用户导入1",
+      "parentid": 421214,
+      "departmentorder": 0,
+      "leve": 1,
+      "status": 1,
+      "departmentPCount": 751
+    },
+    {
+      "departmentid": 421830,
+      "departmentname": "用户导入2",
+      "parentid": 421214,
+      "departmentorder": 0,
+      "leve": 1,
+      "status": 1,
+      "departmentPCount": 348
+    },
+    {
+      "departmentid": 421831,
+      "departmentname": "二级部门1",
+      "parentid": 421829,
+      "departmentorder": 0,
+      "leve": 2,
+      "status": 1,
+      "departmentPCount": 324
+    },
+    {
+      "departmentid": 421832,
+      "departmentname": "三级部门1",
+      "parentid": 421831,
+      "departmentorder": 0,
+      "leve": 3,
+      "status": 1,
+      "departmentPCount": 133
+    },
+    {
+      "departmentid": 421833,
+      "departmentname": "四级部门1",
+      "parentid": 421832,
+      "departmentorder": 0,
+      "leve": 4,
+      "status": 1,
+      "departmentPCount": 42
+    },
+    {
+      "departmentid": 421834,
+      "departmentname": "二级部门2",
+      "parentid": 421830,
+      "departmentorder": 0,
+      "leve": 2,
+      "status": 1,
+      "departmentPCount": 98
+    },
+    {
+      "departmentid": 421836,
+      "departmentname": "32423",
+      "parentid": 421833,
+      "departmentorder": 0,
+      "leve": 5,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421837,
+      "departmentname": "werwe",
+      "parentid": 421836,
+      "departmentorder": 0,
+      "leve": 6,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421838,
+      "departmentname": "22222",
+      "parentid": 421837,
+      "departmentorder": 0,
+      "leve": 7,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421839,
+      "departmentname": "3333",
+      "parentid": 421838,
+      "departmentorder": 0,
+      "leve": 8,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421840,
+      "departmentname": "rrrr",
+      "parentid": 421839,
+      "departmentorder": 0,
+      "leve": 9,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421841,
+      "departmentname": "qqqq",
+      "parentid": 421840,
+      "departmentorder": 0,
+      "leve": 10,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421842,
+      "departmentname": "eeeeer",
+      "parentid": 421841,
+      "departmentorder": 0,
+      "leve": 11,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421843,
+      "departmentname": "eeewwww224555555555555555555555555555555555555555555555555555555",
+      "parentid": 421842,
+      "departmentorder": 0,
+      "leve": 12,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421844,
+      "departmentname": "3333qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
+      "parentid": 421843,
+      "departmentorder": 0,
+      "leve": 13,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421845,
+      "departmentname": "3333333333333333333333333333333333333333333333333333333333333333",
+      "parentid": 421844,
+      "departmentorder": 0,
+      "leve": 14,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421846,
+      "departmentname": "4444444rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
+      "parentid": 421845,
+      "departmentorder": 0,
+      "leve": 15,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421847,
+      "departmentname": "排序部门",
+      "parentid": 421214,
+      "departmentorder": 0,
+      "leve": 1,
+      "status": 1,
+      "departmentPCount": 50
+    },
+    {
+      "departmentid": 421881,
+      "departmentname": "部门导入a",
+      "parentid": 421214,
+      "departmentorder": 0,
+      "leve": 1,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421883,
+      "departmentname": "部门导入2",
+      "parentid": 421881,
+      "departmentorder": 0,
+      "leve": 2,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421884,
+      "departmentname": "部门导入3",
+      "parentid": 421883,
+      "departmentorder": 0,
+      "leve": 3,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421885,
+      "departmentname": "部门导入4",
+      "parentid": 421884,
+      "departmentorder": 0,
+      "leve": 4,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421886,
+      "departmentname": "部门导入5",
+      "parentid": 421885,
+      "departmentorder": 0,
+      "leve": 5,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421887,
+      "departmentname": "部门导入6",
+      "parentid": 421886,
+      "departmentorder": 0,
+      "leve": 6,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421888,
+      "departmentname": "部门导入7",
+      "parentid": 421887,
+      "departmentorder": 0,
+      "leve": 7,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421889,
+      "departmentname": "部门导入8",
+      "parentid": 421888,
+      "departmentorder": 0,
+      "leve": 8,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421890,
+      "departmentname": "部门导入9",
+      "parentid": 421889,
+      "departmentorder": 0,
+      "leve": 9,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421891,
+      "departmentname": "部门导入10",
+      "parentid": 421890,
+      "departmentorder": 0,
+      "leve": 10,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421892,
+      "departmentname": "部门导入11",
+      "parentid": 421891,
+      "departmentorder": 0,
+      "leve": 11,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421893,
+      "departmentname": "部门导入12",
+      "parentid": 421892,
+      "departmentorder": 0,
+      "leve": 12,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421894,
+      "departmentname": "部门导入13",
+      "parentid": 421893,
+      "departmentorder": 0,
+      "leve": 13,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421895,
+      "departmentname": "部门导入14",
+      "parentid": 421894,
+      "departmentorder": 0,
+      "leve": 14,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421896,
+      "departmentname": "部门导入15",
+      "parentid": 421895,
+      "departmentorder": 0,
+      "leve": 15,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 421898,
+      "departmentname": "二级部门1",
+      "parentid": 421831,
+      "departmentorder": 0,
+      "leve": 3,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 422000,
+      "departmentname": "测试部",
+      "parentid": 421214,
+      "departmentorder": 0,
+      "leve": 1,
+      "status": 1,
+      "departmentPCount": 85
+    },
+    {
+      "departmentid": 422001,
+      "departmentname": "开发部",
+      "parentid": 421214,
+      "departmentorder": 0,
+      "leve": 1,
+      "status": 1,
+      "departmentPCount": 61
+    },
+    {
+      "departmentid": 422002,
+      "departmentname": "邮件",
+      "parentid": 422000,
+      "departmentorder": 0,
+      "leve": 2,
+      "status": 1,
+      "departmentPCount": 12
+    },
+    {
+      "departmentid": 422003,
+      "departmentname": "会议",
+      "parentid": 422000,
+      "departmentorder": 0,
+      "leve": 2,
+      "status": 1,
+      "departmentPCount": 32
+    },
+    {
+      "departmentid": 422004,
+      "departmentname": "视频",
+      "parentid": 422003,
+      "departmentorder": 0,
+      "leve": 3,
+      "status": 1,
+      "departmentPCount": 12
+    },
+    {
+      "departmentid": 422005,
+      "departmentname": "电话",
+      "parentid": 422003,
+      "departmentorder": 0,
+      "leve": 3,
+      "status": 1,
+      "departmentPCount": 13
+    },
+    {
+      "departmentid": 422006,
+      "departmentname": "视频产品部",
+      "parentid": 421214,
+      "departmentorder": 0,
+      "leve": 1,
+      "status": 1,
+      "departmentPCount": 1
+    },
+    {
+      "departmentid": 422007,
+      "departmentname": "视频产品部2级",
+      "parentid": 422006,
+      "departmentorder": 0,
+      "leve": 2,
+      "status": 1,
+      "departmentPCount": 0
+    },
+    {
+      "departmentid": 422105,
+      "departmentname": "小小小的部门",
+      "parentid": 421214,
+      "departmentorder": 0,
+      "leve": 1,
+      "status": 1,
+      "departmentPCount": 10025
+    },
+    {
+      "departmentid": 422112,
+      "departmentname": "产品部测试用",
+      "parentid": 421214,
+      "departmentorder": 0,
+      "leve": 1,
+      "status": 1,
+      "departmentPCount": 5
+    },
+    {
+      "departmentid": 422114,
+      "departmentname": "A.林大伟的部门",
+      "parentid": 421214,
+      "departmentorder": 0,
+      "leve": 1,
+      "status": 1,
+      "departmentPCount": 6
+    }
+  ]
+}

@@ -1,0 +1,99 @@
+@import "var";
+
+.fade-in-linear-enter-active,
+.fade-in-linear-leave-active {
+  transition: $--fade-linear-transition;
+}
+.fade-in-linear-enter,
+.fade-in-linear-leave,
+.fade-in-linear-leave-active {
+  opacity: 0;
+}
+
+.vs-fade-in-linear-enter-active,
+.vs-fade-in-linear-leave-active {
+  transition: $--fade-linear-transition;
+}
+.vs-fade-in-linear-enter,
+.vs-fade-in-linear-leave,
+.vs-fade-in-linear-leave-active {
+  opacity: 0;
+}
+
+.vs-fade-in-enter-active,
+.vs-fade-in-leave-active {
+  transition: all .3s cubic-bezier(.55,0,.1,1);
+}
+.vs-fade-in-enter,
+.vs-fade-in-leave-active {
+  opacity: 0;
+}
+
+.vs-zoom-in-center-enter-active,
+.vs-zoom-in-center-leave-active {
+  transition: all .3s cubic-bezier(.55,0,.1,1);
+}
+.vs-zoom-in-center-enter,
+.vs-zoom-in-center-leave-active {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.vs-zoom-in-top-enter-active,
+.vs-zoom-in-top-leave-active {
+  opacity: 1;
+  transform: scaleY(1);
+  transition: $--md-fade-transition;
+  transform-origin: center top;
+}
+.vs-zoom-in-top-enter,
+.vs-zoom-in-top-leave-active {
+  opacity: 0;
+  transform: scaleY(0);
+}
+
+.vs-zoom-in-bottom-enter-active,
+.vs-zoom-in-bottom-leave-active {
+  opacity: 1;
+  transform: scaleY(1);
+  transition: $--md-fade-transition;
+  transform-origin: center bottom;
+}
+.vs-zoom-in-bottom-enter,
+.vs-zoom-in-bottom-leave-active {
+  opacity: 0;
+  transform: scaleY(0);
+}
+
+.vs-zoom-in-left-enter-active,
+.vs-zoom-in-left-leave-active {
+  opacity: 1;
+  transform: scale(1, 1);
+  transition: $--md-fade-transition;
+  transform-origin: top left;
+}
+.vs-zoom-in-left-enter,
+.vs-zoom-in-left-leave-active {
+  opacity: 0;
+  transform: scale(.45, .45);
+}
+
+.collapse-transition {
+  transition: 0.3s height ease-in-out, 0.3s padding-top ease-in-out, 0.3s padding-bottom ease-in-out;
+}
+.horizontal-collapse-transition {
+  transition: 0.3s width ease-in-out, 0.3s padding-left ease-in-out, 0.3s padding-right ease-in-out;
+}
+
+.vs-list-enter-active,
+.vs-list-leave-active {
+  transition: all 1s;
+}
+.vs-list-enter, .vs-list-leave-active {
+  opacity: 0;
+  transform: translateY(-30px);
+}
+
+.vs-opacity-transition {
+  transition: opacity .3s cubic-bezier(.55,0,.1,1);
+}
