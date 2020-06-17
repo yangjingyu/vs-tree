@@ -13,3 +13,39 @@
 
 ### 面包屑
   ![mobile](./examples/assets/images/mobile.jpg)
+
+### 安装
+
+  `npm install vs-tree`
+
+  或
+
+  `yarn add vs-tree`
+
+### 使用
+
+  ```js
+  import VsTree from 'vs-tree';
+  import 'vs-tree/lib/style/index.css';
+
+  Vue.use(VsTree);
+  ```
+
+  ```html
+  <vs-tree :data="data"></vs-tree>
+  ```
+
+  ```js
+  export default {
+    data() {
+      return {
+        data: [
+          {label: 'demo1', children: [
+            {label: 'demo11'}
+          ]},
+          {label: 'demo2'}
+        ]
+      };
+    }
+  }
+  ```
