@@ -120,7 +120,7 @@ export default class Node {
     const defaultExpandedKeys = store.defaultExpandedKeys;
     const key = store.key;
     if (key && defaultExpandedKeys && defaultExpandedKeys.indexOf(this.key) !== -1) {
-      this.expand(null, store.autoExpandParent);
+      this.expand(null, store.autoExpandParent, store.expandedOnlyLoad);
     }
 
     if (key && store.currentNodeKey !== undefined && this.key === store.currentNodeKey) {
@@ -297,16 +297,16 @@ export default class Node {
     }
   }
 
-  expand(callback, expandParent) {
-    const done = () => {
-      if (expandParent) {
+  expand(callback, expandParent, expandedOnlyLoad) {
+    const done = (onlyLoad) => {
+      if (expandParent && !onlyLoad) {
         let parent = this.parent;
         while (parent.level > 0) {
           parent.expanded = true;
           parent = parent.parent;
         }
       }
-      this.expanded = true;
+      this.expanded = !onlyLoad;
       if (callback) callback();
     };
 
@@ -318,11 +318,11 @@ export default class Node {
           } else if (!this.store.checkStrictly) {
             reInitChecked(this);
           }
-          done();
+          done(expandedOnlyLoad);
         }
-      });
+      }, {}, expandedOnlyLoad);
     } else {
-      done();
+      done(expandedOnlyLoad);
     }
   }
 
@@ -458,7 +458,7 @@ export default class Node {
     this.updateLeafState();
   }
 
-  loadData(callback, defaultProps = {}) {
+  loadData(callback, defaultProps = {}, expandedOnlyLoad) {
     if (this.store.lazy === true && this.store.load && !this.loaded && (!this.loading || Object.keys(defaultProps).length)) {
       this.loading = true;
 
@@ -475,7 +475,7 @@ export default class Node {
         }
       };
 
-      this.store.load(this, resolve);
+      this.store.load(this, resolve, expandedOnlyLoad);
     } else {
       if (callback) {
         callback.call(this);

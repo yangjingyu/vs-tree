@@ -6,7 +6,7 @@ import routes from './route.config';
 import demoBlock from './components/demo-block';
 import VsTree from 'main/index.js';
 import '../packages/theme-chalk/src/index.scss';
-import './assets/styles/common.css';
+import './assets/styles/common.scss';
 import './demo-styles/index.scss';
 import 'element-ui/lib/theme-chalk/index.css';
 

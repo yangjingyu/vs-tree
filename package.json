@@ -1,6 +1,6 @@
 {
   "name": "vs-tree",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "vs-tree component for Vue",
   "keywords": [
     "Organize contacts",
@@ -13,10 +13,10 @@
   "private": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/yangjingyu/vs-tree"
+    "url": "https://github.com/yangjingyu/vue-mobile-tree"
   },
-  "homepage": "https://github.com/yangjingyu/vs-tree#readme",
-  "bugs": "https://github.com/yangjingyu/vs-tree/issues",
+  "homepage": "https://github.com/yangjingyu/vue-mobile-tree#readme",
+  "bugs": "https://github.com/yangjingyu/vue-mobile-tree/issues",
   "author": {
     "name": "Yangjingyu",
     "url": "https://github.com/yangjingyu"

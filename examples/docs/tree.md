@@ -2,6 +2,337 @@
 
 用清晰的层级结构展示信息，可展开或折叠。
 
+
+### 虚拟列表
+
+适用于移动端面包屑使用。
+
+:::demo 本例还展示了动态加载节点数据的方法。
+```html
+  <vs-tree
+    :class="{'tree-breadcrumb': isBreadcrumb}"
+    ref="tree"
+    :data="treeDate"
+    :props="props"
+    :load="loadNode"
+    lazy
+    :max="max"
+    virtual
+    show-checkbox
+    node-key="id"
+    :breadcrumb="isBreadcrumb"
+    :show-leaf-divider="isBreadcrumb"
+    expanded-only-load
+    check-on-click-leaf
+    :ignore-ids="ignoreIds"
+    :node-height-size="isBreadcrumb ? 56 : 26"
+    :default-expanded-keys="defalutExpand"
+    :default-checked-keys="defalutChecks"
+    @limit-check="limitCheck"
+    @load-change="loadChange"
+    @check="checkedRead"
+    @check-change="handleCheckChange">
+    <span class="custom-tree-node" slot-scope="{ node, data }">
+      <span>{{ data.name }}</span>
+      <span v-if="!data.did">
+        ({{data.departmentPCount}})
+      </span>
+    </span>
+  </vs-tree>
+
+<div>当前已经选择： {{checked_total}}</div>
+
+<div class="buttons">
+  <el-button @click="refresh(true)">刷新</el-button>
+
+  <el-button @click="getCheckedNodes">获取已选择node 并存入Storage</el-button>
+  <el-button @click="getCheckedKeys">通过 key 获取</el-button>
+  <!-- <el-button @click="setCheckedNodes">通过 node 设置</el-button>
+  <el-button @click="setCheckedKeys">通过 key 设置</el-button> -->
+  <el-button @click="getCurrentNode">当前节点</el-button>
+  <el-button @click="setExpandNode">设置aaaaaa部门展开｜选中节点</el-button>
+  <el-button @click="getCurrentSelects">获取当前选中数量</el-button>
+  <el-button @click="clearChecks">清空当前选中</el-button>
+</div>
+<script>
+  function postData(url, data) {
+    return fetch(`/examples/mock${url}`, {
+      method: 'GET',
+    })
+    .then(response => response.json()) // parses response to JSON
+  }
+
+  const treeMap = {};
+  const jsonToTree = (data, parentId) => {
+    const list = [].concat(data);
+    const parse = (list, parentId, parent) => {
+      return list.reduce((itemArr, node) => {
+        if (node.parentid === parentId) {
+          const newNode = node;
+          newNode.name = node.departmentname;
+          newNode.id = node.departmentid;
+          newNode.path = parent ? (parent.path + '_' + node.departmentid) : node.departmentid; 
+          newNode.children = parse(list, node.departmentid, node);
+          treeMap[newNode.id] = newNode;
+          itemArr.push(newNode);
+        }
+        return itemArr;
+      }, []);
+    };
+    return parse(list, parentId);
+  }
+
+  const usermap = JSON.parse(localStorage.usermap) ||  {};
+
+  export default {
+    data() {
+      return {
+        treeDate: [],
+        rootNode: null,
+        refresh: () => {},
+        max: 100,
+        isBreadcrumb: true,
+        props: {
+          label: 'name',
+          children: 'children',
+          isLeaf: 'isLeaf',
+          count: 'departmentPCount',
+          parentid: 'parentid'
+        },
+        defalutChecks: [],
+        defalutExpand: [],
+        count: 1,
+        checked_total: 0,
+        selfId: 269402,
+        ignoreIds: [],
+        loading: true
+      };
+    },
+    mounted() {
+      const {users, depts} =  localStorage.treeChecked ? JSON.parse(localStorage.treeChecked) : {users: [], depts: []};
+
+      let dids = [];
+
+      depts.forEach(v => {
+        dids.push(v.did);
+        dids.concat(v.path.split('_'));
+      });
+
+      console.log('users', users)
+
+      const allUser = users.reduce((curr, v) => {
+        const ds = [];
+        if (v.mult) {
+          curr = curr.concat(v.mult);
+        }
+        return curr;
+      }, users);
+
+      console.log(allUser, 'allUser');
+
+      allUser.forEach(v => {
+        dids = [v.did].concat(dids).concat(v.path.split('_').filter(v => v != "").map(v => Number(v)))
+      });
+
+      dids = Array.from(new Set(dids));
+
+      console.log(dids, 'dids');
+      
+      this.refresh = (must) => {
+        postData('/department.json').then((res) => {
+          const root = jsonToTree(res.data, -1);
+          this.rootNode = root[0];
+          this.treeDate = root[0].children;
+
+          console.log(treeMap, 'treeMap');
+
+          this.$nextTick(() => {
+            this.defalutChecks = [...depts.map(v => v.did), ...allUser.map(v => [v.did, v.uucId].join('_'))];
+            this.defalutExpand = [...dids, ...depts.map(v => v.did)];
+
+            // console.log();
+          });
+
+          this.$refs.tree.setRootCrumb();
+          // 21214
+          postData('/users.txt').then((res) => {
+            console.log(res, 'res')
+            const data = res[421214] || res["421214"];
+            const user = this.formatData(data);
+            // this.$refs.tree.root.data.push();
+            console.log(this.$refs.tree.store.root, 'data');
+            user.map(v => {
+              this.$refs.tree.store.root.data.push(v);
+            });
+            
+            
+            this.$nextTick(() => {
+              this.checked_total = this.$refs.tree.getCheckedLeafNum();
+            });
+          });
+
+        });
+      }
+
+      this.refresh();
+
+    },
+    methods: {
+      getCheckedNodes() {
+        const nodes = this.$refs.tree.getCheckedNodes();
+        console.log(nodes, '---nodes---');
+        const _users = nodes.filter(v => v.isLeaf).map(v => {
+          return {
+            path: v.path,
+            userName: v.name,
+            uucId: v.uid,
+            did: v.did,
+            depname: v.depname
+          }
+        });
+
+        const users = [];
+        _users.forEach(v => {
+          const user = users.find(u => u.uucId === v.uucId);
+          if (user) {
+            user.mult = user.mult ? [...user.mult, v] : [v];
+          } else {
+            users.push(v);
+          }
+        });
+
+        console.log(users, 'users');
+        const _depts = nodes.filter(v => !v.isLeaf).map(v => {
+          return {
+            path: v.path,
+            did: v.departmentid,
+            depname: v.departmentname
+          }
+        });
+
+        const depts = [];
+        _depts.forEach(v => {
+          const a = users.find(d => d.did === v.did);
+          if (a) {
+          } else {
+            depts.push(v);
+          }
+        });
+
+        console.log(depts, 'depts');
+        // return;
+        localStorage.treeChecked = JSON.stringify({
+          users,
+          depts
+        });
+      },
+      getCheckedKeys() {
+        console.log(this.$refs.tree.getCheckedKeys());
+      },
+      getCurrentNode() {
+        console.log((this.$refs.tree.getCurrentNode()));
+      },
+      getCurrentSelects() {
+        console.log((this.$refs.tree.getCheckedLeafNum()));
+      },
+      setExpandNode() {
+        this.defalutExpand = [...this.defalutExpand, 421214,421455,421456];
+        this.defalutChecks = [...this.defalutChecks, 270542];
+        console.log(this.defalutExpand, this.defalutChecks);
+      },
+      handleCheckChange(data, checked, indeterminate, e, s, v) {
+        console.log(data, checked, indeterminate);
+      },
+      checkedRead(data, info) {
+        this.checked_total = info.checkedLeafsNum;
+      },
+      loadChange() {
+        this.checked_total = this.$refs.tree.getCheckedLeafNum();
+      },
+      handleNodeClick(data) {
+        console.log(data);
+      },
+      limitCheck() {
+        alert('超了');
+      },
+      // defalutChecks
+      clearChecks() {
+        this.defalutChecks = this.$refs.tree.clearCheckAll();
+        this.$nextTick(() => {
+          this.checked_total = this.$refs.tree.getCheckedLeafNum();
+        });
+      },
+      getChildId(data) {
+        data.children.forEach(v => {
+          this.defalutExpand.push(v.departmentid);
+          if (v.children) {
+            this.getChildId(v);
+          }
+        });
+      },
+      expandChildren(data) {
+        if (data.departmentPCount <= 100) {
+          this.getChildId(data);
+        }
+      },
+      formatData(data, node, isRoot) {
+        return data.data.map(v => {
+            v.isLeaf = true;
+            v.id = [v.did, v.uid].join('_');
+            v.parentid = v.did;
+            v.path = isRoot || !node ? '' : node.data.path;
+
+            if (v.uid == this.selfId) {
+              v.disabled = true;
+              this.ignoreIds.push(v.id);
+              this.defalutChecks.push(v.id);
+            }
+
+            return v;
+          });
+      },
+      loadNode(node, resolve) {
+        console.log(node, '----');
+        if(node.level === 0) return;
+        const isRoot = !node.parent;
+        const id = isRoot ? this.rootNode.departmentid : node.data.departmentid;
+
+
+        if (!isRoot && !node.data.departmentPCount) {
+          resolve(node.data.children, !isRoot);
+          return;
+        }
+
+        if (usermap[id]) {
+          const user = this.formatData(usermap[id], node, isRoot);
+          resolve(isRoot ? user : node.data.children.concat(user), !isRoot);
+          !isRoot && this.expandChildren(node.data);
+          return;
+        }
+
+        postData('/users.txt').then((res) => {
+          const data = res[id];
+          
+          usermap[id] = data;
+
+          localStorage.usermap = JSON.stringify(usermap);
+
+          const user = this.formatData(data, node, isRoot);
+
+          setTimeout(() => {
+            resolve(isRoot ? user : node.data.children.concat(user), !isRoot);
+            !isRoot && this.expandChildren(node.data);
+          }, 1000);
+        });
+      }
+    }
+  };
+</script>
+
+```
+:::
+
+
 ### 层级面包屑
 
 适用于移动端面包屑使用。
@@ -92,148 +423,6 @@
       },
       limitCheck() {
         alert('超过最大限制数量');
-      }
-    }
-  };
-</script>
-
-```
-:::
-
-### 虚拟列表
-
-适用于移动端面包屑使用。
-
-:::demo 本例还展示了动态加载节点数据的方法。
-```html
-  <vs-tree
-    :data="treeDate"
-    :props="props"
-    :load="loadNode"
-    lazy
-    :max="max"
-    virtual
-    breadcrumb
-    show-checkbox
-    @limit-check="limitCheck"
-    @check-change="handleCheckChange">
-    <span class="custom-tree-node" slot-scope="{ node, data }">
-      <span>{{ data.name }}</span>
-      <span v-if="!data.did">
-        ({{data.departmentPCount}})
-      </span>
-    </span>
-  </vs-tree>
-<script>
-  function postData(url, data) {
-    return fetch(`/examples/mock${url}`, {
-      method: 'GET',
-    })
-    .then(response => response.json()) // parses response to JSON
-  }
-
-  const jsonToTree = (data, parentId) => {
-    const list = [].concat(data);
-    const parse = (list, parentId) => {
-      return list.reduce((itemArr, node) => {
-        if (node.parentid === parentId) {
-          const newNode = node;
-          newNode.name = node.departmentname;
-          newNode.children = parse(list, node.departmentid, node);
-          itemArr.push(newNode);
-        }
-        return itemArr;
-      }, []);
-    };
-    return parse(list, parentId);
-  }
-
-  export default {
-    data() {
-      return {
-        treeDate: [],
-        rootNode: null,
-        max: 30,
-        props: {
-          label: 'name',
-          children: 'children',
-          isLeaf: 'isLeaf',
-          count: 'departmentPCount'
-        },
-        count: 1
-      };
-    },
-    mounted() {
-      postData('/department.json').then((res) => {
-        const root = jsonToTree(res.data, -1);
-        this.rootNode = root[0];
-        this.treeDate = root[0].children;
-      });
-    },
-    methods: {
-      handleCheckChange(data, checked, indeterminate) {
-        console.log(data, checked, indeterminate);
-      },
-      handleNodeClick(data) {
-        console.log(data);
-      },
-      limitCheck() {
-        alert('超了');
-      },
-      // 自定义验证规则
-      maxRegular(node) {
-        if (node.data.departmentPCount > this.max) {
-          return false;
-        }
-
-        const cs = node.store.getCheckedNodes();
-        let num = 0;
-        for (let i = 0; i < cs.length; i++) {
-          if(cs[i].isLeaf) {
-            num += 1;
-          } else {
-            if (cs[i].departmentPCount > 0) {
-              num += cs[i].departmentPCount;
-            }
-          }
-        }
-
-        if (node.isLeaf) {
-          if(num + 1 > this.max) {
-            return false;
-          }
-        } else if (node.indeterminate) {
-          const leafs = (nodes) => {
-            for (let i = 0; i < nodes.length; i++) {
-              if(nodes[i].isLeaf && nodes[i].checked) {
-                num--;
-              } else if(nodes[i].childNodes && nodes[i].childNodes.length) {
-                leafs(nodes[i].childNodes);
-              }
-            }
-          }
-          leafs(node.childNodes);
-          if (num + node.data.departmentPCount > this.max) {
-            return false;
-          } 
-        } else {
-          if (num + node.data.departmentPCount > this.max) {
-            return false;
-          }
-        }
-      },
-      loadNode(node, resolve) {
-        postData('/users.txt', {departmentid: node.data.departmentid}).then((res) => {
-          const isRoot = !node.parent;
-          const data = isRoot ? res[this.rootNode.departmentid] : res[node.data.departmentid];
-          const user = data.data.map(v => {
-            v.isLeaf = true;
-            return v;
-          });
-          setTimeout(() => {
-            resolve(isRoot ? node.data.concat(user) : node.data.children.concat(user), !isRoot);
-          }, 500);
-        });
       }
     }
   };
@@ -1055,6 +1244,11 @@
 | virtual               | 是否使用虚拟列表                                | boolean                     | —    | false |
 | max                   | 可选最大叶子节点数量, 默认 -1 不做限制             | number                      | —    | -1    |
 | max-regular           | 自定义验证最大可选数量 只有返回值 === false才表示禁止选择 | function(node) {}           | —    | -    |
+| expanded-only-load    | 设置默认展开节点`default-expanded-keys`只加载内部数据不展开节点           | boolean                     | —    | false    |
+| check-on-click-leaf    | 是否在点击叶子节点的时候选中节点，默认值为 false，即只有在点击复选框时才会选中节点。           | boolean                     | —    | false    |
+| show-leaf-divider    | 是否在最后一个node节点后第一个叶子节点前增加分割           | boolean                     | —    | false    |
+| node-height-size    | 当使用virtual列表时，设置每个节点的高度           | boolean                     | —    | 26    |
+| ignore-ids    | 忽略节点id，设置后节点不会记入可选数量，也不会出现在返回的列表中，需设置id           | Array                     | —    | []    |
 
 ### props
 | 参数       | 说明                | 类型     | 可选值  | 默认值  |
@@ -1065,6 +1259,7 @@
 | isLeaf | 指定节点是否为叶子节点，仅在指定了 lazy 属性的情况下生效 | boolean, function(data, node) | —    | —    |
 | 新增    |   |  |     |     |
 | count | 指定节点数量为节点对象下的某个属性值，为制定max-regular 方法时则会更具此属性验证最大选择数 | String | —    |  null    |
+| parentid | 指定父级id, 用于异步加载时计算选择数量 | String | —    |  null    |
 
 ### 方法
 `Tree` 内部使用了 Node 类型的对象来包装用户传入的数据，用来保存目前节点的状态。
@@ -1090,6 +1285,7 @@
 | append          | 为 Tree 中的一个节点追加一个子节点 | (data, parentNode) 接收两个参数，1. 要追加的子节点的 data 2. 子节点的 parent 的 data、key 或者 node |
 | insertBefore    | 为 Tree 的一个节点的前面增加一个节点  | (data, refNode) 接收两个参数，1. 要增加的节点的 data 2. 要增加的节点的后一个节点的 data、key 或者 node |
 | insertAfter     | 为 Tree 的一个节点的后面增加一个节点  | (data, refNode) 接收两个参数，1. 要增加的节点的 data 2. 要增加的节点的前一个节点的 data、key 或者 node |
+| getCheckedLeafNum | 获取当前选中叶子节点数量  | - |
 
 ### Events
 | 事件名称           | 说明             | 回调参数                                     |
@@ -1097,7 +1293,7 @@
 | node-click     | 节点被点击时的回调      | 共三个参数，依次为：传递给 `data` 属性的数组中该节点所对应的对象、节点对应的 Node、节点组件本身。 |
 | node-contextmenu | 当某一节点被鼠标右键点击时会触发该事件 | 共四个参数，依次为：event、传递给 `data` 属性的数组中该节点所对应的对象、节点对应的 Node、节点组件本身。 |
 | check-change   | 节点选中状态发生变化时的回调 | 共三个参数，依次为：传递给 `data` 属性的数组中该节点所对应的对象、节点本身是否被选中、节点的子树中是否有被选中的节点 |
-| check          | 当复选框被点击的时候触发 | 共两个参数，依次为：传递给 `data` 属性的数组中该节点所对应的对象、树目前的选中状态对象，包含 checkedNodes、checkedKeys、halfCheckedNodes、halfCheckedKeys 四个属性 |
+| check          | 当复选框被点击的时候触发 | 共两个参数，依次为：传递给 `data` 属性的数组中该节点所对应的对象、树目前的选中状态对象，包含 checkedNodes、checkedKeys、halfCheckedNodes、halfCheckedKeys, checkedLeafsNum 五个属性 |
 | current-change | 当前选中节点变化时触发的事件 | 共两个参数，依次为：当前节点的数据，当前节点的 Node 对象          |
 | node-expand    | 节点被展开时触发的事件    | 共三个参数，依次为：传递给 `data` 属性的数组中该节点所对应的对象、节点对应的 Node、节点组件本身 |
 | node-collapse  | 节点被关闭时触发的事件    | 共三个参数，依次为：传递给 `data` 属性的数组中该节点所对应的对象、节点对应的 Node、节点组件本身 |
@@ -1109,6 +1305,7 @@
 | node-drop  | 拖拽成功完成时触发的事件  | 共四个参数，依次为：被拖拽节点对应的 Node、结束拖拽时最后进入的节点、被拖拽节点的放置位置（before、after、inner）、event |
 | 新增  |  |  |
 | limit-check  |  超过最大选择时触发事件  |  `data` 属性的数组中该节点所对应的对象 |
+| load-change  |  加载数据后触发  |  `data` 加载的数据 `node` 当前节点 |
 
 ### Scoped Slot
 | name | 说明 |

@@ -154,12 +154,15 @@ export default class TreeStore {
 
   getCheckedNodes(leafOnly = false, includeHalfChecked = false) {
     const checkedNodes = [];
+    const that = this;
     const traverse = function(node) {
       const childNodes = node.root ? node.root.childNodes : node.childNodes;
 
       childNodes.forEach((child) => {
         if ((child.checked || (includeHalfChecked && child.indeterminate)) && (!leafOnly || (leafOnly && child.isLeaf))) {
-          checkedNodes.push(child.data);
+          if (!(child.data.id && that.ignoreIds.find(id => id === child.data.id))) {
+            checkedNodes.push(child.data);
+          }
         }
 
         traverse(child);
@@ -295,7 +298,7 @@ export default class TreeStore {
 
     keys.forEach((key) => {
       const node = this.getNode(key);
-      if (node) node.expand(null, this.autoExpandParent);
+      if (node) node.expand(null, this.autoExpandParent, this.expandedOnlyLoad);
     });
   }
 
@@ -338,6 +341,27 @@ export default class TreeStore {
     }
   }
 
+  getCheckedLeafNum() {
+    const cs = this.getCheckedNodes();
+    if (!this.lazy) {
+      return cs.filter(v => v[this.props.isLeaf]).length;
+    }
+    const count = this.props.count;
+    const parents = cs.filter(v => !v[this.props.isLeaf]);
+
+    let num = 0;
+    for (let i = 0; i < cs.length; i++) {
+      if (cs[i][this.props.isLeaf] && !parents.find(v => v.id === cs[i][this.props.parentid])) {
+        num += 1;
+      } else {
+        if (cs[i][count] > 0 && !parents.find(v => v.id === cs[i][this.props.parentid])) {
+          num += cs[i][count];
+        }
+      }
+    }
+    return num;
+  }
+
   _maxRegular(node) {
     const count = this.props.count;
     if (!count) {
@@ -347,17 +371,7 @@ export default class TreeStore {
       return false;
     }
 
-    const cs = node.store.getCheckedNodes();
-    let num = 0;
-    for (let i = 0; i < cs.length; i++) {
-      if (cs[i].isLeaf) {
-        num += 1;
-      } else {
-        if (cs[i][count] > 0) {
-          num += cs[i][count];
-        }
-      }
-    }
+    let num = this.getCheckedLeafNum();
 
     if (node.isLeaf) {
       if (num + 1 > this.max) {

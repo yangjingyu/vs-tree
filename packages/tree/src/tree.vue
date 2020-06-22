@@ -21,6 +21,7 @@
         style="max-height: 360px; overflow-y: auto;"
         :data-key="getNodeKey"
         :data-sources="root.childNodes"
+        :estimate-size="nodeHeightSize"
         :extra-props="{showCheckbox, renderContent, renderAfterExpand, handleNodeExpand}"
         :data-component="item">
       </virtual-list>
@@ -74,7 +75,8 @@
         nodePrarnt: this,
         props: this.props,
         breadcrumb: this.breadcrumb,
-        virtual: this.virtual
+        virtual: this.virtual,
+        nodeHeightSize: this.nodeHeightSize
       };
     },
 
@@ -119,6 +121,7 @@
         default: true
       },
       checkOnClickNode: Boolean,
+      checkOnClickLeaf: Boolean,
       checkDescendants: {
         type: Boolean,
         default: false
@@ -147,6 +150,7 @@
             children: 'children',
             label: 'label',
             disabled: 'disabled',
+            parentid: 'parentid',
             count: null
           };
         }
@@ -156,6 +160,10 @@
         default: false
       },
       virtual: {
+        type: Boolean,
+        default: false
+      },
+      expandedOnlyLoad: {
         type: Boolean,
         default: false
       },
@@ -175,8 +183,17 @@
         type: Number,
         default: -1
       },
+      nodeHeightSize: {
+        type: Number,
+        default: 26
+      },
+      ignoreIds: {
+        type: Array,
+        default: () => []
+      },
       maxRegular: Function,
       iconClass: String,
+      showLeafDivider: Boolean,
       breadcrumbClass: String
     },
 
@@ -250,6 +267,10 @@
 
       getCheckedNodes(leafOnly, includeHalfChecked) {
         return this.store.getCheckedNodes(leafOnly, includeHalfChecked);
+      },
+
+      getCheckedLeafNum() {
+        return this.store.getCheckedLeafNum();
       },
 
       getCheckedKeys(leafOnly) {
@@ -366,16 +387,20 @@
           hasInput.click();
         }
       },
-      onload(node, resolve) {
+      onload(node, resolve, expandedOnlyLoad) {
         this.load(node, (data, addbread) => {
           if (data && Array.isArray(data)) {
             resolve(data);
-            if (this.breadcrumb && !node.isLeaf && addbread) {
+            if (this.breadcrumb && !node.isLeaf && addbread && !expandedOnlyLoad) {
               this.breadcrumbs.push(node);
               node.expanded = false;
               this.root = node;
               this.forceRender();
             }
+
+            this.$nextTick(() => {
+              this.$emit('load-change', data, node);
+            });
           }
         });
       },
@@ -395,8 +420,21 @@
       },
       forceRender() {
         this.$nextTick(()=> {
-          // this.$refs.treeVirtual.forceRender();
+          this.$refs.treeVirtual.scrollToIndex();
         });
+      },
+      clearCheckAll(noClear) {
+        noClear = noClear || this.ignoreIds || [];
+        this.store.getCheckedKeys().filter(v=> {
+          if (!noClear.find(id => v === id)) {
+            this.store.setChecked(v, false);
+          }
+          return false;
+        });
+        return [];
+      },
+      setRootCrumb() {
+        this.onCutCrumb(-1);
       }
     },
 
@@ -411,6 +449,7 @@
         maxRegular: this.maxRegular,
         props: this.props,
         load: this.onload,
+        ignoreIds: this.ignoreIds,
         currentNodeKey: this.currentNodeKey,
         checkStrictly: this.checkStrictly,
         checkDescendants: this.checkDescendants,
@@ -418,7 +457,8 @@
         defaultExpandedKeys: this.defaultExpandedKeys,
         autoExpandParent: this.autoExpandParent,
         defaultExpandAll: this.defaultExpandAll,
-        filterNodeMethod: this.filterNodeMethod
+        filterNodeMethod: this.filterNodeMethod,
+        expandedOnlyLoad: this.expandedOnlyLoad
       });
 
       this.root = this.store.root;

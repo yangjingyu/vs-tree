@@ -9,7 +9,8 @@
       'is-current': node.isCurrent,
       'is-hidden': !node.visible,
       'is-focusable': !node.disabled,
-      'is-checked': !node.disabled && node.checked
+      'is-checked': !node.disabled && node.checked,
+      'is-last-node': isLastNode
     }"
     role="treeitem"
     tabindex="-1"
@@ -64,6 +65,7 @@
           <virtual-list
             style="max-height: 360px; overflow-y: auto;"
             :data-key="getNodeKey"
+            :estimate-size="nodeHeightSize"
             :data-sources="node.childNodes"
             :extra-props="{showCheckbox, renderContent, renderAfterExpand, handleNodeExpand: handleChildNodeExpand}"
             :data-component="VsTteeItem">
@@ -99,7 +101,7 @@
 
     mixins: [emitter],
 
-    inject: ["nodePrarnt", "virtual"],
+    inject: ["nodePrarnt", "virtual", "nodeHeightSize"],
 
     props: {
       node: {
@@ -159,6 +161,12 @@
       };
     },
 
+    computed: {
+      isLastNode() {
+        return !this.node.isLeaf && this.node.nextSibling && this.node.nextSibling.isLeaf && this.tree && this.tree.showLeafDivider;
+      }
+    },
+
     watch: {
       'node.indeterminate'(val) {
         this.handleSelectChange(this.node.checked, val);
@@ -197,7 +205,7 @@
         if (this.tree.expandOnClickNode) {
           this.handleExpandIconClick();
         }
-        if (this.tree.checkOnClickNode && !this.node.disabled) {
+        if ((this.tree.checkOnClickNode || (this.tree.checkOnClickLeaf && this.node.isLeaf)) && !this.node.disabled) {
           this.handleCheckChange(null, {
             target: { checked: !this.node.checked }
           });
@@ -234,6 +242,7 @@
               checkedKeys: store.getCheckedKeys(),
               halfCheckedNodes: store.getHalfCheckedNodes(),
               halfCheckedKeys: store.getHalfCheckedKeys(),
+              checkedLeafsNum: store.getCheckedLeafNum()
             });
           });
         }, () => {

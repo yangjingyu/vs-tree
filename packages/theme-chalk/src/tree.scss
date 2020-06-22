@@ -117,6 +117,10 @@
   &.is-expanded > .vs-tree-node__children {
     display: block;
   }
+
+  &.is-last-node {
+    border-bottom: 10px solid #f8f8f8;
+  }
 }
 
 .vs-tree--highlight-current .vs-tree-node.is-current > .vs-tree-node__content {

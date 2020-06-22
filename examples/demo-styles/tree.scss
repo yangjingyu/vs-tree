@@ -1,3 +1,5 @@
+
+
 .demo-tree {
   .leaf {
     width: 20px;
@@ -41,18 +43,73 @@
     flex: 1;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    font-size: 14px;
-    padding-right: 8px;
+    font-size: 17px;
     width: calc(100% - 30px);
 
-    &span:nth-child(1) {
-      flex: 1;
+    & > span:nth-child(1) {
       min-width: 0;
       overflow: hidden;
-      margin-right: 20px;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+
+    & > span:nth-child(2) {
+      margin-left: 12px;
+      flex: 1;
+    }
+  }
+}
+
+.tree-breadcrumb {
+  border: 1px solid #f8f8f8;
+  padding: 20px 0;
+
+}
+
+.tree-breadcrumb {
+  .vs-tree-breadcrumb {
+    padding: 0 17px;
+  }
+
+  .vs-tree-node {
+    padding: 0 17px;
+    .vs-tree-node__content {
+      height: 56px;
+      border-bottom: 1px solid #f8f8f8;
+    }
+  }
+
+  .vs-checkbox__inner {
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    color: #fff;
+    text-align: center;
+    border-radius: 10px;
+  }
+
+  .is-checked {
+    .vs-checkbox__inner {
+      &::before {
+        font-family: "vs-icons";
+        content: "\e604";
+      }
+      &::after {
+        display: none;
+      }
+    }
+  }
+
+  .vs-checkbox .vs-checkbox__input.is-indeterminate .vs-checkbox__inner {
+    background-color: transparent;
+    border-color: #DCDFE6;
+    &::before {
+      display: none;
+    }
+  }
+
+  .custom-tree-node {
+    font-size: 17px;
+    color: #333;
   }
 }

@@ -26,8 +26,13 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.vs-icon-checkbox:before {
+  content: "\e604";
+}
+
+
 .vs-icon-loading::before {
-  content: "\e6da";
+  content: "\e643";
 }
 
 .vs-icon-arrow-right::before {
