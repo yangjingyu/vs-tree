@@ -32,7 +32,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 export default {
-  version: '1.2.0',
+  version: require('../package.json').version,
   install,
   CollapseTransition,
   Checkbox,

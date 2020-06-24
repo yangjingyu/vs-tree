@@ -9,7 +9,7 @@
     }"
     role="tree"
   >
-    <vs-breadcrumb class="vs-tree-breadcrumb" separator-class="vs-icon-arrow-right" :class="[breadcrumbClass]" v-if="breadcrumb">
+    <vs-breadcrumb class="vs-tree-breadcrumb" separator-class="vs-icon-arrow-right" :class="[breadcrumbClass]" v-if="breadcrumb && !breadcrumbCustom">
       <vs-breadcrumb-item><a  @click="onCutCrumb(-1)">根目录</a></vs-breadcrumb-item>
       <vs-breadcrumb-item v-for="(item, index) in breadcrumbs" :key="item.id">
         <a @click="onCutCrumb(index)">{{item.data[props.label]}}</a>
@@ -17,14 +17,36 @@
     </vs-breadcrumb>
     <template v-if="virtual">
       <virtual-list
+        :class="virtualClass"
         ref="treeVirtual"
-        style="max-height: 360px; overflow-y: auto;"
+        :size="nodeHeightSize"
+        :remain="30"
+        :bench="30"
+        :start="0"
+        :scrollelement="scrollelement"
+        :style="virtualStyle"
+      >
+        <vs-tree-node
+          v-for="node in root.childNodes"
+          :node="node"
+          :props="props"
+          :breadcrumb="breadcrumb"
+          :render-after-expand="renderAfterExpand"
+          :show-checkbox="showCheckbox"
+          :key="getNodeKey(node)"
+          :render-content="renderContent"
+          @node-expand="handleNodeExpand">
+        </vs-tree-node>
+      </virtual-list>
+      <!-- <virtual-list
+        ref="treeVirtual"
+        :style="virtualStyle"
         :data-key="getNodeKey"
         :data-sources="root.childNodes"
         :estimate-size="nodeHeightSize"
         :extra-props="{showCheckbox, renderContent, renderAfterExpand, handleNodeExpand}"
         :data-component="item">
-      </virtual-list>
+      </virtual-list> -->
     </template>
     <template v-else>
       <vs-tree-node
@@ -76,7 +98,8 @@
         props: this.props,
         breadcrumb: this.breadcrumb,
         virtual: this.virtual,
-        nodeHeightSize: this.nodeHeightSize
+        nodeHeightSize: this.nodeHeightSize,
+        virtualStyle: this.virtualStyle
       };
     },
 
@@ -107,6 +130,12 @@
         type: String,
         default() {
           return '暂无数据';
+        }
+      },
+      virtualStyle: {
+        type: Object,
+        default() {
+          return {maxHeight: '360px', overflowY: 'auto'};
         }
       },
       renderAfterExpand: {
@@ -142,6 +171,7 @@
         type: Boolean,
         default: false
       },
+      breadcrumbCustom: Boolean,
       allowDrag: Function,
       allowDrop: Function,
       props: {
@@ -194,7 +224,9 @@
       maxRegular: Function,
       iconClass: String,
       showLeafDivider: Boolean,
-      breadcrumbClass: String
+      breadcrumbClass: String,
+      scrollelement: null,
+      virtualClass: String
     },
 
     computed: {
@@ -239,6 +271,10 @@
 
       checkStrictly(newVal) {
         this.store.checkStrictly = newVal;
+      },
+
+      breadcrumbs(newVal) {
+        this.$emit('breadcrumb-change', newVal);
       }
     },
 
@@ -388,23 +424,34 @@
         }
       },
       onload(node, resolve, expandedOnlyLoad) {
+        node.isLoading = true;
         this.load(node, (data, addbread) => {
           if (data && Array.isArray(data)) {
             resolve(data);
-            if (this.breadcrumb && !node.isLeaf && addbread && !expandedOnlyLoad) {
+
+            if (node.isCheckLoading) {
+              node.childNodes.forEach(v => {
+                v.checked = true;
+                this.store.setChecked(v, true);
+              });
+            };
+
+            if (this.breadcrumb && !node.isLeaf && addbread && !expandedOnlyLoad && !node.isCheckLoading) {
               this.breadcrumbs.push(node);
               node.expanded = false;
               this.root = node;
               this.forceRender();
             }
-
             this.$nextTick(() => {
+              node.isLoading = false;
+              node.isCheckLoading = false;
               this.$emit('load-change', data, node);
             });
           }
         });
       },
       onCutCrumb(idx) {
+        idx = idx < 0 ? -1 : idx;
         if (idx === -1) {
           this.breadcrumbs = [];
         } else {
@@ -420,7 +467,10 @@
       },
       forceRender() {
         this.$nextTick(()=> {
-          this.$refs.treeVirtual.scrollToIndex();
+          if (this.$refs.treeVirtual) {
+            this.$refs.treeVirtual.setScrollTop();
+            this.$refs.treeVirtual.forceRender();
+          }
         });
       },
       clearCheckAll(noClear) {
@@ -606,7 +656,7 @@
       });
 
       this.$on('node-click', (event, node) => {
-        if (this.breadcrumb && !node.loading && !node.isLeaf) {
+        if (this.breadcrumb && !node.isLeaf && !node.isLoading) {
           this.breadcrumbs.push(node);
           this.root = node;
           this.forceRender();

@@ -25,8 +25,6 @@
     ref="node"
   >
     <div class="vs-tree-node__content"
-      :rid="tree.currentNode && tree.currentNode.node.id"
-      :pid="node.parent.id"
       :style="!breadcrumb && {'padding-left': (node.level - 1) * tree.indent + 'px'}">
       <span
         v-if="!breadcrumb"
@@ -63,13 +61,31 @@
       >
         <template v-if="virtual">
           <virtual-list
-            style="max-height: 360px; overflow-y: auto;"
+            class="vs-virtual-list"
+            :style="virtualStyle"
+            :size="nodeHeightSize"
+            :start="0"
+            :remain="30"
+            :bench="30"
+          >
+            <vs-tree-node
+              :render-content="renderContent"
+              v-for="child in node.childNodes"
+              :render-after-expand="renderAfterExpand"
+              :show-checkbox="showCheckbox"
+              :key="getNodeKey(child)"
+              :node="child"
+              @node-expand="handleChildNodeExpand">
+            </vs-tree-node>
+          </virtual-list>
+          <!-- <virtual-list
+            :style="virtualStyle"
             :data-key="getNodeKey"
             :estimate-size="nodeHeightSize"
             :data-sources="node.childNodes"
             :extra-props="{showCheckbox, renderContent, renderAfterExpand, handleNodeExpand: handleChildNodeExpand}"
             :data-component="VsTteeItem">
-          </virtual-list>
+          </virtual-list> -->
         </template>
         <template v-else>
           <vs-tree-node
@@ -101,7 +117,7 @@
 
     mixins: [emitter],
 
-    inject: ["nodePrarnt", "virtual", "nodeHeightSize"],
+    inject: ["nodePrarnt", "virtual", "nodeHeightSize", "virtualStyle"],
 
     props: {
       node: {
@@ -163,7 +179,7 @@
 
     computed: {
       isLastNode() {
-        return !this.node.isLeaf && this.node.nextSibling && this.node.nextSibling.isLeaf && this.tree && this.tree.showLeafDivider;
+        return (!this.node.isLeaf || (this.node.data && this.node.data.children)) && this.node.nextSibling && this.node.nextSibling.isLeaf && !this.node.nextSibling.data.children && this.tree && this.tree.showLeafDivider;
       }
     },
 
@@ -235,6 +251,8 @@
       handleCheckChange(value, ev) {
         this.tree.store.checkMax(this.node, value).then(() => {
           this.node.setChecked(ev.target.checked, !this.tree.checkStrictly);
+          this.node.isCheckLoading = true;
+          !this.expanded && this.handleExpandIconClick();
           this.$nextTick(() => {
             const store = this.tree.store;
             this.tree.$emit('check', this.node.data, {
@@ -247,6 +265,7 @@
           });
         }, () => {
           this.node.checked = false;
+          ev.target.checked = false;
           this.tree.$emit('limit-check', this.node.data);
         });
       },

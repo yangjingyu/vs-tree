@@ -44,11 +44,8 @@
 
 <div class="buttons">
   <el-button @click="refresh(true)">刷新</el-button>
-
   <el-button @click="getCheckedNodes">获取已选择node 并存入Storage</el-button>
   <el-button @click="getCheckedKeys">通过 key 获取</el-button>
-  <!-- <el-button @click="setCheckedNodes">通过 node 设置</el-button>
-  <el-button @click="setCheckedKeys">通过 key 设置</el-button> -->
   <el-button @click="getCurrentNode">当前节点</el-button>
   <el-button @click="setExpandNode">设置aaaaaa部门展开｜选中节点</el-button>
   <el-button @click="getCurrentSelects">获取当前选中数量</el-button>
@@ -82,7 +79,7 @@
     return parse(list, parentId);
   }
 
-  const usermap = JSON.parse(localStorage.usermap) ||  {};
+  const usermap = localStorage.usermap ? JSON.parse(localStorage.usermap) :  {};
 
   export default {
     data() {
@@ -144,28 +141,19 @@
           this.rootNode = root[0];
           this.treeDate = root[0].children;
 
-          console.log(treeMap, 'treeMap');
-
           this.$nextTick(() => {
             this.defalutChecks = [...depts.map(v => v.did), ...allUser.map(v => [v.did, v.uucId].join('_'))];
             this.defalutExpand = [...dids, ...depts.map(v => v.did)];
-
-            // console.log();
           });
 
           this.$refs.tree.setRootCrumb();
-          // 21214
           postData('/users.txt').then((res) => {
-            console.log(res, 'res')
             const data = res[421214] || res["421214"];
             const user = this.formatData(data);
-            // this.$refs.tree.root.data.push();
             console.log(this.$refs.tree.store.root, 'data');
             user.map(v => {
               this.$refs.tree.store.root.data.push(v);
             });
-            
-            
             this.$nextTick(() => {
               this.checked_total = this.$refs.tree.getCheckedLeafNum();
             });
@@ -219,8 +207,6 @@
           }
         });
 
-        console.log(depts, 'depts');
-        // return;
         localStorage.treeChecked = JSON.stringify({
           users,
           depts
@@ -255,7 +241,6 @@
       limitCheck() {
         alert('超了');
       },
-      // defalutChecks
       clearChecks() {
         this.defalutChecks = this.$refs.tree.clearCheckAll();
         this.$nextTick(() => {
@@ -292,11 +277,9 @@
           });
       },
       loadNode(node, resolve) {
-        console.log(node, '----');
         if(node.level === 0) return;
         const isRoot = !node.parent;
         const id = isRoot ? this.rootNode.departmentid : node.data.departmentid;
-
 
         if (!isRoot && !node.data.departmentPCount) {
           resolve(node.data.children, !isRoot);
@@ -312,11 +295,8 @@
 
         postData('/users.txt').then((res) => {
           const data = res[id];
-          
           usermap[id] = data;
-
           localStorage.usermap = JSON.stringify(usermap);
-
           const user = this.formatData(data, node, isRoot);
 
           setTimeout(() => {
@@ -1249,6 +1229,11 @@
 | show-leaf-divider    | 是否在最后一个node节点后第一个叶子节点前增加分割           | boolean                     | —    | false    |
 | node-height-size    | 当使用virtual列表时，设置每个节点的高度           | boolean                     | —    | 26    |
 | ignore-ids    | 忽略节点id，设置后节点不会记入可选数量，也不会出现在返回的列表中，需设置id           | Array                     | —    | []    |
+| breadcrumb-custom | 自定义面包屑     | Boolean                     | —    | false    |
+| scrollelement  | 虚拟列表的目标滚动元素, 设置后会更具目标元素的滚动触发事件         | Element                     | —    | null    |
+| virtual-class  | 虚拟列表的样式class          |  String              | —    | 普通模式'vs-virtual-list'， 面包屑模式为空    |
+| virtual-style  | 虚拟列表的样式          |  Object              | —    | {maxHeight: '360px', overflowY: 'auto'};    |
+
 
 ### props
 | 参数       | 说明                | 类型     | 可选值  | 默认值  |

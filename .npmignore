@@ -3,6 +3,7 @@ src
 public
 examples
 build
+packages
 # yarn.lock should be ignored -> https://github.com/yarnpkg/yarn/issues/5406
 yarn.lock
 .editorconfig

@@ -1,3 +1,9 @@
-lib/
-node_modules/
-dist/
+packages/tree/src/tree-item.vue
+*.sh
+node_modules
+lib
+coverage
+*.md
+*.scss
+*.woff
+*.ttf
