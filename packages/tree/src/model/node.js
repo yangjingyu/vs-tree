@@ -297,8 +297,9 @@ export default class Node {
     }
   }
 
-  expand(callback, expandParent, expandedOnlyLoad) {
+  expand(callback, expandParent, expandedOnlyLoad, noexpand) {
     const done = (onlyLoad) => {
+      if (noexpand) return;
       if (expandParent && !onlyLoad) {
         let parent = this.parent;
         while (parent.level > 0) {

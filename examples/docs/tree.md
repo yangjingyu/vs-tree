@@ -1271,6 +1271,7 @@
 | insertBefore    | 为 Tree 的一个节点的前面增加一个节点  | (data, refNode) 接收两个参数，1. 要增加的节点的 data 2. 要增加的节点的后一个节点的 data、key 或者 node |
 | insertAfter     | 为 Tree 的一个节点的后面增加一个节点  | (data, refNode) 接收两个参数，1. 要增加的节点的 data 2. 要增加的节点的前一个节点的 data、key 或者 node |
 | getCheckedLeafNum | 获取当前选中叶子节点数量  | - |
+| getCurrentChecked | 获取当前节点叶子节点选中数量  | - |
 
 ### Events
 | 事件名称           | 说明             | 回调参数                                     |

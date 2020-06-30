@@ -341,6 +341,43 @@ export default class TreeStore {
     }
   }
 
+  getCurrentChecked(node) {
+    if (node.isLeaf) {
+      return 0;
+    }
+
+    const count = this.props.count;
+    if (node.checked) {
+      return node.data[count];
+    }
+
+    if (!node.indeterminate) {
+      return 0;
+    }
+
+    let num = 0;
+    const leafs = (nodes) => {
+      for (let i = 0; i < nodes.length; i++) {
+        const n = nodes[i];
+        if (n.isLeaf) {
+          if (n.checked) {
+            num++;
+          }
+        } else {
+          if (n.checked) {
+            num += n.data[count];
+          } else if (n.indeterminate) {
+            leafs(n.childNodes);
+          }
+        }
+      }
+    };
+
+    leafs(node.childNodes);
+
+    return num;
+  }
+
   getCheckedLeafNum() {
     const cs = this.getCheckedNodes();
     if (!this.lazy) {

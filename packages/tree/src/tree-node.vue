@@ -252,7 +252,7 @@
         this.tree.store.checkMax(this.node, value).then(() => {
           this.node.setChecked(ev.target.checked, !this.tree.checkStrictly);
           this.node.isCheckLoading = true;
-          !this.expanded && this.handleExpandIconClick();
+          !this.expanded && value && !this.node.isLeaf && this.node.expand(()=>{}, false, false, true);
           this.$nextTick(() => {
             const store = this.tree.store;
             this.tree.$emit('check', this.node.data, {

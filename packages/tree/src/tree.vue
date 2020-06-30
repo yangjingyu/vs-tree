@@ -429,13 +429,6 @@
           if (data && Array.isArray(data)) {
             resolve(data);
 
-            if (node.isCheckLoading) {
-              node.childNodes.forEach(v => {
-                v.checked = true;
-                this.store.setChecked(v, true);
-              });
-            };
-
             if (this.breadcrumb && !node.isLeaf && addbread && !expandedOnlyLoad && !node.isCheckLoading) {
               this.breadcrumbs.push(node);
               node.expanded = false;
@@ -443,6 +436,12 @@
               this.forceRender();
             }
             this.$nextTick(() => {
+              if (node.isCheckLoading) {
+                node.childNodes.forEach(v => {
+                  v.checked = true;
+                  this.store.setChecked(v, true);
+                });
+              }
               node.isLoading = false;
               node.isCheckLoading = false;
               this.$emit('load-change', data, node);
