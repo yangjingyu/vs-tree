@@ -1199,7 +1199,7 @@
 | node-key              | 每个树节点用来作为唯一标识的属性，整棵树应该是唯一的               | String                      | —    | —     |
 | props                 | 配置选项，具体看下表                               | object                      | —    | —     |
 | render-after-expand   | 是否在第一次展开某个树节点后才渲染其子节点         | boolean                      | —    | true |
-| load                  | 加载子树数据的方法，仅当 lazy 属性为true 时生效    | function(node, resolve)     | —    | —     |
+| load                  | 加载子树数据的方法，仅当 lazy 属性为true 时生效    | function(node, resolve, reject)     | —    | —     |
 | render-content        | 树节点的内容区的渲染 Function                      | Function(h, { node, data, store }        | —    | —     |
 | highlight-current     | 是否高亮当前选中节点，默认值是 false。             | boolean                     | —    | false |
 | default-expand-all    | 是否默认展开所有节点                               | boolean                     | —    | false |

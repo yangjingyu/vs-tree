@@ -1,9 +1,24 @@
 # vs-tree
 
-> 项目改与: [element-ui](https://element.eleme.cn/#/zh-CN/component/tree);<br />
-> 虚拟列表使用: [vue-virtual-scroll-list](https://github.com/tangbc/vue-virtual-scroll-list);
+一个基于 vue 的 通用tree组件，支持层级面包屑、虚拟滚动、懒加载、最大可选，复选框...
 
-## 具有和element-ui tree组件所有功能另添加面包屑和虚拟列表
+
+## 浏览器支持
+
+![Edge](https://raw.github.com/alrra/browser-logos/master/src/edge/edge_48x48.png) | ![Chrome](https://raw.github.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png) | ![Firefox](https://raw.github.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png) | ![Opera](https://raw.github.com/alrra/browser-logos/master/src/opera/opera_48x48.png) | ![Safari](https://raw.github.com/alrra/browser-logos/master/src/safari/safari_48x48.png)
+--- | --- | --- | --- | --- |
+Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ |
+
+## 功能点
+
+* [x] 基础树组件
+* [x] 层级面包屑
+* [x] 复选框
+* [x] 异步加载数据/报错处理
+* [x] 虚拟列表
+* [x] 最大可选
+
+## 基于el-tree新增扩展
 
   简单易用同时满足pc和移动端的Tree结构需求：
   详情见: [使用说明](./examples/docs/tree.md).
@@ -16,11 +31,17 @@
 
 ### 安装
 
-  `npm install vs-tree`
+依赖库：[vue](https://www.npmjs.com/package/vue) 2.5+
 
-  或
+```shell
+npm install vs-tree
+```
 
-  `yarn add vs-tree`
+或
+
+```shell
+yarn add vs-tree
+```
 
 ### 使用
 
@@ -49,3 +70,5 @@
     }
   }
   ```
+
+> 项目基于: [el-tree](https://element.eleme.cn/#/zh-CN/component/tree); 虚拟列表: [vue-virtual-scroll-list](https://github.com/tangbc/vue-virtual-scroll-list);

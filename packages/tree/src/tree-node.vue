@@ -49,9 +49,13 @@
         v-if="node.loading"
         class="vs-tree-node__loading-icon vs-icon-loading">
       </span>
+      <span 
+        v-else-if="node.error"
+        class="vs-tree-node__warn-icon vs-icon-warning">
+      </span>
       <node-content :node="node"></node-content>
     </div>
-    <vs-collapse-transition v-if="!breadcrumb">
+    <vs-collapse-transition v-if="!breadcrumb && !virtual">
       <div
         class="vs-tree-node__children"
         v-if="!renderAfterExpand || childNodeRendered"
@@ -59,45 +63,15 @@
         role="group"
         :aria-expanded="expanded"
       >
-        <template v-if="virtual">
-          <virtual-list
-            class="vs-virtual-list"
-            :style="virtualStyle"
-            :size="nodeHeightSize"
-            :start="0"
-            :remain="30"
-            :bench="30"
-          >
-            <vs-tree-node
-              :render-content="renderContent"
-              v-for="child in node.childNodes"
-              :render-after-expand="renderAfterExpand"
-              :show-checkbox="showCheckbox"
-              :key="getNodeKey(child)"
-              :node="child"
-              @node-expand="handleChildNodeExpand">
-            </vs-tree-node>
-          </virtual-list>
-          <!-- <virtual-list
-            :style="virtualStyle"
-            :data-key="getNodeKey"
-            :estimate-size="nodeHeightSize"
-            :data-sources="node.childNodes"
-            :extra-props="{showCheckbox, renderContent, renderAfterExpand, handleNodeExpand: handleChildNodeExpand}"
-            :data-component="VsTteeItem">
-          </virtual-list> -->
-        </template>
-        <template v-else>
-          <vs-tree-node
-            :render-content="renderContent"
-            v-for="child in node.childNodes"
-            :render-after-expand="renderAfterExpand"
-            :show-checkbox="showCheckbox"
-            :key="getNodeKey(child)"
-            :node="child"
-            @node-expand="handleChildNodeExpand">
-          </vs-tree-node>
-        </template>
+        <vs-tree-node
+          :render-content="renderContent"
+          v-for="child in node.childNodes"
+          :render-after-expand="renderAfterExpand"
+          :show-checkbox="showCheckbox"
+          :key="getNodeKey(child)"
+          :node="child"
+          @node-expand="handleChildNodeExpand">
+        </vs-tree-node>
       </div>
     </vs-collapse-transition>
   </div>
@@ -108,7 +82,6 @@
   import VsCheckbox from 'vs-tree/packages/checkbox';
   import emitter from 'vs-tree/src/mixins/emitter';
   import { getNodeKey } from './model/util';
-  import VsTteeItem from './tree-item.vue';
 
   export default {
     name: 'VsTreeNode',
@@ -168,7 +141,6 @@
 
     data() {
       return {
-        VsTteeItem: VsTteeItem,
         tree: null,
         expanded: false,
         childNodeRendered: false,

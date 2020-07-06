@@ -109,6 +109,10 @@
     color: $--tree-expand-icon-color;
   }
 
+  @include e(warn-icon) {
+    color: $--color-danger;
+  }
+
   & > .vs-tree-node__children {
     overflow: hidden;
     background-color: transparent;

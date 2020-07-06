@@ -9,44 +9,20 @@
     }"
     role="tree"
   >
-    <vs-breadcrumb class="vs-tree-breadcrumb" separator-class="vs-icon-arrow-right" :class="[breadcrumbClass]" v-if="breadcrumb && !breadcrumbCustom">
-      <vs-breadcrumb-item><a  @click="onCutCrumb(-1)">根目录</a></vs-breadcrumb-item>
-      <vs-breadcrumb-item v-for="(item, index) in breadcrumbs" :key="item.id">
-        <a @click="onCutCrumb(index)">{{item.data[props.label]}}</a>
-      </vs-breadcrumb-item>
-    </vs-breadcrumb>
     <template v-if="virtual">
-      <virtual-list
-        :class="virtualClass"
-        ref="treeVirtual"
-        :size="nodeHeightSize"
-        :remain="30"
-        :bench="30"
+      <virtual-list 
+        ref="treeVirtual" 
+        :class="virtualClass" 
+        :size="nodeHeightSize" 
+        :remain="30" 
+        :bench="30" 
         :start="0"
+        :item="item"
+        :itemcount="nodeList.length"
+        :itemprops="getItemprops"
         :scrollelement="scrollelement"
         :style="virtualStyle"
-      >
-        <vs-tree-node
-          v-for="node in root.childNodes"
-          :node="node"
-          :props="props"
-          :breadcrumb="breadcrumb"
-          :render-after-expand="renderAfterExpand"
-          :show-checkbox="showCheckbox"
-          :key="getNodeKey(node)"
-          :render-content="renderContent"
-          @node-expand="handleNodeExpand">
-        </vs-tree-node>
-      </virtual-list>
-      <!-- <virtual-list
-        ref="treeVirtual"
-        :style="virtualStyle"
-        :data-key="getNodeKey"
-        :data-sources="root.childNodes"
-        :estimate-size="nodeHeightSize"
-        :extra-props="{showCheckbox, renderContent, renderAfterExpand, handleNodeExpand}"
-        :data-component="item">
-      </virtual-list> -->
+      />
     </template>
     <template v-else>
       <vs-tree-node
@@ -80,7 +56,6 @@
   import VsTteeItem from './tree-item.vue';
   import emitter from 'vs-tree/src/mixins/emitter';
   import { addClass, removeClass } from 'vs-tree/src/utils/dom';
-  import VsBreadcrumb from 'vs-tree/packages/breadcrumb';
 
   export default {
     name: 'VsTree',
@@ -88,8 +63,7 @@
     mixins: [emitter],
 
     components: {
-      VsTreeNode,
-      VsBreadcrumb
+      VsTreeNode
     },
 
     provide() {
@@ -105,6 +79,7 @@
 
     data() {
       return {
+        list: [],
         item: VsTteeItem,
         store: null,
         root: null,
@@ -239,6 +214,10 @@
         }
       },
 
+      nodeList() {
+        return this.breadcrumb ? this.root.childNodes : this.list;
+      },
+
       treeItemArray() {
         return Array.prototype.slice.call(this.treeItems);
       },
@@ -279,6 +258,36 @@
     },
 
     methods: {
+      getItemprops(itemIndex) {
+        const node = this.nodeList[itemIndex];
+        return {
+          key: this.getNodeKey(node),
+          props: {
+            showCheckbox: this.showCheckbox,
+            renderContent: this.renderContent,
+            renderAfterExpand: this.renderAfterExpand,
+            handleNodeExpand: this.handleNodeExpand,
+            index: itemIndex,
+            source: node
+          }
+        };
+      },
+      updateList() {
+        if (this.breadcrumb) return;
+        const list = [];
+
+        const toArr = (data, checked) => {
+          data.forEach(v => {
+            list.push(v);
+            if (v.childNodes) toArr(v.childNodes);
+          });
+        };
+
+        setTimeout(() => {
+          toArr(this.root.childNodes, true);
+          this.list = list.filter(v => (v.parent.expanded || v.level === 1) && v.visible);
+        }, 50);
+      },
       filter(value) {
         if (!this.filterNodeMethod) throw new Error('[Tree] filterNodeMethod is required when filter');
         this.store.filter(value);
@@ -377,6 +386,12 @@
       },
 
       handleNodeExpand(nodeData, node, instance) {
+        if (!this.breadcrumb && this.virtual) {
+          node.childNodes.forEach(v => {
+            v.visible = true;
+          });
+        }
+        this.updateList();
         this.broadcast('VsTreeNode', 'tree-node-expand', node);
         this.$emit('node-expand', nodeData, node, instance);
       },
@@ -442,11 +457,23 @@
                   this.store.setChecked(v, true);
                 });
               }
+
+              this.updateList();
+
               node.isLoading = false;
               node.isCheckLoading = false;
               this.$emit('load-change', data, node);
             });
+          } else {
+            node.error = true;
           }
+        }, () => {
+          this.$nextTick(() => {
+            node.isLoading = false;
+            node.loading = false;
+            node.loaded = false;
+            node.error = true;
+          });
         });
       },
       onCutCrumb(idx) {
@@ -511,6 +538,10 @@
       });
 
       this.root = this.store.root;
+
+      this.$nextTick(() => {
+        this.updateList();
+      });
 
       let dragState = this.dragState;
       this.$on('tree-node-drag-start', (event, treeNode) => {
@@ -660,6 +691,15 @@
           this.root = node;
           this.forceRender();
         }
+      });
+
+      this.$on('node-collapse', (event, node) => {
+        if (!this.breadcrumb && this.virtual) {
+          node.childNodes.forEach(v => {
+            v.visible = false;
+          });
+        }
+        this.updateList();
       });
     },
 
