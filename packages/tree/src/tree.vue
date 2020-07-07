@@ -240,6 +240,8 @@
 
       data(newVal) {
         this.store.setData(newVal);
+        this.updateList();
+        this.forceRender();
       },
 
       checkboxItems(val) {
@@ -276,17 +278,15 @@
         if (this.breadcrumb) return;
         const list = [];
 
-        const toArr = (data, checked) => {
+        const toArr = data => {
           data.forEach(v => {
             list.push(v);
             if (v.childNodes) toArr(v.childNodes);
           });
         };
 
-        setTimeout(() => {
-          toArr(this.root.childNodes, true);
-          this.list = list.filter(v => (v.parent.expanded || v.level === 1) && v.visible);
-        }, 50);
+        toArr(this.root.childNodes);
+        this.list = list.filter(v => (v.parent.expanded || v.level === 1) && v.visible);
       },
       filter(value) {
         if (!this.filterNodeMethod) throw new Error('[Tree] filterNodeMethod is required when filter');
@@ -540,7 +540,9 @@
       this.root = this.store.root;
 
       this.$nextTick(() => {
-        this.updateList();
+        setTimeout(() => {
+          this.updateList();
+        }, 200);
       });
 
       let dragState = this.dragState;
@@ -695,9 +697,14 @@
 
       this.$on('node-collapse', (event, node) => {
         if (!this.breadcrumb && this.virtual) {
-          node.childNodes.forEach(v => {
-            v.visible = false;
-          });
+          const close = (_node) => {
+            _node.childNodes.forEach(v => {
+              v.visible = false;
+              v.expanded = false;
+              close(v);
+            });
+          };
+          close(node);
         }
         this.updateList();
       });
