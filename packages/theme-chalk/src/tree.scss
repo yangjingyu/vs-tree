@@ -130,3 +130,9 @@
 .vs-tree--highlight-current .vs-tree-node.is-current > .vs-tree-node__content {
   background-color: mix($--color-white, $--color-primary, 92%);
 }
+
+
+.vs-virtual-list {
+  height: auto!important;
+  overflow-y: auto!important;
+}

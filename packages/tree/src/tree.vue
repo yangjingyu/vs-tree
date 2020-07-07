@@ -11,7 +11,8 @@
   >
     <template v-if="virtual">
       <virtual-list 
-        ref="treeVirtual" 
+        ref="treeVirtual"
+        class="vs-virtual-list"
         :class="virtualClass" 
         :size="nodeHeightSize" 
         :remain="30" 
