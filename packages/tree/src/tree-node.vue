@@ -179,7 +179,7 @@
 
       handleSelectChange(checked, indeterminate) {
         if (this.oldChecked !== checked && this.oldIndeterminate !== indeterminate) {
-          this.tree.$emit('check-change', this.node.data, checked, indeterminate);
+          this.tree.$emit('check-change', this.node.data, checked, indeterminate, this.node);
         }
         this.oldChecked = checked;
         this.indeterminate = indeterminate;

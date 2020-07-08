@@ -281,14 +281,19 @@
 
         const toArr = data => {
           data.forEach(v => {
-            list.push(v);
-            if (v.childNodes) toArr(v.childNodes);
+            if (v.parent.expanded || v.level === 1) {
+              list.push(v);
+              if (v.childNodes.length && !v.isLeaf) {
+                toArr(v.childNodes);
+              }
+            }
           });
         };
 
         toArr(this.root.childNodes);
-        this.list = list.filter(v => (v.parent.expanded || v.level === 1) && v.visible);
+        this.list = list; // .filter(v => (v.parent.expanded || v.level === 1));
       },
+
       filter(value) {
         if (!this.filterNodeMethod) throw new Error('[Tree] filterNodeMethod is required when filter');
         this.store.filter(value);
@@ -387,11 +392,6 @@
       },
 
       handleNodeExpand(nodeData, node, instance) {
-        if (!this.breadcrumb && this.virtual) {
-          node.childNodes.forEach(v => {
-            v.visible = true;
-          });
-        }
         this.updateList();
         this.broadcast('VsTreeNode', 'tree-node-expand', node);
         this.$emit('node-expand', nodeData, node, instance);
@@ -697,17 +697,9 @@
       });
 
       this.$on('node-collapse', (event, node) => {
-        if (!this.breadcrumb && this.virtual) {
-          const close = (_node) => {
-            _node.childNodes.forEach(v => {
-              v.visible = false;
-              v.expanded = false;
-              close(v);
-            });
-          };
-          close(node);
-        }
-        this.updateList();
+        this.$nextTick(() => {
+          this.updateList();
+        });
       });
     },
 
