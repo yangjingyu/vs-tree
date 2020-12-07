@@ -1,0 +1,37 @@
+.tree-node {
+  line-height: 26px;
+  cursor: pointer;
+}
+
+.tree-node:hover {
+  background-color: #eee;
+}
+
+.expand, .expand-empty {
+  width: 16px;
+  height: 16px;
+  line-height: 12px;
+  display: inline-block;
+  margin-right: 8px;
+  color: #bbb;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.expand {
+  border: 1px solid #bbb;
+  cursor: pointer;
+}
+
+.expand-true {
+  color: #bbb;
+  /* transform: rotate(90deg); */
+}
+
+.selected {
+  background-color: #eee;
+}
+
+.half-checked .expand {
+  background-color: #2a8ae2;
+}
