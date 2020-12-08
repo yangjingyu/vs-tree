@@ -23,7 +23,10 @@ export default class Tree {
     this.store = new TreeStore({
       data: ops.data,
       max: ops.max,
+      checkedKeys: ops.checkedKeys || [],
+      expandKeys: ops.expandKeys || [],
       limitAlert: ops.limitAlert || noop,
+      change: ops.change || noop,
       update: () => {
         this.createNode();
       },
@@ -39,6 +42,8 @@ export default class Tree {
 
     this.init()
 
+    this.setDefaultChecked()
+    this.setDefaultExpands()
   }
 
   init() {
@@ -70,8 +75,26 @@ export default class Tree {
     this.data = this.nodes.filter(v => {
       return v.visbile
     });
-
     this.vlist.update(this.data)
+  }
+
+  // 设置默认选中
+  setDefaultChecked() {
+    this.store.checkedKeys.forEach(id => {
+      this.getNodeById(id).setChecked(true)
+    });
+  }
+
+  // 设置默认展开
+  setDefaultExpands() {
+    this.store.expandKeys.forEach(id => {
+      this.getNodeById(id).setExpand(true)
+    });
+  }
+
+  // 根据ID获取节点
+  getNodeById(id) {
+    return this.store.dataMap.get(id);
   }
 
   // 获取选中节点

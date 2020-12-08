@@ -1,5 +1,4 @@
 import Node from "./node";
-
 export default class TreeStore {
   constructor(options) {
     for (let option in options) {
@@ -7,6 +6,8 @@ export default class TreeStore {
         this[option] = options[option];
       }
     }
+
+    this.dataMap = new Map();
 
     this.root = new Node({
       data: this.data,
@@ -33,7 +34,6 @@ export default class TreeStore {
     if(node.childNodes.length > this.max) {
       return true
     }
-    console.log(node);
     return false
   }
 }

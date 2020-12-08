@@ -75,7 +75,7 @@ export default class Node {
     dom.className = "expand"
     dom.innerText = "+"
 
-    if (this.level < 1) {
+    if (this.level < 1 || this.expanded) {
       dom.classList.add('expand-true');
       this.expanded = true
       dom.innerText = "-"
@@ -83,37 +83,40 @@ export default class Node {
 
     dom.addEventListener('click', (e) => {
       e.stopPropagation();
-      if (dom.classList.contains('expand-true')) {
-        dom.classList.remove('expand-true')
-        dom.innerText = "+"
-        this.expanded = false
-      } else {
-        dom.innerText = "-"
-        dom.classList.add('expand-true')
-        this.expanded = true
-      }
-      this.updateExpand(this.expanded)
-      this.store.update()
+      const expand = !dom.classList.contains('expand-true');
+      dom.innerText = expand ? "-" : "+"
+      dom.classList.toggle('expand-true')
+      this.setExpand(expand)
     })
+    this.expandEl = dom;
     return dom;
   }
 
   createCheckbox() {
-    const dom = document.createElement('span')
+    const dom = document.createElement('label')
+    dom.className = "vs-checkbox";
+    // const dom = document.createElement('span')
+    // dom.className = "vs-checkbox__input"
+    const inner = document.createElement('span')
+    inner.className = "vs-checkbox__inner"
     const checkbox = document.createElement('input')
     dom.appendChild(checkbox)
+    dom.appendChild(inner)
+    // dom.appendChild(dom)
     checkbox.type = 'checkbox'
     checkbox.checked = this.checked;
+    checkbox.className = 'vs-checkbox__original'
 
     checkbox.addEventListener('change', (e) => {
-      const boo = e.target.checked;
-      if (boo && this.store.max && this.store.checkMaxNodes(this)) {
+      const checked = e.target.checked;
+      if (checked && this.store.max && this.store.checkMaxNodes(this)) {
         this.store.limitAlert();
         e.target.checked = false;
         return;
       }
-      this.updateChecked(boo)
-      this.updateCheckedParent(boo)
+      this.updateChecked(checked)
+      this.updateCheckedParent(checked)
+      this.store.change(this);
     });
     this.checkboxNode = checkbox;
     return dom;
@@ -127,6 +130,7 @@ export default class Node {
   }
 
   setData(data) {
+    this.store.dataMap.set(data.id, this);
     this.data = data;
     this.childNodes = [];
 
@@ -173,7 +177,7 @@ export default class Node {
     this.checked = check;
     this.checkboxNode && (this.checkboxNode.checked = check);
     this.parent && (this.parent.indeterminate = false)
-    this.dom && this.dom.classList.remove('half-checked')
+    this.dom && this.dom.classList.remove('is-indeterminate')
     if (this.childNodes.length) {
       this.childNodes.forEach(v => {
         v.updateChecked(check)
@@ -189,19 +193,32 @@ export default class Node {
       this.parent.checked = true;
       this.parent.indeterminate = false;
       this.parent.checkboxNode.checked = true;
-      this.parent.dom.classList.remove('half-checked')
+      this.parent.dom.classList.remove('is-indeterminate')
     } else if (someChecked) {
       this.parent.checked = false;
       this.parent.indeterminate = true;
       this.parent.checkboxNode.checked = false;
-      this.parent.dom.classList.add('half-checked')
+      this.parent.dom.classList.add('is-indeterminate')
     } else {
       this.parent.checked = false;
       this.parent.indeterminate = false;
       this.parent.checkboxNode.checked = false;
-      this.parent.dom.classList.remove('half-checked')
+      this.parent.dom.classList.remove('is-indeterminate')
     }
 
     this.parent.updateCheckedParent()
+  }
+
+  // 设置是否选中
+  setChecked(checked) {
+    this.updateChecked(checked)
+    this.updateCheckedParent(checked)
+  }
+
+  // 设置默认展开
+  setExpand(expand) {
+    this.expanded = expand;
+    this.updateExpand(this.expanded)
+    this.store.update()
   }
 }
