@@ -88,7 +88,7 @@
       const tpl = this.store.renderContent(this);
       const content = document.createElement('div');
       content.innerHTML = tpl;
-      console.log(content.querySelector("[tree-click]"));
+      const clickDom = content.querySelector("[tree-click]");
       return content;
     }
 
