@@ -16,6 +16,10 @@ export default class Node {
     this.store = ops.store
     this.parent = ops.parent
 
+    if (this.store.expandKeys.includes(this.data.id)) {
+      this.expanded = true;
+    }
+
     if (this.parent) {
       this.level = this.parent.level + 1
     }
@@ -29,7 +33,7 @@ export default class Node {
   }
 
   initData() {
-    if (this.level > 1) {
+    if (this.level > 1 && !(this.parent && this.parent.expanded)) {
       return this.visbile = false
     }
     this.visbile = true;
@@ -37,19 +41,25 @@ export default class Node {
 
   createNode() {
     if (this.dom) {
-      this.checkboxNode.checked = this.checked;
+      this.checkboxNode && (this.checkboxNode.checked = this.checked);
       return this.dom;
     }
     const dom = document.createElement('div')
     dom.className = 'tree-node'
-    this.loaded = true;
+
     dom.appendChild(this.createInner())
+    if (this.store.renderContent) {
+      dom.appendChild(this.createContent())
+    }
     dom.addEventListener('click', (e) => {
-      if (this.store.selectedCurrent) {
-        this.store.selectedCurrent.dom.classList.remove('selected');
+      if (this.store.highlightCurrent) {
+        if (this.store.selectedCurrent) {
+          this.store.selectedCurrent.dom.classList.remove('selected');
+        }
+        dom.classList.add('selected');
       }
-      dom.classList.add('selected');
       this.store.selectedCurrent = this;
+      this.store.click(e, this)
     });
     this.dom = dom;
     return dom
@@ -57,11 +67,22 @@ export default class Node {
 
   createInner() {
     const dom = document.createElement('div')
-    dom.style.paddingLeft = this.level * 10 + 'px'
+    // 当隐藏根节点时减少一级缩进
+    const level = this.store.hideRoot ? -1 : 0;
+    dom.style.paddingLeft = (this.level + level) * this.store.indent + 'px'
     dom.appendChild(this.childNodes && this.childNodes.length ? this.createExpand() : this.createExpandEmpty())
-    dom.appendChild(this.createCheckbox())
+    this.store.showCheckbox && dom.appendChild(this.createCheckbox())
     dom.appendChild(this.createText())
     return dom
+  }
+
+  // 自定义内容
+  createContent() {
+    const tpl = this.store.renderContent(this)
+    const content = document.createElement('div')
+    content.innerHTML = tpl;
+    console.log(content.querySelector("[tree-click]"));
+    return content;
   }
 
   createExpandEmpty() {
@@ -95,17 +116,15 @@ export default class Node {
   createCheckbox() {
     const dom = document.createElement('label')
     dom.className = "vs-checkbox";
-    // const dom = document.createElement('span')
-    // dom.className = "vs-checkbox__input"
     const inner = document.createElement('span')
     inner.className = "vs-checkbox__inner"
     const checkbox = document.createElement('input')
-    dom.appendChild(checkbox)
-    dom.appendChild(inner)
-    // dom.appendChild(dom)
     checkbox.type = 'checkbox'
     checkbox.checked = this.checked;
     checkbox.className = 'vs-checkbox__original'
+
+    dom.appendChild(checkbox)
+    dom.appendChild(inner)
 
     checkbox.addEventListener('change', (e) => {
       const checked = e.target.checked;
@@ -118,6 +137,7 @@ export default class Node {
       this.updateCheckedParent(checked)
       this.store.change(this);
     });
+
     this.checkboxNode = checkbox;
     return dom;
   }
@@ -211,6 +231,7 @@ export default class Node {
 
   // 设置是否选中
   setChecked(checked) {
+    if (!this.store.showCheckbox) return;
     this.updateChecked(checked)
     this.updateCheckedParent(checked)
   }

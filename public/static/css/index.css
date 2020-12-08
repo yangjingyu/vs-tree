@@ -1,9 +1,11 @@
 .tree-node {
   height: 26px;
-  line-height: 26px;
   cursor: pointer;
   color: #606266;
   font-size: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .tree-node:hover {
@@ -12,9 +14,9 @@
 
 .expand,
 .expand-empty {
-  width: 16px;
-  height: 16px;
-  line-height: 12px;
+  width: 14px;
+  height: 14px;
+  line-height: 10px;
   display: inline-block;
   margin-right: 8px;
   color: #bbb;
@@ -50,6 +52,7 @@
   white-space: nowrap;
   user-select: none;
   margin-right: 8px;
+  vertical-align: middle;
 }
 
 .vs-checkbox__input {

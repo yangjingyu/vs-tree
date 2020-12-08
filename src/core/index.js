@@ -23,10 +23,15 @@ export default class Tree {
     this.store = new TreeStore({
       data: ops.data,
       max: ops.max,
+      indent: ops.indent || 10,
       checkedKeys: ops.checkedKeys || [],
       expandKeys: ops.expandKeys || [],
       limitAlert: ops.limitAlert || noop,
+      click: ops.click || noop,
       change: ops.change || noop,
+      highlightCurrent: ops.highlightCurrent || false,
+      showCheckbox: ops.showCheckbox || false,
+      renderContent: ops.renderContent || null,
       update: () => {
         this.createNode();
       },
@@ -38,12 +43,17 @@ export default class Tree {
 
     this.nodes = this.getAllNodes(this.root)
 
+    if (typeof ops.showRoot === "boolean" && !ops.showRoot) {
+      this.store.hideRoot = true;
+      // 跟节点创建dom
+      this.root.createNode();
+    }
+
     this.store.nodes = this.nodes;
 
     this.init()
 
     this.setDefaultChecked()
-    this.setDefaultExpands()
   }
 
   init() {
@@ -73,7 +83,8 @@ export default class Tree {
 
   createNode() {
     this.data = this.nodes.filter(v => {
-      return v.visbile
+      // 过滤隐藏节点 ｜ 隐藏root节点
+      return v.visbile && !(this.store.hideRoot && v.level === 0)
     });
     this.vlist.update(this.data)
   }
@@ -82,13 +93,6 @@ export default class Tree {
   setDefaultChecked() {
     this.store.checkedKeys.forEach(id => {
       this.getNodeById(id).setChecked(true)
-    });
-  }
-
-  // 设置默认展开
-  setDefaultExpands() {
-    this.store.expandKeys.forEach(id => {
-      this.getNodeById(id).setExpand(true)
     });
   }
 

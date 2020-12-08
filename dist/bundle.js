@@ -23,6 +23,10 @@
       this.store = ops.store;
       this.parent = ops.parent;
 
+      if (this.store.expandKeys.includes(this.data.id)) {
+        this.expanded = true;
+      }
+
       if (this.parent) {
         this.level = this.parent.level + 1;
       }
@@ -36,7 +40,7 @@
     }
 
     initData() {
-      if (this.level > 1) {
+      if (this.level > 1 && !(this.parent && this.parent.expanded)) {
         return this.visbile = false
       }
       this.visbile = true;
@@ -44,19 +48,25 @@
 
     createNode() {
       if (this.dom) {
-        this.checkboxNode.checked = this.checked;
+        this.checkboxNode && (this.checkboxNode.checked = this.checked);
         return this.dom;
       }
       const dom = document.createElement('div');
       dom.className = 'tree-node';
-      this.loaded = true;
+
       dom.appendChild(this.createInner());
+      if (this.store.renderContent) {
+        dom.appendChild(this.createContent());
+      }
       dom.addEventListener('click', (e) => {
-        if (this.store.selectedCurrent) {
-          this.store.selectedCurrent.dom.classList.remove('selected');
+        if (this.store.highlightCurrent) {
+          if (this.store.selectedCurrent) {
+            this.store.selectedCurrent.dom.classList.remove('selected');
+          }
+          dom.classList.add('selected');
         }
-        dom.classList.add('selected');
         this.store.selectedCurrent = this;
+        this.store.click(e, this);
       });
       this.dom = dom;
       return dom
@@ -64,11 +74,22 @@
 
     createInner() {
       const dom = document.createElement('div');
-      dom.style.paddingLeft = this.level * 10 + 'px';
+      // 当隐藏根节点时减少一级缩进
+      const level = this.store.hideRoot ? -1 : 0;
+      dom.style.paddingLeft = (this.level + level) * this.store.indent + 'px';
       dom.appendChild(this.childNodes && this.childNodes.length ? this.createExpand() : this.createExpandEmpty());
-      dom.appendChild(this.createCheckbox());
+      this.store.showCheckbox && dom.appendChild(this.createCheckbox());
       dom.appendChild(this.createText());
       return dom
+    }
+
+    // 自定义内容
+    createContent() {
+      const tpl = this.store.renderContent(this);
+      const content = document.createElement('div');
+      content.innerHTML = tpl;
+      console.log(content.querySelector("[tree-click]"));
+      return content;
     }
 
     createExpandEmpty() {
@@ -102,17 +123,15 @@
     createCheckbox() {
       const dom = document.createElement('label');
       dom.className = "vs-checkbox";
-      // const dom = document.createElement('span')
-      // dom.className = "vs-checkbox__input"
       const inner = document.createElement('span');
       inner.className = "vs-checkbox__inner";
       const checkbox = document.createElement('input');
-      dom.appendChild(checkbox);
-      dom.appendChild(inner);
-      // dom.appendChild(dom)
       checkbox.type = 'checkbox';
       checkbox.checked = this.checked;
       checkbox.className = 'vs-checkbox__original';
+
+      dom.appendChild(checkbox);
+      dom.appendChild(inner);
 
       checkbox.addEventListener('change', (e) => {
         const checked = e.target.checked;
@@ -125,6 +144,7 @@
         this.updateCheckedParent(checked);
         this.store.change(this);
       });
+
       this.checkboxNode = checkbox;
       return dom;
     }
@@ -218,6 +238,7 @@
 
     // 设置是否选中
     setChecked(checked) {
+      if (!this.store.showCheckbox) return;
       this.updateChecked(checked);
       this.updateCheckedParent(checked);
     }
@@ -733,10 +754,15 @@
       this.store = new TreeStore({
         data: ops.data,
         max: ops.max,
+        indent: ops.indent || 10,
         checkedKeys: ops.checkedKeys || [],
         expandKeys: ops.expandKeys || [],
         limitAlert: ops.limitAlert || noop,
+        click: ops.click || noop,
         change: ops.change || noop,
+        highlightCurrent: ops.highlightCurrent || false,
+        showCheckbox: ops.showCheckbox || false,
+        renderContent: ops.renderContent || null,
         update: () => {
           this.createNode();
         },
@@ -748,12 +774,17 @@
 
       this.nodes = this.getAllNodes(this.root);
 
+      if (typeof ops.showRoot === "boolean" && !ops.showRoot) {
+        this.store.hideRoot = true;
+        // 跟节点创建dom
+        this.root.createNode();
+      }
+
       this.store.nodes = this.nodes;
 
       this.init();
 
       this.setDefaultChecked();
-      this.setDefaultExpands();
     }
 
     init() {
@@ -783,7 +814,8 @@
 
     createNode() {
       this.data = this.nodes.filter(v => {
-        return v.visbile
+        // 过滤隐藏节点 ｜ 隐藏root节点
+        return v.visbile && !(this.store.hideRoot && v.level === 0)
       });
       this.vlist.update(this.data);
     }
@@ -792,13 +824,6 @@
     setDefaultChecked() {
       this.store.checkedKeys.forEach(id => {
         this.getNodeById(id).setChecked(true);
-      });
-    }
-
-    // 设置默认展开
-    setDefaultExpands() {
-      this.store.expandKeys.forEach(id => {
-        this.getNodeById(id).setExpand(true);
       });
     }
 
