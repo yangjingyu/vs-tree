@@ -8,6 +8,7 @@ export default class Node {
     this.expanded = false
     this.indeterminate = false
     this.visbile = false
+    this.disabled = false
 
     this.level = 0
     this.childNodes = []
@@ -18,6 +19,10 @@ export default class Node {
 
     if (this.store.expandKeys.includes(this.data.id)) {
       this.expanded = true;
+    }
+
+    if (this.store.disabledKeys.includes(this.data.id)) {
+      this.disabled = true;
     }
 
     if (this.parent) {
@@ -137,6 +142,7 @@ export default class Node {
     const checkbox = document.createElement('input')
     checkbox.type = 'checkbox'
     checkbox.checked = this.checked;
+    checkbox.disabled = this.disabled
     checkbox.className = 'vs-checkbox__original'
 
     dom.appendChild(checkbox)
@@ -257,8 +263,8 @@ export default class Node {
   }
 
   // 设置是否选中
-  setChecked(checked) {
-    if (!this.store.showCheckbox) return;
+  setChecked(checked, isInitDefault) {
+    if (!this.store.showCheckbox || (!isInitDefault && this.disabled)) return;
     this.updateChecked(checked)
     this.updateCheckedParent(checked)
   }

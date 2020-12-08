@@ -3,7 +3,17 @@ import Vlist from "../virtual-list"
 const noop = () => {}
 export default class Tree {
   constructor(selector, ops) {
-    this.$options = ops;
+    var obj = new Proxy(ops, {
+      get: function (target, propKey, receiver) {
+        console.log(`getting ${propKey}!`);
+        return Reflect.get(target, propKey, receiver);
+      },
+      set: function (target, propKey, value, receiver) {
+        console.log(`setting ${propKey}!`);
+        return Reflect.set(target, propKey, value, receiver);
+      }
+    });
+    this.$options = obj;
     this.$el = document.querySelector(selector)
 
     if (!this.$el) {
@@ -27,6 +37,7 @@ export default class Tree {
       indent: ops.indent || 10,
       checkedKeys: ops.checkedKeys || [],
       expandKeys: ops.expandKeys || [],
+      disabledKeys: ops.disabledKeys || [],
       limitAlert: ops.limitAlert || noop,
       click: ops.click || noop,
       check: ops.check || noop, // 复选框被点击时出发
@@ -94,7 +105,7 @@ export default class Tree {
   // 设置默认选中
   setDefaultChecked() {
     this.store.checkedKeys.forEach(id => {
-      this.getNodeById(id).setChecked(true)
+      this.getNodeById(id).setChecked(true, true)
     });
   }
 

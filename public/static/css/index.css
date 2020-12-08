@@ -120,6 +120,16 @@
   transform-origin: center;
 }
 
+.vs-checkbox__original:disabled ~ .vs-checkbox__inner {
+  background-color: #edf2fc;
+  border-color: #dcdfe6;
+  cursor: not-allowed;
+}
+
+.vs-checkbox__original:checked:disabled ~ .vs-checkbox__inner:after {
+  border-color: #c0c4cc;
+}
+
 .vs-checkbox__original {
   opacity: 0;
   outline: none;

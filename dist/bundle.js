@@ -15,6 +15,7 @@
       this.expanded = false;
       this.indeterminate = false;
       this.visbile = false;
+      this.disabled = false;
 
       this.level = 0;
       this.childNodes = [];
@@ -25,6 +26,10 @@
 
       if (this.store.expandKeys.includes(this.data.id)) {
         this.expanded = true;
+      }
+
+      if (this.store.disabledKeys.includes(this.data.id)) {
+        this.disabled = true;
       }
 
       if (this.parent) {
@@ -143,6 +148,7 @@
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
       checkbox.checked = this.checked;
+      checkbox.disabled = this.disabled;
       checkbox.className = 'vs-checkbox__original';
 
       dom.appendChild(checkbox);
@@ -263,8 +269,8 @@
     }
 
     // 设置是否选中
-    setChecked(checked) {
-      if (!this.store.showCheckbox) return;
+    setChecked(checked, isInitDefault) {
+      if (!this.store.showCheckbox || (!isInitDefault && this.disabled)) return;
       this.updateChecked(checked);
       this.updateCheckedParent(checked);
     }
@@ -764,7 +770,17 @@
   const noop = () => {};
   class Tree {
     constructor(selector, ops) {
-      this.$options = ops;
+      var obj = new Proxy(ops, {
+        get: function (target, propKey, receiver) {
+          console.log(`getting ${propKey}!`);
+          return Reflect.get(target, propKey, receiver);
+        },
+        set: function (target, propKey, value, receiver) {
+          console.log(`setting ${propKey}!`);
+          return Reflect.set(target, propKey, value, receiver);
+        }
+      });
+      this.$options = obj;
       this.$el = document.querySelector(selector);
 
       if (!this.$el) {
@@ -788,6 +804,7 @@
         indent: ops.indent || 10,
         checkedKeys: ops.checkedKeys || [],
         expandKeys: ops.expandKeys || [],
+        disabledKeys: ops.disabledKeys || [],
         limitAlert: ops.limitAlert || noop,
         click: ops.click || noop,
         check: ops.check || noop, // 复选框被点击时出发
@@ -855,7 +872,7 @@
     // 设置默认选中
     setDefaultChecked() {
       this.store.checkedKeys.forEach(id => {
-        this.getNodeById(id).setChecked(true);
+        this.getNodeById(id).setChecked(true, true);
       });
     }
 
