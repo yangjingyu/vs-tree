@@ -59,6 +59,7 @@
         dom.appendChild(this.createContent());
       }
       dom.addEventListener('click', (e) => {
+        e.stopPropagation();
         if (this.store.highlightCurrent) {
           if (this.store.selectedCurrent) {
             this.store.selectedCurrent.dom.classList.remove('selected');
@@ -67,6 +68,8 @@
         }
         this.store.selectedCurrent = this;
         this.store.click(e, this);
+      }, {
+        passive: false
       });
       this.dom = dom;
       return dom
@@ -88,8 +91,18 @@
       const tpl = this.store.renderContent(this);
       const content = document.createElement('div');
       content.innerHTML = tpl;
-      const clickDom = content.querySelector("[tree-click]");
-      return content;
+      const clickDom = content.querySelectorAll("[tree-click]");
+      if (clickDom) {
+        content.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const attr = e.target.attributes['tree-click'];
+          if (attr.value) {
+            this.store.click(e, this, attr.value);
+          }
+        }, {
+          passive: false
+        });
+      }    return content;
     }
 
     createExpandEmpty() {
@@ -115,6 +128,8 @@
         dom.innerText = expand ? "-" : "+";
         dom.classList.toggle('expand-true');
         this.setExpand(expand);
+      }, {
+        passive: false
       });
       this.expandEl = dom;
       return dom;
@@ -133,7 +148,17 @@
       dom.appendChild(checkbox);
       dom.appendChild(inner);
 
+      // label 点击会出发两次
+      dom.addEventListener('click', (e) => {
+        e.stopPropagation();
+      }, { passive: false });
+
+      checkbox.addEventListener('click', (e) => {
+        this.store.check(e, this);
+      }, { passive: false });
+
       checkbox.addEventListener('change', (e) => {
+        e.stopPropagation();
         const checked = e.target.checked;
         if (checked && this.store.max && this.store.checkMaxNodes(this)) {
           this.store.limitAlert();
@@ -202,6 +227,7 @@
 
     updateChecked(check) {
       this.checked = check;
+      this.sortId = Date.now();
       this.checkboxNode && (this.checkboxNode.checked = check);
       this.parent && (this.parent.indeterminate = false);
       this.dom && this.dom.classList.remove('is-indeterminate');
@@ -273,7 +299,11 @@
 
     // 获取选中节点
     getCheckedNodes() {
-      return this.nodes.filter(v => v.checked).map(v => v.data);
+      const nodes = this.nodes.filter(v => v.checked);
+      if (this.sort) {
+        return nodes.sort((a, b) => a.sortId - b.sortId).map(v => v.data)
+      }
+      return nodes.map(v => v.data)
     }
 
     // 验证是否已经选到最大
@@ -754,11 +784,13 @@
       this.store = new TreeStore({
         data: ops.data,
         max: ops.max,
+        sort: ops.sort || false,
         indent: ops.indent || 10,
         checkedKeys: ops.checkedKeys || [],
         expandKeys: ops.expandKeys || [],
         limitAlert: ops.limitAlert || noop,
         click: ops.click || noop,
+        check: ops.check || noop, // 复选框被点击时出发
         change: ops.change || noop,
         highlightCurrent: ops.highlightCurrent || false,
         showCheckbox: ops.showCheckbox || false,

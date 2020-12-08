@@ -23,11 +23,13 @@ export default class Tree {
     this.store = new TreeStore({
       data: ops.data,
       max: ops.max,
+      sort: ops.sort || false,
       indent: ops.indent || 10,
       checkedKeys: ops.checkedKeys || [],
       expandKeys: ops.expandKeys || [],
       limitAlert: ops.limitAlert || noop,
       click: ops.click || noop,
+      check: ops.check || noop, // 复选框被点击时出发
       change: ops.change || noop,
       highlightCurrent: ops.highlightCurrent || false,
       showCheckbox: ops.showCheckbox || false,

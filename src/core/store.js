@@ -21,7 +21,11 @@ export default class TreeStore {
 
   // 获取选中节点
   getCheckedNodes() {
-    return this.nodes.filter(v => v.checked).map(v => v.data);
+    const nodes = this.nodes.filter(v => v.checked);
+    if (this.sort) {
+      return nodes.sort((a, b) => a.sortId - b.sortId).map(v => v.data)
+    }
+    return nodes.map(v => v.data)
   }
 
   // 验证是否已经选到最大

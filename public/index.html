@@ -6,6 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>vs-tree2.0</title>
   <link rel="stylesheet" href="./static/css/index.css">
+  <style>
+    .tree-action a{
+      margin-left: 8px;
+      color: #2a8ae2;
+      font-size: 12px;
+    }
+  </style>
 </head>
 
 <body>
@@ -108,8 +115,13 @@
       itemHeight: 26,
       checkedKeys: ["100", "104"],
       expandKeys: ["122"],
-      click: function(event, node) {
-
+      sort: true, // 按选中先后顺序排序
+      click: function(event, node, type) {
+        console.log(node, 'click', type);
+      },
+      // 复选框被点击时出发
+      check: function(event, node) {
+        console.log(node, 'onCheck');
       },
       change: function(node) {
         console.log(node);
@@ -118,7 +130,10 @@
         console.log('超过最大');
       },
       renderContent: function(node) {
-        return `<div><a tree-click="edit">eidt</a></div>`
+        return `<div class="tree-action">
+          <a tree-click="edit">eidt</a>
+          <a tree-click="remove">remove</a>
+        </div>`
       }
     });
     console.timeEnd('render:tree');
