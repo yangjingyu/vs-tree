@@ -89,6 +89,8 @@
       this.indeterminate = false;
       this.visbile = false;
       this.disabled = false;
+      this.loaded = false;
+      this.isLeaf = false;
       this.level = 0;
       this.childNodes = [];
       this.data = ops.data;
@@ -175,11 +177,14 @@
     }, {
       key: "createInner",
       value: function createInner() {
+        var _this$childNodes;
+
         var dom = document.createElement('div'); // 当隐藏根节点时减少一级缩进
 
         var level = this.store.hideRoot ? -1 : 0;
         dom.style.paddingLeft = (this.level + level) * this.store.indent + 'px';
-        dom.appendChild(this.childNodes && this.childNodes.length ? this.createExpand() : this.createExpandEmpty());
+        var checkDom = ((_this$childNodes = this.childNodes) !== null && _this$childNodes !== void 0 && _this$childNodes.length || this.store.lazy) && !this.isLeaf ? this.createExpand() : this.createExpandEmpty();
+        dom.appendChild(checkDom);
 
         if (this.store.showCheckbox) {
           if (!this.store.nocheckParent || !this.childNodes.length) {
@@ -328,6 +333,11 @@
         this.store.dataMap.set(data.id, this);
         this.data = data;
         this.childNodes = [];
+
+        if (typeof data.isLeaf === 'boolean') {
+          this.isLeaf = data.isLeaf;
+        }
+
         var children;
 
         if (this.level === 0 && this.data instanceof Node) {
@@ -431,21 +441,66 @@
     }, {
       key: "setExpand",
       value: function setExpand(expand) {
+        var _this6 = this;
+
         this.expanded = expand;
         this.updateExpand(this.expanded);
-        this.store.update();
+
+        if (this.store.lazy && !this.loaded) {
+          this.loadData(function (data) {
+            if (data) {
+              _this6.store.update();
+            }
+          });
+        } else {
+          this.store.update();
+        }
+      } // 加载数据
+
+    }, {
+      key: "loadData",
+      value: function loadData(callback) {
+        var _this7 = this;
+
+        this.loading = true;
+
+        var resolve = function resolve() {
+          var children = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+          _this7.loaded = true;
+          _this7.loading = false;
+          console.log(children);
+
+          if (children.length) {
+            children.forEach(function (data) {
+              _this7.insertChild({
+                data: data,
+                store: _this7.store
+              });
+            });
+
+            _this7.childNodes[0].updateCheckedParent();
+
+            _this7.store.updateNodes();
+          }
+
+          if (callback) {
+            callback.call(_this7, children);
+          }
+        };
+
+        this.store.load(this, resolve);
       } // 删除节点
 
     }, {
       key: "remove",
       value: function remove() {
-        var _this6 = this;
+        var _this8 = this;
 
         var parent = this.parent;
         if (!parent) return;
         var children = parent.childNodes || [];
         var index = children.findIndex(function (d) {
-          return d.id === _this6.id;
+          return d.id === _this8.id;
         });
 
         if (index > -1) {
@@ -1107,6 +1162,7 @@
       this.store = new TreeStore({
         data: ops.data,
         max: ops.max,
+        lazy: ops.lazy || false,
         sort: ops.sort || false,
         indent: ops.indent || 10,
         checkedKeys: ops.checkedKeys || [],
@@ -1117,6 +1173,7 @@
         check: ops.check || noop,
         // 复选框被点击时出发
         change: ops.change || noop,
+        load: ops.load || noop,
         highlightCurrent: ops.highlightCurrent || false,
         showCheckbox: ops.showCheckbox || false,
         renderContent: ops.renderContent || null,

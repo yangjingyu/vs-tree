@@ -9,6 +9,8 @@ export default class Node {
     this.indeterminate = false
     this.visbile = false
     this.disabled = false
+    this.loaded = false
+    this.isLeaf = false
 
     this.level = 0
     this.childNodes = []
@@ -49,6 +51,7 @@ export default class Node {
       this.checkboxNode && (this.checkboxNode.checked = this.checked)
       return this.dom
     }
+
     const dom = document.createElement('div')
     dom.className = 'tree-node'
 
@@ -85,7 +88,8 @@ export default class Node {
     // 当隐藏根节点时减少一级缩进
     const level = this.store.hideRoot ? -1 : 0
     dom.style.paddingLeft = (this.level + level) * this.store.indent + 'px'
-    dom.appendChild(this.childNodes && this.childNodes.length ? this.createExpand() : this.createExpandEmpty())
+    const checkDom = (this.childNodes?.length || this.store.lazy) && !this.isLeaf ? this.createExpand() : this.createExpandEmpty()
+    dom.appendChild(checkDom)
     if (this.store.showCheckbox) {
       if (!this.store.nocheckParent || !this.childNodes.length) {
         dom.appendChild(this.createCheckbox())
@@ -209,6 +213,10 @@ export default class Node {
     this.data = data
     this.childNodes = []
 
+    if (typeof data.isLeaf === 'boolean') {
+      this.isLeaf = data.isLeaf
+    }
+
     let children
     if (this.level === 0 && this.data instanceof Node) {
       children = this.data
@@ -297,7 +305,44 @@ export default class Node {
   setExpand (expand) {
     this.expanded = expand
     this.updateExpand(this.expanded)
-    this.store.update()
+    if (this.store.lazy && !this.loaded) {
+      this.loadData((data) => {
+        if (data) {
+          this.store.update()
+        }
+      })
+    } else {
+      this.store.update()
+    }
+  }
+
+  // 加载数据
+  loadData (callback) {
+    this.loading = true
+
+    const resolve = (children = []) => {
+      this.loaded = true
+      this.loading = false
+
+      console.log(children)
+
+      if (children.length) {
+        children.forEach(data => {
+          this.insertChild({
+            data: data,
+            store: this.store
+          })
+        })
+        this.childNodes[0].updateCheckedParent()
+        this.store.updateNodes()
+      }
+
+      if (callback) {
+        callback.call(this, children)
+      }
+    }
+
+    this.store.load(this, resolve)
   }
 
   // 删除节点
