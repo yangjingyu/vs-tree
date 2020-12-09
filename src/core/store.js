@@ -50,7 +50,7 @@ export default class TreeStore {
 
   // 获取选中节点
   getCheckedNodes() {
-    const nodes = this.nodes.filter(v => v.checked);
+    const nodes = this.nodes.filter(v => v.checked && (!this.nocheckParent || !v.childNodes.length));
     if (this.sort) {
       return nodes.sort((a, b) => a.sortId - b.sortId).map(v => v.data)
     }

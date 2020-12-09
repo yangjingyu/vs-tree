@@ -45,6 +45,7 @@ export default class Tree {
       highlightCurrent: ops.highlightCurrent || false,
       showCheckbox: ops.showCheckbox || false,
       renderContent: ops.renderContent || null,
+      nocheckParent: ops.nocheckParent || false, // 只允许叶子节点选中
       update: () => {
         this.render();
       },

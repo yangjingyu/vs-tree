@@ -79,7 +79,11 @@ export default class Node {
     const level = this.store.hideRoot ? -1 : 0;
     dom.style.paddingLeft = (this.level + level) * this.store.indent + 'px'
     dom.appendChild(this.childNodes && this.childNodes.length ? this.createExpand() : this.createExpandEmpty())
-    this.store.showCheckbox && dom.appendChild(this.createCheckbox())
+    if (this.store.showCheckbox) {
+      if (!this.store.nocheckParent || !this.childNodes.length) {
+        dom.appendChild(this.createCheckbox())
+      }
+    }
     dom.appendChild(this.createText())
     return dom
   }
@@ -240,7 +244,7 @@ export default class Node {
   }
 
   updateCheckedParent() {
-    if (!this.parent) return;
+    if (!this.parent || this.store.nocheckParent) return;
     const allChecked = this.parent.childNodes.every(v => v.checked);
     const someChecked = this.parent.childNodes.some(v => v.checked || v.indeterminate);
     if (allChecked) {
