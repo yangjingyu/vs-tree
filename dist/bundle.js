@@ -71,6 +71,13 @@
           }
           dom.classList.add('selected');
         }
+
+        if (this.store.checkOnClickNode) {
+          this.handleCheckChange({
+            target: { checked: !this.checked }
+          });
+        }
+
         this.store.selectedCurrent = this;
         this.store.click(e, this);
       }, {
@@ -95,23 +102,32 @@
       return dom
     }
 
+    // 自定义Dom 节点
+    cusmtomNode(name, info) {
+      const box = document.createElement(name);
+      info.text && (box.innerText = info.text);
+      info.className && (box.className = info.className);
+      if (info.children) {
+        info.children.forEach(v => {
+          box.appendChild(v);
+        });
+      }
+      if (typeof info.click === 'function') {
+        box.addEventListener('click', (e) => {
+          e.stopPropagation();
+          info.click(e, this);
+        }, { passive: false });
+      }
+      return box;
+    }
+
     // 自定义内容
     createContent() {
-      const tpl = this.store.renderContent(this);
-      const content = document.createElement('div');
-      content.innerHTML = tpl;
-      const clickDom = content.querySelectorAll("[tree-click]");
-      if (clickDom) {
-        content.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const attr = e.target.attributes['tree-click'];
-          if (attr.value) {
-            this.store.click(e, this, attr.value);
-          }
-        }, {
-          passive: false
-        });
-      }    return content;
+      const tpl = this.store.renderContent(this.cusmtomNode.bind(this), this);
+      tpl.addEventListener('click', (e) => {
+        e.stopPropagation();
+      }, { passive: false });
+      return tpl;
     }
 
     createExpandEmpty() {
@@ -169,19 +185,23 @@
 
       checkbox.addEventListener('change', (e) => {
         e.stopPropagation();
-        const checked = e.target.checked;
-        if (checked && this.store.max && this.store.checkMaxNodes(this)) {
-          this.store.limitAlert();
-          e.target.checked = false;
-          return;
-        }
-        this.updateChecked(checked);
-        this.updateCheckedParent(checked);
-        this.store.change(this);
+        this.handleCheckChange(e);
       });
 
       this.checkboxNode = checkbox;
       return dom;
+    }
+
+    handleCheckChange(e) {
+      const checked = e.target.checked;
+      if (checked && this.store.max && this.store.checkMaxNodes(this)) {
+        this.store.limitAlert();
+        e.target.checked = false;
+        return;
+      }
+      this.updateChecked(checked);
+      this.updateCheckedParent(checked);
+      this.store.change(this);
     }
 
     createText() {
@@ -885,6 +905,7 @@
         showCheckbox: ops.showCheckbox || false,
         renderContent: ops.renderContent || null,
         nocheckParent: ops.nocheckParent || false, // 只允许叶子节点选中
+        checkOnClickNode: ops.checkOnClickNode || false,
         update: () => {
           this.render();
         },

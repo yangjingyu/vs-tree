@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>vs-tree2.0_基础示例</title>
+  <link rel="stylesheet" href="./static/css/index.css">
+</head>
+
+<body>
+  <div id="tree"></div>
+  <script src="../dist/bundle.js"></script>
+  <script>
+    console.time('create:data')
+    function add(parentId, name) {
+      const list = []
+      for (var i = 0; i < 10; i++) {
+        list.push({ id: `${parentId}${i}`, name: name + i, parentId: parentId })
+      }
+      return list
+    }
+    const data = {
+      id: '1', name: 'zhangsan', parentId: '-1', children: [
+        { id: '100', name: 'wangwu', parentId: '1' },
+        {
+          id: '101', name: 'zhaoliu', parentId: '1', children: add('101', 'zhaoliu')
+        },
+        {
+          id: '102', name: 'huahua', parentId: '1', children: add('102', 'huahua')
+        },
+        {
+          id: '103', name: 'oo', parentId: '1'
+        },
+        {
+          id: '104', name: 'oo', parentId: '1'
+        },
+        {
+          id: '105', name: 'oo', parentId: '1'
+        },
+        {
+          id: '106', name: 'oo', parentId: '1'
+        },
+        {
+          id: '107', name: 'oo', parentId: '1'
+        },
+        {
+          id: '108', name: 'oo', parentId: '1'
+        },
+        {
+          id: '109', name: 'oo', parentId: '1'
+        },
+        {
+          id: '110', name: 'oo', parentId: '1'
+        },
+        {
+          id: '111', name: 'oo', parentId: '1'
+        },
+        {
+          id: '122', name: 'oo22', parentId: '1',
+          children: add('122', '0022_')
+        },
+      ]
+    }
+    console.timeEnd('create:data')
+    console.time('render:tree');
+    const tree = new vsTree.default('#tree', {
+      data: data,
+    });
+    console.timeEnd('render:tree');
+  </script>
+</body>
+
+</html>
