@@ -1,8 +1,8 @@
-import { version as _v } from '../package.json';
+import { version as _v } from '../package.json'
+import './less/vs-tree.less'
+import vsTree from './core'
 
-import init from './core'
-
-export default init
+export default vsTree
 
 // 版本号
-export const version = _v;
+export const version = _v

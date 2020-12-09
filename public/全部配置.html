@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>vs-tree2.0_全部配置</title>
+  <link rel="stylesheet" href="../dist/vs-tree.css">
   <link rel="stylesheet" href="./static/css/index.css">
   <style>
     .tree-action a {
@@ -20,7 +21,7 @@
   <button id="checked" type="button">获取选中元素</button>
   <button id="getNodeById" type="button">根据ID获取节点</button>
   <button id="clearChecked" type="button">清除wangwu选中</button>
-  <script src="../dist/bundle.js"></script>
+  <script src="../dist/vs-tree.js"></script>
   <script>
     console.time('create:data')
     function add(parentId, name) {
@@ -104,6 +105,7 @@
     }
     console.timeEnd('create:data')
     console.time('render:tree');
+    console.log(vsTree);
     const tree = new vsTree.default('#tree', {
       data: data,
       showRoot: false,

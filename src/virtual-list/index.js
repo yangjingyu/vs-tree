@@ -5,26 +5,26 @@
 import Virtual from './virtual'
 
 export default class Vlist {
-  constructor(opts) {
+  constructor (opts) {
     this.range = null
 
-    this.$el = opts.root;
+    this.$el = opts.root
 
     this.$el.style.maxHeight = '400px'
     this.$el.style.overflowY = 'auto'
 
-    this.dataSources = opts.data;
+    this.dataSources = opts.data
 
-    this.wrapper = document.createElement("div")
-    this.$el.appendChild(this.wrapper);
+    this.wrapper = document.createElement('div')
+    this.$el.appendChild(this.wrapper)
 
     this.$el.addEventListener('scroll', this.onScroll.bind(this), {
       passive: false
     })
 
-    this.keeps = opts.keeps || 20;
+    this.keeps = opts.keeps || 20
 
-    this.estimateSize = opts.estimateSize || 26;
+    this.estimateSize = opts.estimateSize || 26
 
     this.dataKey = 'id'
 
@@ -32,26 +32,26 @@ export default class Vlist {
   }
 
   // return current scroll offset
-  getOffset() {
-    const root = this.$el;
+  getOffset () {
+    const root = this.$el
     return root ? Math.ceil(root.scrollTop) : 0
   }
 
   // return client viewport size
-  getClientSize() {
-    const root = this.$el;
+  getClientSize () {
+    const root = this.$el
     return root ? Math.ceil(root.clientHeight) : 0
   }
 
   // return all scroll size
-  getScrollSize() {
-    const root = this.$el;
+  getScrollSize () {
+    const root = this.$el
     return root ? Math.ceil(root.scrollHeight) : 0
   }
 
   // ----------- public method end -----------
 
-  installVirtual() {
+  installVirtual () {
     this.virtual = new Virtual({
       slotHeaderSize: 0,
       slotFooterSize: 0,
@@ -59,25 +59,25 @@ export default class Vlist {
       estimateSize: this.estimateSize,
       buffer: Math.round(this.keeps / 3), // recommend for a third of keeps
       uniqueIds: this.getUniqueIdFromDataSources()
-    }, this.onRangeChanged.bind(this));
+    }, this.onRangeChanged.bind(this))
 
     // sync initial range
-    this.range = this.virtual.getRange();
-    this.render();
+    this.range = this.virtual.getRange()
+    this.render()
   }
 
-  getUniqueIdFromDataSources() {
+  getUniqueIdFromDataSources () {
     const { dataKey } = this
     return this.dataSources.map((dataSource) => typeof dataKey === 'function' ? dataKey(dataSource) : dataSource[dataKey])
   }
 
   // here is the rerendering entry
-  onRangeChanged(range) {
+  onRangeChanged (range) {
     this.range = range
-    this.render();
+    this.render()
   }
 
-  onScroll(evt) {
+  onScroll () {
     const offset = this.getOffset()
     const clientSize = this.getClientSize()
     const scrollSize = this.getScrollSize()
@@ -90,7 +90,7 @@ export default class Vlist {
     this.virtual.handleScroll(offset)
   }
 
-  getRenderSlots() {
+  getRenderSlots () {
     const { start, end } = this.range
     const { dataSources, dataKey } = this
     this.wrapper.innerHTML = ''
@@ -109,14 +109,14 @@ export default class Vlist {
     }
   }
 
-  update(data) {
-    this.dataSources = data;
+  update (data) {
+    this.dataSources = data
     this.wrapper.innerHTML = ''
     this.virtual.updateParam('uniqueIds', this.getUniqueIdFromDataSources())
     this.virtual.handleDataSourcesChange()
   }
 
-  render() {
+  render () {
     const { padFront, padBehind } = this.range
 
     const paddingStyle = `${padFront}px 0px ${padBehind}px`
