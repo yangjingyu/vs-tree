@@ -7,6 +7,8 @@ export default class TreeStore {
       }
     }
 
+    this.nodes = [];
+
     this.dataMap = new Map();
 
     this.root = new Node({
@@ -17,6 +19,33 @@ export default class TreeStore {
 
   setData(val) {
     this.root.setData(val)
+    this.updateNodes();
+  }
+
+  // 更新节点列表
+  updateNodes() {
+    this.nodes = this.getAllNodes();
+    this.nodesChange(this.nodes);
+  }
+
+  // 获取节点列表
+  getAllNodes() {
+    const nodes = []
+    const expand = (val) => {
+      nodes.push(val)
+      if (val.childNodes && val.childNodes.length) {
+        val.childNodes.forEach(element => {
+          expand(element)
+        });
+      }
+    }
+    expand(this.root)
+    return nodes;
+  }
+
+  // 根据ID获取节点
+  getNodeById(id) {
+    return this.dataMap.get(id);
   }
 
   // 获取选中节点
@@ -26,6 +55,18 @@ export default class TreeStore {
       return nodes.sort((a, b) => a.sortId - b.sortId).map(v => v.data)
     }
     return nodes.map(v => v.data)
+  }
+
+  // 设置默认选中
+  setDefaultChecked() {
+    this.checkedKeys.forEach(id => {
+      const node = this.getNodeById(id);
+      if (node) {
+        node.setChecked(true, true)
+      } else {
+        console.warn('not found node by ' + id);
+      }
+    });
   }
 
   // 验证是否已经选到最大

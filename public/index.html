@@ -19,7 +19,7 @@
   <div id="tree"></div>
   <button id="checked" type="button">获取选中元素</button>
   <button id="getNodeById" type="button">根据ID获取节点</button>
-  <button id="clearChecked" type="button">清除选中</button>
+  <button id="clearChecked" type="button">清除wangwu选中</button>
   <script src="../dist/bundle.js"></script>
   <script>
     console.time('create:data')
@@ -114,11 +114,20 @@
       showCount: 30,
       itemHeight: 26,
       disabledKeys: ["104", "105"],
-      checkedKeys: ["102", "100", "104"],
+      checkedKeys: ["100","102", "104"],
       expandKeys: ["122"],
       sort: true, // 按选中先后顺序排序
       click: function(event, node, type) {
         console.log(node, 'click', type);
+        if (type === 'remove') {
+          node.remove()
+        }
+        if (type === 'append') {
+          node.append({
+            id: 999999,
+            name: 'append'
+          })
+        }
       },
       // 复选框被点击时出发
       check: function(event, node) {
@@ -132,7 +141,7 @@
       },
       renderContent: function(node) {
         return `<div class="tree-action">
-          <a tree-click="edit">eidt</a>
+          <a tree-click="append">append</a>
           <a tree-click="remove">remove</a>
         </div>`
       }
@@ -145,12 +154,12 @@
     }
 
     document.getElementById("getNodeById").onclick = function () {
-      console.log(tree.getNodeById("102164"));
-      tree.getNodeById("102164").setChecked(true);
+      console.log(tree.getNodeById("103"));
+      tree.getNodeById("103") && tree.getNodeById("103").setChecked(true);
     }
 
     document.getElementById("clearChecked").onclick = function () {
-      ["100", "104"].forEach(id => {
+      ["100"].forEach(id => {
         tree.getNodeById(id).setChecked(false);
       });
     }

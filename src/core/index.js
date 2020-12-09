@@ -1,6 +1,6 @@
 import TreeStore from "./store"
 import Vlist from "../virtual-list"
-const noop = () => {}
+const noop = () => { }
 export default class Tree {
   constructor(selector, ops) {
     var obj = new Proxy(ops, {
@@ -46,55 +46,40 @@ export default class Tree {
       showCheckbox: ops.showCheckbox || false,
       renderContent: ops.renderContent || null,
       update: () => {
-        this.createNode();
+        this.render();
       },
+      nodesChange: (nodes) => {
+        this.nodes = nodes;
+        this.vlist && this.render();
+      }
     });
 
     this.store.setData(ops.data)
 
-    this.root = this.store.root;
-
-    this.nodes = this.getAllNodes(this.root)
-
     if (typeof ops.showRoot === "boolean" && !ops.showRoot) {
       this.store.hideRoot = true;
       // 跟节点创建dom
-      this.root.createNode();
+      this.store.root.createNode();
     }
-
-    this.store.nodes = this.nodes;
 
     this.init()
 
-    this.setDefaultChecked()
+    // 设置默认选中
+    this.store.setDefaultChecked()
   }
 
   init() {
     this.vlist = new Vlist({
       root: this.$el,
-      data: this.data,
+      data: [],
       maxHeight: this.maxHeight,
       estimateSize: this.itemHeight,
       keeps: this.showCount,
     })
-    this.createNode()
+    this.render()
   }
 
-  getAllNodes(node) {
-    const nodes = []
-    const expand = (val) => {
-      nodes.push(val)
-      if (val.childNodes && val.childNodes.length) {
-        val.childNodes.forEach(element => {
-          expand(element)
-        });
-      }
-    }
-    expand(node)
-    return nodes;
-  }
-
-  createNode() {
+  render() {
     this.data = this.nodes.filter(v => {
       // 过滤隐藏节点 ｜ 隐藏root节点
       return v.visbile && !(this.store.hideRoot && v.level === 0)
@@ -102,16 +87,9 @@ export default class Tree {
     this.vlist.update(this.data)
   }
 
-  // 设置默认选中
-  setDefaultChecked() {
-    this.store.checkedKeys.forEach(id => {
-      this.getNodeById(id).setChecked(true, true)
-    });
-  }
-
   // 根据ID获取节点
   getNodeById(id) {
-    return this.store.dataMap.get(id);
+    return this.store.getNodeById(id)
   }
 
   // 获取选中节点

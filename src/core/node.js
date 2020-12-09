@@ -210,6 +210,7 @@ export default class Node {
     child.level = this.level + 1
 
     this.childNodes.push(child)
+    return child
   }
 
   updateExpand(expand) {
@@ -274,5 +275,31 @@ export default class Node {
     this.expanded = expand;
     this.updateExpand(this.expanded)
     this.store.update()
+  }
+
+  // 删除节点
+  remove() {
+    const parent = this.parent;
+    if (!parent) return;
+    const children = parent.childNodes || [];
+    const index = children.findIndex(d => d.id === this.id);
+    if (index > -1) {
+      children.splice(index, 1);
+    }
+    this.store.updateNodes();
+  }
+
+  // 添加节点
+  append(data) {
+    if (!data || typeof data !== 'object') return;
+    if (!this.childNodes.length) {
+      delete this.dom;
+    }
+    const node = this.insertChild({
+      data: data,
+      store: this.store
+    });
+    node.updateCheckedParent()
+    this.store.updateNodes();
   }
 }
