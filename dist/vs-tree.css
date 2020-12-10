@@ -49,7 +49,8 @@
 .half-checked .expand {
   background-color: #2a8ae2;
 }
-.vs-checkbox {
+.vs-checkbox,
+.vs-radio {
   position: relative;
   color: #606266;
   font-weight: 500;
@@ -64,7 +65,8 @@
   margin-right: 8px;
   vertical-align: middle;
 }
-.vs-checkbox__input {
+.vs-checkbox__input,
+.vs-radio__input {
   white-space: nowrap;
   cursor: pointer;
   outline: none;
@@ -73,7 +75,8 @@
   position: relative;
   vertical-align: middle;
 }
-.vs-checkbox__inner {
+.vs-checkbox__inner,
+.vs-radio__inner {
   display: inline-block;
   position: relative;
   border: 1px solid #DCDFE6;
@@ -140,7 +143,8 @@
 .vs-checkbox__original:checked:disabled ~ .vs-checkbox__inner:after {
   border-color: #c0c4cc;
 }
-.vs-checkbox__original {
+.vs-checkbox__original,
+.vs-radio__original {
   opacity: 0;
   outline: none;
   position: absolute;
@@ -148,4 +152,37 @@
   width: 0;
   height: 0;
   z-index: -1;
+}
+.vs-radio__inner {
+  border-radius: 100%;
+}
+.vs-radio__inner:after {
+  -webkit-box-sizing: content-box;
+          box-sizing: content-box;
+  content: "";
+  left: 3px;
+  position: absolute;
+  top: 3px;
+  width: 6px;
+  height: 6px;
+  -webkit-transform: scale(0);
+          transform: scale(0);
+  -webkit-transition: -webkit-transform 0.15s ease-in 0.05s;
+  transition: -webkit-transform 0.15s ease-in 0.05s;
+  transition: transform 0.15s ease-in 0.05s;
+  transition: transform 0.15s ease-in 0.05s, -webkit-transform 0.15s ease-in 0.05s;
+  -webkit-transform-origin: center;
+          transform-origin: center;
+  border-radius: 100%;
+}
+.vs-radio__original:checked ~ .vs-radio__inner {
+  border-color: #1989fa;
+}
+.vs-radio__original:checked ~ .vs-radio__inner:after {
+  background-color: #1989fa;
+  -webkit-transform: scale(1);
+          transform: scale(1);
+}
+.vs-radio__original:checked:disabled ~ .vs-radio__inner:after {
+  border-color: #c0c4cc;
 }

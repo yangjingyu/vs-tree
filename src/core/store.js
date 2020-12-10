@@ -11,6 +11,8 @@ export default class TreeStore {
 
     this.dataMap = new Map()
 
+    this.radioMap = {}
+
     this.root = new Node({
       data: this.data,
       store: this

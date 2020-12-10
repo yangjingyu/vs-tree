@@ -46,6 +46,8 @@ export default class Tree {
       load: ops.load || noop,
       highlightCurrent: ops.highlightCurrent || false,
       showCheckbox: ops.showCheckbox || false,
+      showRadio: ops.showRadio || false,
+      radioParentoOnly: ops.radioParentoOnly || false, // 每个父节点下唯一，仅raido模式有效
       renderContent: ops.renderContent || null,
       nocheckParent: ops.nocheckParent || false, // 只允许叶子节点选中
       checkOnClickNode: ops.checkOnClickNode || false,

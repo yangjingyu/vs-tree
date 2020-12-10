@@ -11,6 +11,8 @@
 | data             | 展示数据                     | Object  |         |
 | showRoot         | 是否展示根节点               | Boolean | true    |
 | showCheckbox     | 是否显示复选框               | Boolean | false   |
+| showRadio        | 是否显示单选框，会覆盖复选框 | Boolean | false   |
+| radioParentoOnly | 每个父节点下唯一             | Boolean | false   |
 | highlightCurrent | 是否高亮选中当前项           | Boolean | false   |
 | nocheckParent    | 禁止父节点选中               | Boolean | false   |
 | sort             | 对选中列表排序               | Boolean | false   |
@@ -52,7 +54,7 @@
 | limitAlert    | 超过max配置时触发  | -                 |
 | renderContent | 自定义节点内容     | h,node            |
 | load          | lazy=true时有效    | node, resolve     |
-| format          | 格式化数据    | data     |
+| format        | 格式化数据         | data              |
 
 #### renderContent
 

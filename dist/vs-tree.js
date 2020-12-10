@@ -153,6 +153,7 @@
 
         if (this.dom) {
           this.checkboxNode && (this.checkboxNode.checked = this.checked);
+          this.radioNode && (this.radioNode.checked = this.checked);
           return this.dom;
         }
 
@@ -204,7 +205,7 @@
         var checkDom = ((_this$childNodes = this.childNodes) !== null && _this$childNodes !== void 0 && _this$childNodes.length || this.store.lazy) && !this.isLeaf ? this.createExpand() : this.createExpandEmpty();
         dom.appendChild(checkDom);
 
-        if (this.store.showCheckbox) {
+        if (this.store.showCheckbox || this.store.showRadio) {
           if (!this.store.nocheckParent || !this.childNodes.length) {
             dom.appendChild(this.createCheckbox());
           }
@@ -293,15 +294,31 @@
       value: function createCheckbox() {
         var _this5 = this;
 
+        var label = 'checkbox';
+
+        if (this.store.showRadio) {
+          label = 'radio';
+        }
+
         var dom = document.createElement('label');
-        dom.className = 'vs-checkbox';
+        dom.className = "vs-".concat(label);
         var inner = document.createElement('span');
-        inner.className = 'vs-checkbox__inner';
+        inner.className = "vs-".concat(label, "__inner");
         var checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
+        checkbox.type = label;
         checkbox.checked = this.checked;
         checkbox.disabled = this.disabled;
-        checkbox.className = 'vs-checkbox__original';
+        checkbox.className = "vs-".concat(label, "__original");
+        checkbox.name = label === 'radio' ? 'vs-radio' + (this.store.radioParentoOnly ? this.parent.id : '') : 'vs-checkbox';
+
+        if (label === 'radio') {
+          checkbox.name = 'vs-radio' + (this.store.radioParentoOnly ? this.parent.id : '');
+          this.radioNode = checkbox;
+        } else {
+          checkbox.name = 'vs-checkbox';
+          this.checkboxNode = checkbox;
+        }
+
         dom.appendChild(checkbox);
         dom.appendChild(inner); // label 点击会出发两次
 
@@ -309,7 +326,8 @@
           e.stopPropagation();
         }, {
           passive: false
-        });
+        }); // 点击回调
+
         checkbox.addEventListener('click', function (e) {
           _this5.store.check(e, _this5);
         }, {
@@ -320,7 +338,6 @@
 
           _this5.handleCheckChange(e);
         });
-        this.checkboxNode = checkbox;
         return dom;
       }
     }, {
@@ -334,8 +351,13 @@
           return;
         }
 
-        this.updateChecked(checked);
-        this.updateCheckedParent(checked);
+        if (this.store.showRadio) {
+          this.updateRadioChecked(checked);
+        } else {
+          this.updateChecked(checked);
+          this.updateCheckedParent(checked);
+        }
+
         this.store.change(this);
       }
     }, {
@@ -451,12 +473,41 @@
         }
 
         this.parent.updateCheckedParent();
+      } // 更新单选节点选中
+
+    }, {
+      key: "updateRadioChecked",
+      value: function updateRadioChecked(checked) {
+        // 父节点下唯一
+        if (this.store.radioParentoOnly) {
+          if (this.store.radioMap[this.parent.id]) {
+            this.store.radioMap[this.parent.id].checked = false;
+          }
+
+          this.store.radioMap[this.parent.id] = this;
+        } else {
+          if (this.store.radioNode) {
+            this.store.radioNode = false;
+          }
+
+          this.store.radioNode = this;
+        }
+
+        this.checked = checked;
+        this.radioNode && (this.radioNode.checked = checked);
       } // 设置是否选中
 
     }, {
       key: "setChecked",
       value: function setChecked(checked, isInitDefault) {
-        if (!this.store.showCheckbox || !isInitDefault && this.disabled) return;
+        if (!isInitDefault && this.disabled) return;
+
+        if (this.store.showRadio) {
+          this.updateRadioChecked(checked);
+          return;
+        }
+
+        if (!this.store.showCheckbox) return;
         this.updateChecked(checked);
         this.updateCheckedParent(checked);
       } // 设置默认展开
@@ -574,6 +625,7 @@
 
       this.nodes = [];
       this.dataMap = new Map();
+      this.radioMap = {};
       this.root = new Node({
         data: this.data,
         store: this
@@ -1207,6 +1259,9 @@
         load: ops.load || noop,
         highlightCurrent: ops.highlightCurrent || false,
         showCheckbox: ops.showCheckbox || false,
+        showRadio: ops.showRadio || false,
+        radioParentoOnly: ops.radioParentoOnly || false,
+        // 每个父节点下唯一，仅raido模式有效
         renderContent: ops.renderContent || null,
         nocheckParent: ops.nocheckParent || false,
         // 只允许叶子节点选中

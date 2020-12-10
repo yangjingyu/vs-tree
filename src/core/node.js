@@ -63,6 +63,7 @@ export default class Node {
   createNode () {
     if (this.dom) {
       this.checkboxNode && (this.checkboxNode.checked = this.checked)
+      this.radioNode && (this.radioNode.checked = this.checked)
       return this.dom
     }
 
@@ -104,7 +105,7 @@ export default class Node {
     dom.style.paddingLeft = (this.level + level) * this.store.indent + 'px'
     const checkDom = (this.childNodes?.length || this.store.lazy) && !this.isLeaf ? this.createExpand() : this.createExpandEmpty()
     dom.appendChild(checkDom)
-    if (this.store.showCheckbox) {
+    if (this.store.showCheckbox || this.store.showRadio) {
       if (!this.store.nocheckParent || !this.childNodes.length) {
         dom.appendChild(this.createCheckbox())
       }
@@ -173,15 +174,28 @@ export default class Node {
   }
 
   createCheckbox () {
+    let label = 'checkbox'
+    if (this.store.showRadio) {
+      label = 'radio'
+    }
     const dom = document.createElement('label')
-    dom.className = 'vs-checkbox'
+    dom.className = `vs-${label}`
     const inner = document.createElement('span')
-    inner.className = 'vs-checkbox__inner'
+    inner.className = `vs-${label}__inner`
     const checkbox = document.createElement('input')
-    checkbox.type = 'checkbox'
+    checkbox.type = label
     checkbox.checked = this.checked
     checkbox.disabled = this.disabled
-    checkbox.className = 'vs-checkbox__original'
+    checkbox.className = `vs-${label}__original`
+    checkbox.name = label === 'radio' ? 'vs-radio' + (this.store.radioParentoOnly ? this.parent.id : '') : 'vs-checkbox'
+
+    if (label === 'radio') {
+      checkbox.name = 'vs-radio' + (this.store.radioParentoOnly ? this.parent.id : '')
+      this.radioNode = checkbox
+    } else {
+      checkbox.name = 'vs-checkbox'
+      this.checkboxNode = checkbox
+    }
 
     dom.appendChild(checkbox)
     dom.appendChild(inner)
@@ -191,6 +205,7 @@ export default class Node {
       e.stopPropagation()
     }, { passive: false })
 
+    // 点击回调
     checkbox.addEventListener('click', (e) => {
       this.store.check(e, this)
     }, { passive: false })
@@ -200,7 +215,6 @@ export default class Node {
       this.handleCheckChange(e)
     })
 
-    this.checkboxNode = checkbox
     return dom
   }
 
@@ -211,8 +225,13 @@ export default class Node {
       e.target.checked = false
       return
     }
-    this.updateChecked(checked)
-    this.updateCheckedParent(checked)
+
+    if (this.store.showRadio) {
+      this.updateRadioChecked(checked)
+    } else {
+      this.updateChecked(checked)
+      this.updateCheckedParent(checked)
+    }
     this.store.change(this)
   }
 
@@ -313,9 +332,33 @@ export default class Node {
     this.parent.updateCheckedParent()
   }
 
+  // 更新单选节点选中
+  updateRadioChecked (checked) {
+    // 父节点下唯一
+    if (this.store.radioParentoOnly) {
+      if (this.store.radioMap[this.parent.id]) {
+        this.store.radioMap[this.parent.id].checked = false
+      }
+      this.store.radioMap[this.parent.id] = this
+    } else {
+      if (this.store.radioNode) {
+        this.store.radioNode = false
+      }
+      this.store.radioNode = this
+    }
+
+    this.checked = checked
+    this.radioNode && (this.radioNode.checked = checked)
+  }
+
   // 设置是否选中
   setChecked (checked, isInitDefault) {
-    if (!this.store.showCheckbox || (!isInitDefault && this.disabled)) return
+    if ((!isInitDefault && this.disabled)) return
+    if (this.store.showRadio) {
+      this.updateRadioChecked(checked)
+      return
+    }
+    if (!this.store.showCheckbox) return
     this.updateChecked(checked)
     this.updateCheckedParent(checked)
   }
