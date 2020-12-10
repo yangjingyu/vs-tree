@@ -4,10 +4,10 @@ import { terser } from 'rollup-plugin-terser'
 import babel from '@rollup/plugin-babel'
 import postcss from 'rollup-plugin-postcss'
 import autoprefixer from 'autoprefixer'
-import cssnano from 'cssnano';
+import cssnano from 'cssnano'
 import { eslint } from "rollup-plugin-eslint"
 
-const isDev = process.env.NODE_ENV !== 'production';
+const isDev = process.env.NODE_ENV !== 'production'
 
 const postcssPlugin = [
   autoprefixer

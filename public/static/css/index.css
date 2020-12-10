@@ -1,0 +1,12 @@
+.box {
+  height: 400px;
+  display: flex;
+  overflow: hidden;
+  justify-content: space-between;
+}
+
+#list {
+  height: 100%;
+  padding: 0 20px;
+  overflow-y: auto;
+}

@@ -49,6 +49,7 @@ export default class Tree {
       renderContent: ops.renderContent || null,
       nocheckParent: ops.nocheckParent || false, // 只允许叶子节点选中
       checkOnClickNode: ops.checkOnClickNode || false,
+      format: ops.format || null,
       update: () => {
         this.render()
       },

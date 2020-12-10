@@ -81,6 +81,8 @@
 
   var Node = /*#__PURE__*/function () {
     function Node(ops) {
+      var _this = this;
+
       _classCallCheck(this, Node);
 
       this.id = setepId++;
@@ -93,8 +95,24 @@
       this.isLeaf = false;
       this.level = 0;
       this.childNodes = [];
-      this.data = ops.data;
       this.store = ops.store;
+      this.data = ops.data;
+
+      if (typeof this.store.format === 'function') {
+        var _data = this.store.format(Object.assign({}, ops.data));
+
+        if (_typeof(_data) !== 'object') {
+          throw new Error('format must return object! \nformat: function(data) {\n  return {name, children, isLeaf}\n}');
+        }
+
+        var props = ['name', 'children', 'isLeaf'];
+        props.forEach(function (key) {
+          if (Object.prototype.hasOwnProperty.call(_data, key)) {
+            _this.data[key] = _data[key];
+          }
+        });
+      }
+
       this.parent = ops.parent;
 
       if (this.store.expandKeys.includes(this.data.id)) {
@@ -131,7 +149,7 @@
     }, {
       key: "createNode",
       value: function createNode() {
-        var _this = this;
+        var _this2 = this;
 
         if (this.dom) {
           this.checkboxNode && (this.checkboxNode.checked = this.checked);
@@ -149,25 +167,25 @@
         dom.addEventListener('click', function (e) {
           e.stopPropagation();
 
-          if (_this.store.highlightCurrent) {
-            if (_this.store.selectedCurrent) {
-              _this.store.selectedCurrent.dom.classList.remove('selected');
+          if (_this2.store.highlightCurrent) {
+            if (_this2.store.selectedCurrent) {
+              _this2.store.selectedCurrent.dom.classList.remove('selected');
             }
 
             dom.classList.add('selected');
           }
 
-          if (_this.store.checkOnClickNode) {
-            _this.handleCheckChange({
+          if (_this2.store.checkOnClickNode) {
+            _this2.handleCheckChange({
               target: {
-                checked: !_this.checked
+                checked: !_this2.checked
               }
             });
           }
 
-          _this.store.selectedCurrent = _this;
+          _this2.store.selectedCurrent = _this2;
 
-          _this.store.click(e, _this);
+          _this2.store.click(e, _this2);
         }, {
           passive: false
         });
@@ -199,7 +217,7 @@
     }, {
       key: "cusmtomNode",
       value: function cusmtomNode(name, info) {
-        var _this2 = this;
+        var _this3 = this;
 
         var box = document.createElement(name);
         info.text && (box.innerText = info.text);
@@ -214,7 +232,7 @@
         if (typeof info.click === 'function') {
           box.addEventListener('click', function (e) {
             e.stopPropagation();
-            info.click(e, _this2);
+            info.click(e, _this3);
           }, {
             passive: false
           });
@@ -244,7 +262,7 @@
     }, {
       key: "createExpand",
       value: function createExpand() {
-        var _this3 = this;
+        var _this4 = this;
 
         var dom = document.createElement('span');
         dom.className = 'expand';
@@ -258,11 +276,12 @@
 
         dom.addEventListener('click', function (e) {
           e.stopPropagation();
+          if (_this4.loading) return;
           var expand = !dom.classList.contains('expand-true');
           dom.innerText = expand ? '-' : '+';
           dom.classList.toggle('expand-true');
 
-          _this3.setExpand(expand);
+          _this4.setExpand(expand);
         }, {
           passive: false
         });
@@ -272,7 +291,7 @@
     }, {
       key: "createCheckbox",
       value: function createCheckbox() {
-        var _this4 = this;
+        var _this5 = this;
 
         var dom = document.createElement('label');
         dom.className = 'vs-checkbox';
@@ -292,14 +311,14 @@
           passive: false
         });
         checkbox.addEventListener('click', function (e) {
-          _this4.store.check(e, _this4);
+          _this5.store.check(e, _this5);
         }, {
           passive: false
         });
         checkbox.addEventListener('change', function (e) {
           e.stopPropagation();
 
-          _this4.handleCheckChange(e);
+          _this5.handleCheckChange(e);
         });
         this.checkboxNode = checkbox;
         return dom;
@@ -346,6 +365,10 @@
           children = this.data.children || [];
         }
 
+        if (children.length) {
+          this.loaded = true;
+        }
+
         for (var i = 0, j = children.length; i < j; i++) {
           this.insertChild({
             data: children[i]
@@ -370,11 +393,11 @@
     }, {
       key: "updateExpand",
       value: function updateExpand(expand) {
-        var _this5 = this;
+        var _this6 = this;
 
         if (this.childNodes.length) {
           this.childNodes.forEach(function (v) {
-            if (expand && _this5.expanded) {
+            if (expand && _this6.expanded) {
               v.visbile = true;
             } else {
               v.visbile = false;
@@ -441,7 +464,7 @@
     }, {
       key: "setExpand",
       value: function setExpand(expand) {
-        var _this6 = this;
+        var _this7 = this;
 
         this.expanded = expand;
         this.updateExpand(this.expanded);
@@ -449,7 +472,7 @@
         if (this.store.lazy && !this.loaded) {
           this.loadData(function (data) {
             if (data) {
-              _this6.store.update();
+              _this7.store.update();
             }
           });
         } else {
@@ -460,31 +483,39 @@
     }, {
       key: "loadData",
       value: function loadData(callback) {
-        var _this7 = this;
+        var _this8 = this;
 
+        if (this.loading) return;
         this.loading = true;
+
+        if (this.expandEl) {
+          this.expandEl.classList.add('is-loading');
+        }
 
         var resolve = function resolve() {
           var children = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-          _this7.loaded = true;
-          _this7.loading = false;
-          console.log(children);
+          _this8.loaded = true;
+          _this8.loading = false;
+
+          if (_this8.expandEl) {
+            _this8.expandEl.classList.remove('is-loading');
+          }
 
           if (children.length) {
             children.forEach(function (data) {
-              _this7.insertChild({
+              _this8.insertChild({
                 data: data,
-                store: _this7.store
+                store: _this8.store
               });
             });
 
-            _this7.childNodes[0].updateCheckedParent();
+            _this8.childNodes[0].updateCheckedParent();
 
-            _this7.store.updateNodes();
+            _this8.store.updateNodes();
           }
 
           if (callback) {
-            callback.call(_this7, children);
+            callback.call(_this8, children);
           }
         };
 
@@ -494,13 +525,13 @@
     }, {
       key: "remove",
       value: function remove() {
-        var _this8 = this;
+        var _this9 = this;
 
         var parent = this.parent;
         if (!parent) return;
         var children = parent.childNodes || [];
         var index = children.findIndex(function (d) {
-          return d.id === _this8.id;
+          return d.id === _this9.id;
         });
 
         if (index > -1) {
@@ -1180,6 +1211,7 @@
         nocheckParent: ops.nocheckParent || false,
         // 只允许叶子节点选中
         checkOnClickNode: ops.checkOnClickNode || false,
+        format: ops.format || null,
         update: function update() {
           _this.render();
         },

@@ -4,20 +4,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>vs-tree2.0_异步加载</title>
+  <title>vs-tree2.0_获取选中节点</title>
   <link rel="stylesheet" href="../dist/vs-tree.css">
   <link rel="stylesheet" href="./static/css/index.css">
 </head>
 
 <body>
-  <div id="tree"></div>
+  <div class="box">
+    <div id="tree"></div>
+    <div id="list"></div>
+  </div>
   <script src="../dist/vs-tree.js"></script>
   <script>
     console.time('create:data')
     var id = 1000
     function add(parentId, name) {
       const list = []
-      for (var i = 0; i < 100; i++) {
+      for (var i = 0; i < 20; i++) {
         list.push({ id: '100' + id++, name: name + i, parentId: parentId })
       }
       return list
@@ -48,15 +51,15 @@
       indent: 12, // 缩进
       showCount: 30,
       itemHeight: 26,
-      lazy: true,
-      load: function (node, resolve) {
-        setTimeout(() => {
-          resolve([{
-            id: id++,
-            name: '新叶子节点' + id,
-            isLeaf: true
-          }])
-        }, 1000)
+      sort: true,
+      change: function() {
+        console.log(tree.getCheckedNodes());
+        document.getElementById('list').innerHTML = ''
+        const list = [];
+        tree.getCheckedNodes().forEach((v, index) => {
+          list.push('<div>'+ index + ': ' + v.name +'</div>')
+        })
+        document.getElementById('list').innerHTML = list.reverse().join('')
       }
     });
     console.timeEnd('render:tree');

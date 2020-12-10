@@ -36,6 +36,13 @@
   color: #bbb;
   /* transform: rotate(90deg); */
 }
+.expand.is-loading {
+  background-image: url(./oval.svg);
+  background-repeat: no-repeat;
+  background-size: 14px 14px;
+  border: none;
+  color: transparent;
+}
 .selected {
   background-color: #eee;
 }

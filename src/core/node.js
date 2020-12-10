@@ -15,8 +15,22 @@ export default class Node {
     this.level = 0
     this.childNodes = []
 
-    this.data = ops.data
     this.store = ops.store
+
+    this.data = ops.data
+    if (typeof this.store.format === 'function') {
+      const _data = this.store.format(Object.assign({}, ops.data))
+      if (typeof _data !== 'object') {
+        throw new Error('format must return object! \nformat: function(data) {\n  return {name, children, isLeaf}\n}')
+      }
+      const props = ['name', 'children', 'isLeaf']
+      props.forEach(key => {
+        if (Object.prototype.hasOwnProperty.call(_data, key)) {
+          this.data[key] = _data[key]
+        }
+      })
+    }
+
     this.parent = ops.parent
 
     if (this.store.expandKeys.includes(this.data.id)) {
@@ -146,6 +160,7 @@ export default class Node {
 
     dom.addEventListener('click', (e) => {
       e.stopPropagation()
+      if (this.loading) return
       const expand = !dom.classList.contains('expand-true')
       dom.innerText = expand ? '-' : '+'
       dom.classList.toggle('expand-true')
@@ -222,6 +237,10 @@ export default class Node {
       children = this.data
     } else {
       children = this.data.children || []
+    }
+
+    if (children.length) {
+      this.loaded = true
     }
 
     for (let i = 0, j = children.length; i < j; i++) {
@@ -318,13 +337,18 @@ export default class Node {
 
   // 加载数据
   loadData (callback) {
+    if (this.loading) return
     this.loading = true
+    if (this.expandEl) {
+      this.expandEl.classList.add('is-loading')
+    }
 
     const resolve = (children = []) => {
       this.loaded = true
       this.loading = false
-
-      console.log(children)
+      if (this.expandEl) {
+        this.expandEl.classList.remove('is-loading')
+      }
 
       if (children.length) {
         children.forEach(data => {

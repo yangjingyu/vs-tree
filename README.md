@@ -15,6 +15,7 @@
 | nocheckParent    | 禁止父节点选中               | Boolean | false   |
 | sort             | 对选中列表排序               | Boolean | false   |
 | checkOnClickNode | 是否在点击节点的时候选中节点 | Boolean | false   |
+| lazy             | 异步加载节点                 | Boolean | false   |
 | max              | 最大可选数量                 | Number  | 0       |
 | disabledKeys     | 禁止操作                     | Array   | null    |
 | checkedKeys      | 默认选中                     | Array   | null    |
@@ -50,7 +51,8 @@
 | change        | 复选框改变时触发   | node              |
 | limitAlert    | 超过max配置时触发  | -                 |
 | renderContent | 自定义节点内容     | h,node            |
-
+| load          | lazy=true时有效    | node, resolve     |
+| format          | 格式化数据    | data     |
 
 #### renderContent
 
@@ -65,7 +67,7 @@ renderContent: function (h, node) {
         text: 'append',
         click: function (e, node) {
           node.append({
-            id: 999999,
+            id: id++,
             name: 'append'
           })
         }
@@ -78,5 +80,36 @@ renderContent: function (h, node) {
       })
     ]
   })
+}
+```
+
+### load
+
+resolve 异步加载完成后回调
+
+```js
+lazy: true,
+load: function (node, resolve) {
+  setTimeout(() => {
+    resolve([{
+      id: id++,
+      name: '新叶子节点' + id,
+      isLeaf: true
+    }])
+  }, 1000)
+}
+```
+
+### format
+
+目前仅支持，name、children、isLeaf
+
+```js
+format: function(data) {
+  return {
+    name: data.title,
+    children: data.child,
+    isLeaf: !data.child
+  }
 }
 ```
