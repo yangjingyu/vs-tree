@@ -68,7 +68,7 @@ export default class Node {
     }
 
     const dom = document.createElement('div')
-    dom.className = 'tree-node'
+    dom.className = 'vs-tree-node'
 
     dom.appendChild(this.createInner())
     if (this.store.renderContent) {
@@ -83,7 +83,7 @@ export default class Node {
         dom.classList.add('selected')
       }
 
-      if (this.store.checkOnClickNode) {
+      if (this.store.checkOnClickNode && !this.disabled) {
         this.handleCheckChange({
           target: { checked: !this.checked }
         })
@@ -100,9 +100,17 @@ export default class Node {
 
   createInner () {
     const dom = document.createElement('div')
+    dom.className = 'vs-tree-inner'
     // 当隐藏根节点时减少一级缩进
     const level = this.store.hideRoot ? -1 : 0
-    dom.style.paddingLeft = (this.level + level) * this.store.indent + 'px'
+    // dom.style.paddingLeft = (this.level + level) * this.store.indent + 'px'
+
+    for (let i = 0; i < this.level + level; i++) {
+      const indent = document.createElement('span')
+      indent.className = 'vs-indent-unit'
+      dom.appendChild(indent)
+    }
+
     const checkDom = (this.childNodes?.length || this.store.lazy) && !this.isLeaf ? this.createExpand() : this.createExpandEmpty()
     dom.appendChild(checkDom)
     if (this.store.showCheckbox || this.store.showRadio) {
@@ -151,20 +159,17 @@ export default class Node {
   createExpand () {
     const dom = document.createElement('span')
     dom.className = 'expand'
-    dom.innerText = '+'
 
     if (this.level < 1 || this.expanded) {
-      dom.classList.add('expand-true')
+      dom.classList.add('expanded')
       this.expanded = true
-      dom.innerText = '-'
     }
 
     dom.addEventListener('click', (e) => {
       e.stopPropagation()
       if (this.loading) return
-      const expand = !dom.classList.contains('expand-true')
-      dom.innerText = expand ? '-' : '+'
-      dom.classList.toggle('expand-true')
+      const expand = !dom.classList.contains('expanded')
+      dom.classList.toggle('expanded')
       this.setExpand(expand)
     }, {
       passive: false

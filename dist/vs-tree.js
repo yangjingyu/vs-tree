@@ -158,7 +158,7 @@
         }
 
         var dom = document.createElement('div');
-        dom.className = 'tree-node';
+        dom.className = 'vs-tree-node';
         dom.appendChild(this.createInner());
 
         if (this.store.renderContent) {
@@ -176,7 +176,7 @@
             dom.classList.add('selected');
           }
 
-          if (_this2.store.checkOnClickNode) {
+          if (_this2.store.checkOnClickNode && !_this2.disabled) {
             _this2.handleCheckChange({
               target: {
                 checked: !_this2.checked
@@ -198,10 +198,17 @@
       value: function createInner() {
         var _this$childNodes;
 
-        var dom = document.createElement('div'); // 当隐藏根节点时减少一级缩进
+        var dom = document.createElement('div');
+        dom.className = 'vs-tree-inner'; // 当隐藏根节点时减少一级缩进
 
-        var level = this.store.hideRoot ? -1 : 0;
-        dom.style.paddingLeft = (this.level + level) * this.store.indent + 'px';
+        var level = this.store.hideRoot ? -1 : 0; // dom.style.paddingLeft = (this.level + level) * this.store.indent + 'px'
+
+        for (var i = 0; i < this.level + level; i++) {
+          var indent = document.createElement('span');
+          indent.className = 'vs-indent-unit';
+          dom.appendChild(indent);
+        }
+
         var checkDom = ((_this$childNodes = this.childNodes) !== null && _this$childNodes !== void 0 && _this$childNodes.length || this.store.lazy) && !this.isLeaf ? this.createExpand() : this.createExpandEmpty();
         dom.appendChild(checkDom);
 
@@ -267,20 +274,17 @@
 
         var dom = document.createElement('span');
         dom.className = 'expand';
-        dom.innerText = '+';
 
         if (this.level < 1 || this.expanded) {
-          dom.classList.add('expand-true');
+          dom.classList.add('expanded');
           this.expanded = true;
-          dom.innerText = '-';
         }
 
         dom.addEventListener('click', function (e) {
           e.stopPropagation();
           if (_this4.loading) return;
-          var expand = !dom.classList.contains('expand-true');
-          dom.innerText = expand ? '-' : '+';
-          dom.classList.toggle('expand-true');
+          var expand = !dom.classList.contains('expanded');
+          dom.classList.toggle('expanded');
 
           _this4.setExpand(expand);
         }, {
@@ -1082,6 +1086,7 @@
       this.$el.style.overflowY = 'auto';
       this.dataSources = opts.data;
       this.wrapper = document.createElement('div');
+      this.wrapper.className = 'vs-virtual-list';
       this.$el.appendChild(this.wrapper);
       this.$el.addEventListener('scroll', this.onScroll.bind(this), {
         passive: false
@@ -1230,8 +1235,9 @@
 
       if (!this.$el) {
         throw Error('请为组件提供根节点');
-      } // 每一项的高度
+      }
 
+      this.$el.classList.add = 'vs-tree'; // 每一项的高度
 
       this.itemHeight = ops.itemHeight || 26; // 当前可见数量
 

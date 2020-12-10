@@ -16,6 +16,7 @@ export default class Vlist {
     this.dataSources = opts.data
 
     this.wrapper = document.createElement('div')
+    this.wrapper.className = 'vs-virtual-list'
     this.$el.appendChild(this.wrapper)
 
     this.$el.addEventListener('scroll', this.onScroll.bind(this), {

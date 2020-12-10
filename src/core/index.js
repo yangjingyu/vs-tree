@@ -19,6 +19,8 @@ export default class Tree {
     if (!this.$el) {
       throw Error('请为组件提供根节点')
     }
+    this.$el.classList.add = 'vs-tree'
+
     // 每一项的高度
     this.itemHeight = ops.itemHeight || 26
     // 当前可见数量
