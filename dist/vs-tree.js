@@ -201,12 +201,16 @@
         var dom = document.createElement('div');
         dom.className = 'vs-tree-inner'; // 当隐藏根节点时减少一级缩进
 
-        var level = this.store.hideRoot ? -1 : 0; // dom.style.paddingLeft = (this.level + level) * this.store.indent + 'px'
+        var level = this.store.hideRoot ? -1 : 0;
 
-        for (var i = 0; i < this.level + level; i++) {
-          var indent = document.createElement('span');
-          indent.className = 'vs-indent-unit';
-          dom.appendChild(indent);
+        if (this.store.showLine) {
+          for (var i = 0; i < this.level + level; i++) {
+            var indent = document.createElement('span');
+            indent.className = 'vs-indent-unit';
+            dom.appendChild(indent);
+          }
+        } else {
+          dom.style.paddingLeft = (this.level + level) * this.store.indent + 'px';
         }
 
         var checkDom = ((_this$childNodes = this.childNodes) !== null && _this$childNodes !== void 0 && _this$childNodes.length || this.store.lazy) && !this.isLeaf ? this.createExpand() : this.createExpandEmpty();
@@ -1253,6 +1257,8 @@
         max: ops.max,
         lazy: ops.lazy || false,
         sort: ops.sort || false,
+        showLine: ops.showLine || false,
+        // 是否显示连接线
         indent: ops.indent || 10,
         checkedKeys: ops.checkedKeys || [],
         expandKeys: ops.expandKeys || [],

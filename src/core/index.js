@@ -37,6 +37,7 @@ export default class Tree {
       max: ops.max,
       lazy: ops.lazy || false,
       sort: ops.sort || false,
+      showLine: ops.showLine || false, // 是否显示连接线
       indent: ops.indent || 10,
       checkedKeys: ops.checkedKeys || [],
       expandKeys: ops.expandKeys || [],

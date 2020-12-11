@@ -103,12 +103,15 @@ export default class Node {
     dom.className = 'vs-tree-inner'
     // 当隐藏根节点时减少一级缩进
     const level = this.store.hideRoot ? -1 : 0
-    // dom.style.paddingLeft = (this.level + level) * this.store.indent + 'px'
 
-    for (let i = 0; i < this.level + level; i++) {
-      const indent = document.createElement('span')
-      indent.className = 'vs-indent-unit'
-      dom.appendChild(indent)
+    if (this.store.showLine) {
+      for (let i = 0; i < this.level + level; i++) {
+        const indent = document.createElement('span')
+        indent.className = 'vs-indent-unit'
+        dom.appendChild(indent)
+      }
+    } else {
+      dom.style.paddingLeft = (this.level + level) * this.store.indent + 'px'
     }
 
     const checkDom = (this.childNodes?.length || this.store.lazy) && !this.isLeaf ? this.createExpand() : this.createExpandEmpty()

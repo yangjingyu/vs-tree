@@ -16,6 +16,9 @@
 .vs-tree-node:hover {
   background-color: #eee;
 }
+.vs-tree-node:first-child .expand::before {
+  height: 0;
+}
 .vs-indent-unit {
   position: relative;
   display: inline-block;
@@ -23,18 +26,14 @@
   height: 14px;
   vertical-align: middle;
 }
-.vs-indent-unit::before,
-.vs-indent-unit.vs-indent-unit::after {
+.vs-indent-unit::after {
   content: "";
   width: 0;
-  height: 200%;
+  height: 160%;
   position: absolute;
   left: 50%;
   border-left: 1px dashed #ddd;
   top: -8px;
-}
-.vs-indent-unit::after {
-  bottom: -8px;
 }
 .expand,
 .expand-empty {
@@ -49,6 +48,7 @@
           box-sizing: border-box;
 }
 .expand {
+  position: relative;
   cursor: pointer;
 }
 .expand::after {
@@ -59,6 +59,35 @@
   display: inline-block;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
+}
+.vs-indent-unit ~ .expand::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  width: 0;
+  height: 8px;
+  border-left: 1px dashed #ddd;
+}
+.vs-indent-unit ~ .expand-empty {
+  position: relative;
+}
+.vs-indent-unit ~ .expand-empty::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 50%;
+  margin-top: 2px;
+  border-bottom: 1px dashed #ddd;
+}
+.vs-indent-unit ~ .expand-empty::before {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: 50%;
+  height: 160%;
+  border-left: 1px dashed #ddd;
 }
 .expanded {
   color: #bbb;

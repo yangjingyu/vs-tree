@@ -10,6 +10,7 @@
 | selector         | ID选择器                     | string  |         |
 | data             | 展示数据                     | Object  |         |
 | showRoot         | 是否展示根节点               | Boolean | true    |
+| showLine         | 是否展示连接线               | Boolean | false    |
 | showCheckbox     | 是否显示复选框               | Boolean | false   |
 | showRadio        | 是否显示单选框，会覆盖复选框 | Boolean | false   |
 | radioParentoOnly | 每个父节点下唯一             | Boolean | false   |
