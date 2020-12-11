@@ -46,3 +46,7 @@ p {
 .custom-icon {
   background-image: url(./icon1.svg);
 }
+
+.tree-demo .vs-tree-node {
+  justify-content: start;
+}

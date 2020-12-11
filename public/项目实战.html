@@ -11,7 +11,7 @@
 
 <body>
   <div>用时：<span id="usetime"></span></div>
-  <div id="tree"></div>
+  <div id="tree" class="tree-demo"></div>
   <button id="checked" type="button">获取选中元素</button>
   <script>
     console.time('create:data')
@@ -72,7 +72,7 @@
             className: "tree-action",
             children: [
               h("span", {
-                text: `(${getCount(umap, node)})`
+                text: `（${getCount(umap, node)}）`
               })
             ]
           })
