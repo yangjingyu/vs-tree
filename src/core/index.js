@@ -31,6 +31,8 @@ export default class Tree {
     this.dataKey = ops.dataKey || 'id'
     // 当前可见项
     this.data = []
+    // 关键字过滤
+    this.keyword = ''
 
     this.store = new TreeStore({
       data: ops.data,
@@ -93,9 +95,20 @@ export default class Tree {
   render () {
     this.data = this.nodes.filter(v => {
       // 过滤隐藏节点 ｜ 隐藏root节点
-      return v.visbile && !(this.store.hideRoot && v.level === 0)
+      return v.visbile && !(this.store.hideRoot && v.level === 0) && this.hasKeyword(v)
     })
     this.vlist.update(this.data)
+  }
+
+  hasKeyword (v) {
+    return v.data.name.includes(this.keyword)
+  }
+
+  // 过滤节点
+  filter (keyword = '') {
+    this.keyword = keyword
+    this.render()
+    return this.data
   }
 
   // 根据ID获取节点

@@ -10,3 +10,12 @@
   padding: 0 20px;
   overflow-y: auto;
 }
+
+#search {
+  width: 400px;
+  height: 28px;
+  padding: 0 12px;
+  margin: 0 0 10px;
+  font-size: 12px;
+  box-sizing: border-box;
+}

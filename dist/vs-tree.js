@@ -1283,7 +1283,9 @@
 
       this.dataKey = ops.dataKey || 'id'; // 当前可见项
 
-      this.data = [];
+      this.data = []; // 关键字过滤
+
+      this.keyword = '';
       this.store = new TreeStore({
         data: ops.data,
         max: ops.max,
@@ -1353,9 +1355,23 @@
 
         this.data = this.nodes.filter(function (v) {
           // 过滤隐藏节点 ｜ 隐藏root节点
-          return v.visbile && !(_this2.store.hideRoot && v.level === 0);
+          return v.visbile && !(_this2.store.hideRoot && v.level === 0) && _this2.hasKeyword(v);
         });
         this.vlist.update(this.data);
+      }
+    }, {
+      key: "hasKeyword",
+      value: function hasKeyword(v) {
+        return v.data.name.includes(this.keyword);
+      } // 过滤节点
+
+    }, {
+      key: "filter",
+      value: function filter() {
+        var keyword = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+        this.keyword = keyword;
+        this.render();
+        return this.data;
       } // 根据ID获取节点
 
     }, {

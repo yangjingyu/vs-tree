@@ -46,6 +46,7 @@
 | setChecked | 设置是否选中 | true,false |
 | remove     | 删除当前节点 | -          |
 | append     | 追加节点     | data       |
+| filter     | 过滤节点     | keyword       |
 
 ### Events
 | 事件名称      | 说明               | 回调参数          |
