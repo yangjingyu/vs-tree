@@ -1,6 +1,6 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('os')) :
-  typeof define === 'function' && define.amd ? define(['exports', 'os'], factory) :
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+  typeof define === 'function' && define.amd ? define(['exports'], factory) :
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.vsTree = {}));
 }(this, (function (exports) { 'use strict';
 
@@ -105,7 +105,7 @@
           throw new Error('format must return object! \nformat: function(data) {\n  return {name, children, isLeaf}\n}');
         }
 
-        var props = ['name', 'children', 'isLeaf'];
+        var props = ['name', 'children', 'isLeaf', 'icon'];
         props.forEach(function (key) {
           if (Object.prototype.hasOwnProperty.call(_data, key)) {
             _this.data[key] = _data[key];
@@ -227,6 +227,12 @@
         if (this.store.showCheckbox || this.store.showRadio) {
           if (!this.store.nocheckParent || !this.childNodes.length) {
             dom.appendChild(this.createCheckbox());
+          }
+        }
+
+        if (this.store.showIcon) {
+          if (!this.store.onlyShowLeafIcon || !this.childNodes.length || this.isLeaf) {
+            dom.appendChild(this.createIcon());
           }
         }
 
@@ -385,6 +391,23 @@
         dom.innerText = this.data.name;
         dom.className = 'name';
         return dom;
+      }
+    }, {
+      key: "createIcon",
+      value: function createIcon() {
+        var icon = document.createElement('span');
+        icon.className = this.isLeaf || !this.childNodes.length ? 'vs-icon-leaf' : 'vs-icon-parent';
+
+        if (this.data.icon) {
+          if (this.data.icon instanceof HTMLElement) {
+            icon.style.backgroundImage = 'none';
+            icon.appendChild(this.data.icon);
+          } else {
+            icon.classList.add(this.data.icon);
+          }
+        }
+
+        return icon;
       }
     }, {
       key: "setData",
@@ -1316,6 +1339,8 @@
         max: ops.max,
         showLine: ops.showLine || false,
         // 是否显示连接线
+        showIcon: ops.showIcon || false,
+        onlyShowLeafIcon: ops.onlyShowLeafIcon || false,
         showCheckbox: ops.showCheckbox || false,
         showRadio: ops.showRadio || false,
         highlightCurrent: ops.highlightCurrent || false,

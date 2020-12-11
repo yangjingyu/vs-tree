@@ -42,3 +42,7 @@ p {
   font-size: 12px;
   color: #333;
 }
+
+.custom-icon {
+  background-image: url(./icon1.svg);
+}

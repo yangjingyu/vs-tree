@@ -1,6 +1,5 @@
 import TreeStore from './store'
 import Vlist from '../virtual-list'
-import { type } from 'os'
 const noop = () => { }
 export default class Tree {
   constructor (selector, ops) {
@@ -54,6 +53,8 @@ export default class Tree {
       data: this._data,
       max: ops.max,
       showLine: ops.showLine || false, // 是否显示连接线
+      showIcon: ops.showIcon || false,
+      onlyShowLeafIcon: ops.onlyShowLeafIcon || false,
       showCheckbox: ops.showCheckbox || false,
       showRadio: ops.showRadio || false,
       highlightCurrent: ops.highlightCurrent || false,

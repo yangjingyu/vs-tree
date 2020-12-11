@@ -23,7 +23,7 @@ export default class Node {
       if (typeof _data !== 'object') {
         throw new Error('format must return object! \nformat: function(data) {\n  return {name, children, isLeaf}\n}')
       }
-      const props = ['name', 'children', 'isLeaf']
+      const props = ['name', 'children', 'isLeaf', 'icon']
       props.forEach(key => {
         if (Object.prototype.hasOwnProperty.call(_data, key)) {
           this.data[key] = _data[key]
@@ -132,6 +132,13 @@ export default class Node {
         dom.appendChild(this.createCheckbox())
       }
     }
+
+    if (this.store.showIcon) {
+      if (!this.store.onlyShowLeafIcon || (!this.childNodes.length || this.isLeaf)) {
+        dom.appendChild(this.createIcon())
+      }
+    }
+
     dom.appendChild(this.createText())
     return dom
   }
@@ -261,6 +268,20 @@ export default class Node {
     dom.innerText = this.data.name
     dom.className = 'name'
     return dom
+  }
+
+  createIcon () {
+    const icon = document.createElement('span')
+    icon.className = (this.isLeaf || !this.childNodes.length) ? 'vs-icon-leaf' : 'vs-icon-parent'
+    if (this.data.icon) {
+      if (this.data.icon instanceof HTMLElement) {
+        icon.style.backgroundImage = 'none'
+        icon.appendChild(this.data.icon)
+      } else {
+        icon.classList.add(this.data.icon)
+      }
+    }
+    return icon
   }
 
   setData (data) {

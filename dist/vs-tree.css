@@ -237,3 +237,23 @@
 .vs-radio__original:checked:disabled ~ .vs-radio__inner:after {
   border-color: #c0c4cc;
 }
+.vs-icon-leaf,
+.vs-icon-parent {
+  width: 14px;
+  height: 14px;
+  margin-right: 5px;
+  display: inline-block;
+  vertical-align: middle;
+  background-image: url(./leaf.svg);
+  background-size: 12px 12px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.vs-icon-leaf > img,
+.vs-icon-parent > img {
+  width: 100%;
+  height: 100%;
+}
+.vs-icon-parent {
+  background-image: url(./parent.svg);
+}
