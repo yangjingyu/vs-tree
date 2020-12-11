@@ -69,6 +69,7 @@ export default class Tree {
       check: ops.check || noop, // 复选框被点击时出发
       change: ops.change || noop,
       load: ops.load || noop,
+      contextmenu: ops.contextmenu || null,
       radioParentoOnly: ops.radioParentoOnly || false, // 每个父节点下唯一，仅raido模式有效
       renderContent: ops.renderContent || null,
       nocheckParent: ops.nocheckParent || false, // 只允许叶子节点选中

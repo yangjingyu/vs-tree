@@ -71,9 +71,11 @@ export default class Node {
     dom.className = 'vs-tree-node'
 
     dom.appendChild(this.createInner())
+
     if (this.store.renderContent) {
       dom.appendChild(this.createContent())
     }
+
     dom.addEventListener('click', (e) => {
       e.stopPropagation()
       if (this.store.highlightCurrent) {
@@ -94,6 +96,15 @@ export default class Node {
     }, {
       passive: false
     })
+
+    dom.addEventListener('contextmenu', (e) => {
+      if (this.store.contextmenu && typeof this.store.contextmenu === 'function') {
+        e.stopPropagation()
+        e.preventDefault()
+        this.store.contextmenu(e, this)
+      }
+    })
+
     this.dom = dom
     return dom
   }

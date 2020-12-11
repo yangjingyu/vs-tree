@@ -190,6 +190,14 @@
         }, {
           passive: false
         });
+        dom.addEventListener('contextmenu', function (e) {
+          if (_this2.store.contextmenu && typeof _this2.store.contextmenu === 'function') {
+            e.stopPropagation();
+            e.preventDefault();
+
+            _this2.store.contextmenu(e, _this2);
+          }
+        });
         this.dom = dom;
         return dom;
       }
@@ -1325,6 +1333,7 @@
         // 复选框被点击时出发
         change: ops.change || noop,
         load: ops.load || noop,
+        contextmenu: ops.contextmenu || null,
         radioParentoOnly: ops.radioParentoOnly || false,
         // 每个父节点下唯一，仅raido模式有效
         renderContent: ops.renderContent || null,
