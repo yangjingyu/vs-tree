@@ -626,15 +626,22 @@
       key: "append",
       value: function append(data) {
         if (!data || _typeof(data) !== 'object') return;
+        var olddom = this.dom;
 
-        if (!this.childNodes.length) {
-          delete this.dom;
+        if (this.childNodes.length !== 0) {
+          olddom = null;
         }
 
         var node = this.insertChild({
           data: data,
           store: this.store
         });
+
+        if (olddom) {
+          delete this.dom;
+          olddom.parentNode.replaceChild(this.createNode(), olddom);
+        }
+
         node.updateCheckedParent();
         this.store.updateNodes();
       }

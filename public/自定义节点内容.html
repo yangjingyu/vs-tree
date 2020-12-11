@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>vs-tree2.0_复杂示例</title>
+  <title>vs-tree2.0_自定义节点内容</title>
   <link rel="stylesheet" href="../dist/vs-tree.css">
   <link rel="stylesheet" href="./static/css/index.css">
   <style>
@@ -18,9 +18,6 @@
 
 <body>
   <div id="tree"></div>
-  <button id="checked" type="button">获取选中元素</button>
-  <button id="getNodeById" type="button">根据ID获取节点</button>
-  <button id="clearChecked" type="button">清除wangwu选中</button>
   <script src="../dist/vs-tree.js"></script>
   <script>
     console.time('create:data')
@@ -50,44 +47,12 @@
     }
     console.timeEnd('create:data')
     console.time('render:tree');
-    console.log(vsTree);
     const tree = new vsTree.default('#tree', {
       data: data,
-      showRoot: false,
       showCheckbox: true,
-      max: 0,
-      highlightCurrent: false,
-      checkOnClickNode: true,
       indent: 12, // 缩进
       showCount: 30,
       itemHeight: 26,
-      disabledKeys: ["104", "105"],
-      checkedKeys: ["100", "102", "104"],
-      expandKeys: ["101"],
-      nocheckParent: true, // 禁止选中父节点
-      sort: true, // 按选中先后顺序排序
-      click: function (event, node, type) {
-        console.log(node, 'click', type);
-        if (type === 'remove') {
-          node.remove()
-        }
-        if (type === 'append') {
-          node.append({
-            id: id++,
-            name: 'append'
-          })
-        }
-      },
-      // 复选框被点击时触发
-      check: function (event, node) {
-        console.log(node, 'onCheck');
-      },
-      change: function (node) {
-        console.log(node);
-      },
-      limitAlert: function () {
-        console.log('超过最大');
-      },
       renderContent: function (h, node) {
         return h("div", {
           className: "tree-action",
@@ -96,7 +61,7 @@
               text: 'append',
               click: function (e, node) {
                 node.append({
-                  id: 999999,
+                  id: id++,
                   name: 'append'
                 })
               }
@@ -112,22 +77,6 @@
       }
     });
     console.timeEnd('render:tree');
-
-    document.getElementById("checked").onclick = function () {
-      console.log(tree);
-      console.log(tree.getCheckedNodes());
-    }
-
-    document.getElementById("getNodeById").onclick = function () {
-      console.log(tree.getNodeById("103"));
-      tree.getNodeById("103") && tree.getNodeById("103").setChecked(true);
-    }
-
-    document.getElementById("clearChecked").onclick = function () {
-      ["100"].forEach(id => {
-        tree.getNodeById(id).setChecked(false);
-      });
-    }
   </script>
 </body>
 

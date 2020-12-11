@@ -50,7 +50,7 @@
 ### Events
 | 事件名称      | 说明               | 回调参数          |
 | ------------- | ------------------ | ----------------- |
-| click         | 节点点击事件       | event, node, type |
+| click         | 节点点击事件       | event, node |
 | check         | 复选框被点击时触发 | event, node       |
 | change        | 复选框改变时触发   | node              |
 | limitAlert    | 超过max配置时触发  | -                 |
