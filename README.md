@@ -21,7 +21,7 @@
 | checkOnClickNode | 是否在点击节点的时候选中节点   | Boolean        | false   |
 | lazy             | 异步加载节点                   | Boolean        | false   |
 | max              | 最大可选数量                   | Number         | 0       |
-| rootName         | 根节点名称，仅data为数组时有效 | String         | null    |
+| rootName         | 根节点名称，仅data为数组时有效，此时不会默认 | String         | null    |
 | disabledKeys     | 禁止操作                       | Array          | null    |
 | checkedKeys      | 默认选中                       | Array          | null    |
 | expandKeys       | 默认展开                       | Array          | null    |
