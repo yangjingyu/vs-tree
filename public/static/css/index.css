@@ -19,3 +19,8 @@
   font-size: 12px;
   box-sizing: border-box;
 }
+
+p {
+  font-size: 12px;
+  color: #333;
+}

@@ -1,5 +1,6 @@
 import TreeStore from './store'
 import Vlist from '../virtual-list'
+import { type } from 'os'
 const noop = () => { }
 export default class Tree {
   constructor (selector, ops) {
@@ -21,6 +22,21 @@ export default class Tree {
     }
     this.$el.classList.add = 'vs-tree'
 
+    if (Array.isArray(ops.data)) {
+      this._data = {
+        _vsroot: true,
+        name: ops.rootName || '---',
+        children: ops.data
+      }
+      if (!ops.rootName) {
+        ops.showRoot = false
+      }
+    } else if (typeof ops.data === 'object') {
+      this._data = ops.data
+    } else {
+      throw Error('参数data仅支持对象或数组！')
+    }
+
     // 每一项的高度
     this.itemHeight = ops.itemHeight || 26
     // 当前可见数量
@@ -35,7 +51,7 @@ export default class Tree {
     this.keyword = ''
 
     this.store = new TreeStore({
-      data: ops.data,
+      data: this._data,
       max: ops.max,
       showLine: ops.showLine || false, // 是否显示连接线
       showCheckbox: ops.showCheckbox || false,
@@ -67,7 +83,7 @@ export default class Tree {
       }
     })
 
-    this.store.setData(ops.data)
+    this.store.setData(this._data)
 
     if (typeof ops.showRoot === 'boolean' && !ops.showRoot) {
       this.store.hideRoot = true

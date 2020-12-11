@@ -18,7 +18,7 @@ export default class Node {
     this.store = ops.store
 
     this.data = ops.data
-    if (typeof this.store.format === 'function') {
+    if (typeof this.store.format === 'function' && !ops.data._vsroot) {
       const _data = this.store.format(Object.assign({}, ops.data))
       if (typeof _data !== 'object') {
         throw new Error('format must return object! \nformat: function(data) {\n  return {name, children, isLeaf}\n}')

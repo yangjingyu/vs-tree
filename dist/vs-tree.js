@@ -1,6 +1,6 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-  typeof define === 'function' && define.amd ? define(['exports'], factory) :
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('os')) :
+  typeof define === 'function' && define.amd ? define(['exports', 'os'], factory) :
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.vsTree = {}));
 }(this, (function (exports) { 'use strict';
 
@@ -98,7 +98,7 @@
       this.store = ops.store;
       this.data = ops.data;
 
-      if (typeof this.store.format === 'function') {
+      if (typeof this.store.format === 'function' && !ops.data._vsroot) {
         var _data = this.store.format(Object.assign({}, ops.data));
 
         if (_typeof(_data) !== 'object') {
@@ -717,7 +717,7 @@
         var _this = this;
 
         var nodes = this.nodes.filter(function (v) {
-          return v.checked && (!_this.nocheckParent || !v.childNodes.length);
+          return v.checked && !v.data._vsroot && (!_this.nocheckParent || !v.childNodes.length);
         });
 
         if (this.sort) {
@@ -1273,7 +1273,24 @@
         throw Error('请为组件提供根节点');
       }
 
-      this.$el.classList.add = 'vs-tree'; // 每一项的高度
+      this.$el.classList.add = 'vs-tree';
+
+      if (Array.isArray(ops.data)) {
+        this._data = {
+          _vsroot: true,
+          name: ops.rootName || '---',
+          children: ops.data
+        };
+
+        if (!ops.rootName) {
+          ops.showRoot = false;
+        }
+      } else if (_typeof(ops.data) === 'object') {
+        this._data = ops.data;
+      } else {
+        throw Error('参数data仅支持对象或数组！');
+      } // 每一项的高度
+
 
       this.itemHeight = ops.itemHeight || 26; // 当前可见数量
 
@@ -1287,7 +1304,7 @@
 
       this.keyword = '';
       this.store = new TreeStore({
-        data: ops.data,
+        data: this._data,
         max: ops.max,
         showLine: ops.showLine || false,
         // 是否显示连接线
@@ -1323,7 +1340,7 @@
           _this.vlist && _this.render();
         }
       });
-      this.store.setData(ops.data);
+      this.store.setData(this._data);
 
       if (typeof ops.showRoot === 'boolean' && !ops.showRoot) {
         this.store.hideRoot = true; // 跟节点创建dom
