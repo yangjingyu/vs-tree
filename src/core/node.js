@@ -165,6 +165,9 @@ export default class Node {
   // 自定义内容
   createContent () {
     const tpl = this.store.renderContent(this.cusmtomNode.bind(this), this)
+    if (!tpl) {
+      return document.createElement('span')
+    }
     tpl.addEventListener('click', (e) => {
       e.stopPropagation()
     }, { passive: false })

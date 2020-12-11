@@ -12,43 +12,96 @@
 <body>
   <div>用时：<span id="usetime"></span></div>
   <div id="tree"></div>
-  <script src="./static/data.txt"></script>
+  <button id="checked" type="button">获取选中元素</button>
+  <script>
+    console.time('create:data')
+    var list = []
+    var xhr = new XMLHttpRequest()
+    xhr.open('GET', './static/data.txt', true)
+    xhr.send()
+    xhr.onload = function (e) {
+      list = xhr.response.split('\r\n').map(v => v && JSON.parse(v))
+      var data = list.filter(v => v && v.obj === 'department' && v.data.pdid === '-1')
+      console.timeEnd('create:data')
+      init(data)
+    }
+  </script>
   <script src="../dist/vs-tree.js"></script>
   <script>
-    console.log(orgcontacts);
-    console.time('create:data')
-    var id = 1000
-    function add(parentId, name) {
-      const list = []
-      for (var i = 0; i < 100000; i++) {
-        list.push({ id: '100' + id++, name: name + i, parentId: parentId })
+    var tree;
+    function init (data) {
+      console.time('render:tree');
+      var time = Date.now()
+      const umap = {}
+      const infomap = {}
+      list.forEach(v => {
+        if (v.obj === 'department_user') {
+          if (umap[v.data.did]) {
+            umap[v.data.did].push(v.data)
+          } else {
+            umap[v.data.did] = [v.data]
+          }
+        } else if (v.obj === 'user') {
+          infomap[v.data.uid] = v.data
+        }
+      })
+      tree = new vsTree.default('#tree', {
+        data: data[0],
+        showCheckbox: true,
+        format: function(data) {
+          var child = []
+          if (data.obj === 'department') {
+            child = list.filter(v => v.obj === 'department' && v.data.pdid === data.data.did)
+            child = child.concat(umap[data.data.did] || [])
+            return {
+              name: data.data.name || '---',
+              children: child
+            }
+          }
+          return {
+            name: infomap[data.uid] && infomap[data.uid].name,
+            isLeaf: true,
+            children: []
+          }
+        },
+        renderContent: function (h, node) {
+          if (node.data.obj !== 'department') {
+            return false
+          }
+          return h("div", {
+            className: "tree-action",
+            children: [
+              h("span", {
+                text: `(${getCount(umap, node)})`
+              })
+            ]
+          })
+        }
+      });
+      console.timeEnd('render:tree');
+      document.getElementById('usetime').innerHTML = Date.now() - time + 'ms'
+    }
+
+    function getCount(umap, node) {
+      if (!umap[node.data.data.did]) return 0
+      let count = 0
+      const calc = (node) => {
+        if (node.data.obj !== 'department') return
+        count += (umap[node.data.data.did] && umap[node.data.data.did].length) || 0
+        if (node.childNodes) {
+          node.childNodes.forEach(v => {
+            calc(v)
+          })
+        }
       }
-      return list
+      calc(node)
+      return count
     }
-    const data = {
-      id: '1', name: 'zhangsan', parentId: '-1', children: [
-        { id: '100', name: 'wangwu', parentId: '1', children: add('100', 'wangwu') },
-        { id: '101', name: 'zhaoliu', parentId: '1', children: add('101', 'zhaoliu') },
-        { id: '102', name: 'huahua', parentId: '1' },
-        { id: '103', name: 'oo-1', parentId: '1' },
-        { id: '104', name: 'oo-2', parentId: '1' },
-        { id: '105', name: 'oo-3', parentId: '1' },
-        { id: '106', name: 'oo-4', parentId: '1' },
-        { id: '107', name: 'oo-5', parentId: '1' },
-        { id: '108', name: 'oo-6', parentId: '1' },
-        { id: '109', name: 'oo-7', parentId: '1' },
-        { id: '110', name: 'oo-8', parentId: '1' },
-        { id: '111', name: 'oo-9', parentId: '1' },
-      ]
+
+    document.getElementById("checked").onclick = function () {
+      console.log(tree);
+      console.log(tree.getCheckedNodes());
     }
-    console.timeEnd('create:data')
-    console.time('render:tree');
-    var time = Date.now()
-    const tree = new vsTree.default('#tree', {
-      data: data,
-    });
-    console.timeEnd('render:tree');
-    document.getElementById('usetime').innerHTML = Date.now() - time + 'ms'
   </script>
 </body>
 

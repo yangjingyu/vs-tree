@@ -119,7 +119,7 @@ export default class Tree {
   }
 
   hasKeyword (v) {
-    return v.data.name.includes(this.keyword)
+    return v.data.name && v.data.name.includes(this.keyword)
   }
 
   // 过滤节点

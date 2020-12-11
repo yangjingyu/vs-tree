@@ -271,6 +271,11 @@
       key: "createContent",
       value: function createContent() {
         var tpl = this.store.renderContent(this.cusmtomNode.bind(this), this);
+
+        if (!tpl) {
+          return document.createElement('span');
+        }
+
         tpl.addEventListener('click', function (e) {
           e.stopPropagation();
         }, {
@@ -1413,7 +1418,7 @@
     }, {
       key: "hasKeyword",
       value: function hasKeyword(v) {
-        return v.data.name.includes(this.keyword);
+        return v.data.name && v.data.name.includes(this.keyword);
       } // 过滤节点
 
     }, {
