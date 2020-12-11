@@ -11,7 +11,11 @@ export default class TreeStore {
 
     this.dataMap = new Map()
 
+    // 当前选中节点
     this.radioMap = {}
+
+    // 当前展开节点
+    this.expandMap = {}
 
     this.root = new Node({
       data: this.data,

@@ -263,14 +263,16 @@
           passive: false
         });
         return tpl;
-      }
+      } // 叶子节点-无需展开
+
     }, {
       key: "createExpandEmpty",
       value: function createExpandEmpty() {
         var dom = document.createElement('span');
         dom.className = 'expand-empty';
         return dom;
-      }
+      } // 有子元素-需要展开
+
     }, {
       key: "createExpand",
       value: function createExpand() {
@@ -527,6 +529,7 @@
 
         this.expanded = expand;
         this.updateExpand(this.expanded);
+        this.setAccordion(expand);
 
         if (this.store.lazy && !this.loaded) {
           this.loadData(function (data) {
@@ -536,6 +539,25 @@
           });
         } else {
           this.store.update();
+        }
+      } // 更新手风琴状态
+
+    }, {
+      key: "setAccordion",
+      value: function setAccordion(expand) {
+        if (this.store.accordion && this.parent && expand) {
+          var preExpand = this.store.expandMap[this.parent.id];
+          if (preExpand === this) return;
+
+          if (preExpand) {
+            preExpand.setExpand(false);
+
+            if (preExpand.expandEl) {
+              preExpand.expandEl.classList.remove('expanded');
+            }
+          }
+
+          this.store.expandMap[this.parent.id] = this;
         }
       } // 加载数据
 
@@ -632,8 +654,11 @@
       }
 
       this.nodes = [];
-      this.dataMap = new Map();
-      this.radioMap = {};
+      this.dataMap = new Map(); // 当前选中节点
+
+      this.radioMap = {}; // 当前展开节点
+
+      this.expandMap = {};
       this.root = new Node({
         data: this.data,
         store: this
@@ -1255,10 +1280,15 @@
       this.store = new TreeStore({
         data: ops.data,
         max: ops.max,
-        lazy: ops.lazy || false,
-        sort: ops.sort || false,
         showLine: ops.showLine || false,
         // 是否显示连接线
+        showCheckbox: ops.showCheckbox || false,
+        showRadio: ops.showRadio || false,
+        highlightCurrent: ops.highlightCurrent || false,
+        accordion: ops.accordion || false,
+        // 手风琴模式
+        lazy: ops.lazy || false,
+        sort: ops.sort || false,
         indent: ops.indent || 10,
         checkedKeys: ops.checkedKeys || [],
         expandKeys: ops.expandKeys || [],
@@ -1269,9 +1299,6 @@
         // 复选框被点击时出发
         change: ops.change || noop,
         load: ops.load || noop,
-        highlightCurrent: ops.highlightCurrent || false,
-        showCheckbox: ops.showCheckbox || false,
-        showRadio: ops.showRadio || false,
         radioParentoOnly: ops.radioParentoOnly || false,
         // 每个父节点下唯一，仅raido模式有效
         renderContent: ops.renderContent || null,

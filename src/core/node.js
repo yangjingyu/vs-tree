@@ -153,12 +153,14 @@ export default class Node {
     return tpl
   }
 
+  // 叶子节点-无需展开
   createExpandEmpty () {
     const dom = document.createElement('span')
     dom.className = 'expand-empty'
     return dom
   }
 
+  // 有子元素-需要展开
   createExpand () {
     const dom = document.createElement('span')
     dom.className = 'expand'
@@ -375,6 +377,8 @@ export default class Node {
   setExpand (expand) {
     this.expanded = expand
     this.updateExpand(this.expanded)
+    this.setAccordion(expand)
+
     if (this.store.lazy && !this.loaded) {
       this.loadData((data) => {
         if (data) {
@@ -383,6 +387,21 @@ export default class Node {
       })
     } else {
       this.store.update()
+    }
+  }
+
+  // 更新手风琴状态
+  setAccordion (expand) {
+    if (this.store.accordion && this.parent && expand) {
+      const preExpand = this.store.expandMap[this.parent.id]
+      if (preExpand === this) return
+      if (preExpand) {
+        preExpand.setExpand(false)
+        if (preExpand.expandEl) {
+          preExpand.expandEl.classList.remove('expanded')
+        }
+      }
+      this.store.expandMap[this.parent.id] = this
     }
   }
 

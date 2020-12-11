@@ -35,9 +35,13 @@ export default class Tree {
     this.store = new TreeStore({
       data: ops.data,
       max: ops.max,
+      showLine: ops.showLine || false, // 是否显示连接线
+      showCheckbox: ops.showCheckbox || false,
+      showRadio: ops.showRadio || false,
+      highlightCurrent: ops.highlightCurrent || false,
+      accordion: ops.accordion || false, // 手风琴模式
       lazy: ops.lazy || false,
       sort: ops.sort || false,
-      showLine: ops.showLine || false, // 是否显示连接线
       indent: ops.indent || 10,
       checkedKeys: ops.checkedKeys || [],
       expandKeys: ops.expandKeys || [],
@@ -47,9 +51,6 @@ export default class Tree {
       check: ops.check || noop, // 复选框被点击时出发
       change: ops.change || noop,
       load: ops.load || noop,
-      highlightCurrent: ops.highlightCurrent || false,
-      showCheckbox: ops.showCheckbox || false,
-      showRadio: ops.showRadio || false,
       radioParentoOnly: ops.radioParentoOnly || false, // 每个父节点下唯一，仅raido模式有效
       renderContent: ops.renderContent || null,
       nocheckParent: ops.nocheckParent || false, // 只允许叶子节点选中
