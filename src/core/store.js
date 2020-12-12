@@ -87,8 +87,6 @@ export default class TreeStore {
 
     const len = this.getCheckedNodes().length
 
-    console.log(len, this.getUnCheckLeafsCount(node))
-
     if (!node.checked && len + (node.isLeaf ? 1 : this.getUnCheckLeafsCount(node)) > this.max) {
       return true
     }

@@ -14,9 +14,14 @@ export default class Tree {
       }
     })
     this.$options = obj
-    this.$el = document.querySelector(selector)
 
-    if (!this.$el) {
+    if (typeof selector === 'string') {
+      this.$el = document.querySelector(selector)
+    } else {
+      this.$el = selector
+    }
+
+    if (!(this.$el instanceof HTMLElement)) {
       throw Error('请为组件提供根节点')
     }
     this.$el.classList.add = 'vs-tree'
@@ -28,7 +33,7 @@ export default class Tree {
         children: ops.data
       }
       if (!ops.rootName) {
-        ops.showRoot = false
+        ops.hideRoot = true
       }
     } else if (typeof ops.data === 'object') {
       this._data = ops.data
@@ -52,6 +57,7 @@ export default class Tree {
     this.store = new TreeStore({
       data: this._data,
       max: ops.max,
+      hideRoot: ops.hideRoot,
       expandLevel: typeof ops.expandLevel === 'number' ? ops.expandLevel : 1, // 默认展开1级节点
       beforeCheck: ops.beforeCheck || null,
       showLine: ops.showLine || false, // 是否显示连接线
@@ -91,8 +97,7 @@ export default class Tree {
 
     this.store.setData(this._data)
 
-    if (typeof ops.showRoot === 'boolean' && !ops.showRoot) {
-      this.store.hideRoot = true
+    if (this.store.hideRoot) {
       // 跟节点创建dom
       this.store.root.createNode()
     }

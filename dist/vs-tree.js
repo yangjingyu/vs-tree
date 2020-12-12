@@ -44,6 +44,55 @@
     return Constructor;
   }
 
+  function _defineProperty(obj, key, value) {
+    if (key in obj) {
+      Object.defineProperty(obj, key, {
+        value: value,
+        enumerable: true,
+        configurable: true,
+        writable: true
+      });
+    } else {
+      obj[key] = value;
+    }
+
+    return obj;
+  }
+
+  function ownKeys(object, enumerableOnly) {
+    var keys = Object.keys(object);
+
+    if (Object.getOwnPropertySymbols) {
+      var symbols = Object.getOwnPropertySymbols(object);
+      if (enumerableOnly) symbols = symbols.filter(function (sym) {
+        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+      });
+      keys.push.apply(keys, symbols);
+    }
+
+    return keys;
+  }
+
+  function _objectSpread2(target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i] != null ? arguments[i] : {};
+
+      if (i % 2) {
+        ownKeys(Object(source), true).forEach(function (key) {
+          _defineProperty(target, key, source[key]);
+        });
+      } else if (Object.getOwnPropertyDescriptors) {
+        Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+      } else {
+        ownKeys(Object(source)).forEach(function (key) {
+          Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+        });
+      }
+    }
+
+    return target;
+  }
+
   function _toConsumableArray(arr) {
     return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
   }
@@ -806,7 +855,6 @@
         }
 
         var len = this.getCheckedNodes().length;
-        console.log(len, this.getUnCheckLeafsCount(node));
 
         if (!node.checked && len + (node.isLeaf ? 1 : this.getUnCheckLeafsCount(node)) > this.max) {
           return true;
@@ -1339,9 +1387,14 @@
         }
       });
       this.$options = obj;
-      this.$el = document.querySelector(selector);
 
-      if (!this.$el) {
+      if (typeof selector === 'string') {
+        this.$el = document.querySelector(selector);
+      } else {
+        this.$el = selector;
+      }
+
+      if (!(this.$el instanceof HTMLElement)) {
         throw Error('请为组件提供根节点');
       }
 
@@ -1355,7 +1408,7 @@
         };
 
         if (!ops.rootName) {
-          ops.showRoot = false;
+          ops.hideRoot = true;
         }
       } else if (_typeof(ops.data) === 'object') {
         this._data = ops.data;
@@ -1378,6 +1431,7 @@
       this.store = new TreeStore({
         data: this._data,
         max: ops.max,
+        hideRoot: ops.hideRoot,
         expandLevel: typeof ops.expandLevel === 'number' ? ops.expandLevel : 1,
         // 默认展开1级节点
         beforeCheck: ops.beforeCheck || null,
@@ -1424,9 +1478,8 @@
       });
       this.store.setData(this._data);
 
-      if (typeof ops.showRoot === 'boolean' && !ops.showRoot) {
-        this.store.hideRoot = true; // 跟节点创建dom
-
+      if (this.store.hideRoot) {
+        // 跟节点创建dom
         this.store.root.createNode();
       }
 
@@ -1489,9 +1542,108 @@
     return Tree;
   }();
 
-  var version$1 = version;
+  var plugin = (function (VsTree) {
+    return function (Vue) {
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      Vue.component('vs-tree', {
+        template: '<div ref="tree" id="tree"></div>',
+        props: {
+          data: Array | Object,
+          options: Object,
+          hideRoot: Boolean,
+          showCheckbox: Boolean,
+          showRadio: Boolean,
+          radioParentoOnly: Boolean,
+          showLine: Boolean,
+          showIcon: Boolean,
+          onlyShowLeafIcon: Boolean,
+          highlightCurrent: Boolean,
+          accordion: Boolean,
+          nocheckParent: Boolean,
+          sort: Boolean,
+          checkOnClickNode: Boolean,
+          checkFilterLeaf: Boolean,
+          rootName: String,
+          max: Number,
+          lazy: Boolean,
+          load: Function,
+          format: Function,
+          disabledKeys: Array,
+          checkedKeys: Array,
+          expandKeys: Array,
+          expandLevel: {
+            type: Number,
+            default: 1
+          },
+          indent: {
+            type: Number,
+            default: 10
+          },
+          showCount: {
+            type: Number,
+            default: 20
+          },
+          itemHeight: {
+            type: Number,
+            default: 26
+          },
+          beforeCheck: Function,
+          renderContent: Function,
+          checkFilter: Function
+        },
+        data: function data() {
+          return {
+            tree: {}
+          };
+        },
+        mounted: function mounted() {
+          this._vsinit();
+        },
+        methods: {
+          _vsinit: function _vsinit() {
+            var _this = this;
+
+            console.time('render:tree');
+            this.tree.tree = new VsTree(this.$refs.tree, Object.assign({}, options, this.$props, _objectSpread2(_objectSpread2({}, this.options), {}, {
+              data: this.data,
+              click: function click(event, node) {
+                _this.$emit('click', event, node);
+              },
+              check: function check(event, node) {
+                _this.$emit('check', event, node);
+              },
+              change: function change(node) {
+                _this.$emit('change', node);
+              },
+              contextmenu: function contextmenu(event, node) {
+                _this.$emit('node-contextmenu', event, node);
+              },
+              limitAlert: function limitAlert() {
+                _this.$emit('limit-alert');
+              }
+            })));
+            console.timeEnd('render:tree');
+          },
+          getNodeById: function getNodeById(id) {
+            return this.tree.tree.getNodeById(id);
+          },
+          getCheckedNodes: function getCheckedNodes() {
+            return this.tree.tree.getCheckedNodes();
+          },
+          filter: function filter(value) {
+            return this.tree.tree.filter(value);
+          }
+        }
+      });
+    };
+  });
+
+  var version$1 = version; // Vue 插件
+
+  var install = plugin(Tree);
 
   exports.default = Tree;
+  exports.install = install;
   exports.version = version$1;
 
   Object.defineProperty(exports, '__esModule', { value: true });

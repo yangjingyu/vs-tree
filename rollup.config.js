@@ -19,12 +19,18 @@ if (!isDev) {
 
 export default {
   input: 'src/main.js',
-  output: {
-    file: 'dist/vs-tree.js',
-    format: 'umd',
-    name: 'vsTree',
-    exports: 'named'
-  },
+  output: [
+    {
+      file: 'dist/vs-tree.esm.browser.js',
+      format: "es"
+    },
+    {
+      file: 'dist/vs-tree.js',
+      format: 'umd',
+      name: 'vsTree',
+      exports: 'named'
+    }
+  ],
   plugins: [
     json(),
     commonjs(),
