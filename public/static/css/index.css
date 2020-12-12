@@ -1,3 +1,8 @@
+.menu a {
+  line-height: 30px;
+  color: #2a8ae2;
+}
+
 .box {
   height: 400px;
   display: flex;
