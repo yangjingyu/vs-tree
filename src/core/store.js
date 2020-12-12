@@ -56,7 +56,7 @@ export default class TreeStore {
 
   // 获取选中节点
   getCheckedNodes () {
-    const nodes = this.nodes.filter(v => v.checked && !v.data._vsroot && (!this.nocheckParent || !v.childNodes.length))
+    const nodes = this.nodes.filter(v => v.checked && !v.data._vsroot && this._checkVerify(v) && (!this.nocheckParent || !v.childNodes.length))
     if (this.sort) {
       return nodes.sort((a, b) => a.sortId - b.sortId).map(v => v.data)
     }
@@ -81,14 +81,36 @@ export default class TreeStore {
       return false
     }
 
-    const len = this.getCheckedNodes().length
-    if (len > this.max) {
+    if (!node.checked && node.hasChildCount > this.max) {
       return true
     }
 
-    if (node.childNodes.length > this.max) {
+    const len = this.getCheckedNodes().length
+
+    console.log(len, this.getUnCheckLeafsCount(node))
+
+    if (!node.checked && len + (node.isLeaf ? 1 : this.getUnCheckLeafsCount(node)) > this.max) {
       return true
     }
+
     return false
+  }
+
+  getUnCheckLeafsCount (node) {
+    let count = this._checkVerify(node) && !node.checked ? 1 : 0
+    node.childNodes.forEach(v => {
+      count += this.getUnCheckLeafsCount(v)
+    })
+    return count
+  }
+
+  _checkVerify (node) {
+    if (typeof this.checkFilter === 'function') {
+      return this.checkFilter(node)
+    } else if (this.checkFilterLeaf) {
+      return node.isLeaf
+    } else {
+      return true
+    }
   }
 }

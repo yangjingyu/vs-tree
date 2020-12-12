@@ -52,6 +52,7 @@ export default class Tree {
     this.store = new TreeStore({
       data: this._data,
       max: ops.max,
+      expandLevel: typeof ops.expandLevel === 'number' ? ops.expandLevel : 1, // 默认展开1级节点
       beforeCheck: ops.beforeCheck || null,
       showLine: ops.showLine || false, // 是否显示连接线
       showIcon: ops.showIcon || false,
@@ -59,6 +60,8 @@ export default class Tree {
       showCheckbox: ops.showCheckbox || false,
       showRadio: ops.showRadio || false,
       highlightCurrent: ops.highlightCurrent || false,
+      checkFilterLeaf: ops.checkFilterLeaf || false, // 过滤非叶子节点
+      checkFilter: ops.checkFilter || null, // 过滤选中节点
       accordion: ops.accordion || false, // 手风琴模式
       lazy: ops.lazy || false,
       sort: ops.sort || false,

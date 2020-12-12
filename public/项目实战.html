@@ -48,9 +48,9 @@
       tree = new vsTree.default('#tree', {
         data: data[0],
         showCheckbox: true,
-        beforeCheck: function(node) {
-          console.log(node);
-          return true
+        max: 988,
+        checkFilter: function (node) {
+          return node.isLeaf
         },
         limitAlert: function() {
           alert('超过最大可选')
@@ -75,11 +75,13 @@
           if (node.data.obj !== 'department') {
             return false
           }
+          const count = getCount(umap, node)
+          node.hasChildCount = count
           return h("div", {
             className: "tree-action",
             children: [
               h("span", {
-                text: `（${getCount(umap, node)}）`
+                text: `（${count}）`
               })
             ]
           })

@@ -139,7 +139,7 @@
       value: function initData() {
         var _this$parent;
 
-        if (this.level > 1 && !((_this$parent = this.parent) !== null && _this$parent !== void 0 && _this$parent.expanded)) {
+        if (this.level > this.store.expandLevel && this.store.expandLevel !== -1 && !((_this$parent = this.parent) !== null && _this$parent !== void 0 && _this$parent.expanded)) {
           this.visbile = false;
           return;
         }
@@ -300,7 +300,7 @@
         var dom = document.createElement('span');
         dom.className = 'expand';
 
-        if (this.level < 1 || this.expanded) {
+        if (this.level < this.store.expandLevel || this.store.expandLevel === -1 || this.expanded) {
           dom.classList.add('expanded');
           this.expanded = true;
         }
@@ -430,6 +430,8 @@
 
         if (typeof data.isLeaf === 'boolean') {
           this.isLeaf = data.isLeaf;
+        } else if (!data.children && !this.store.lazy) {
+          this.isLeaf = true;
         }
 
         var children;
@@ -760,7 +762,7 @@
         var _this = this;
 
         var nodes = this.nodes.filter(function (v) {
-          return v.checked && !v.data._vsroot && (!_this.nocheckParent || !v.childNodes.length);
+          return v.checked && !v.data._vsroot && _this._checkVerify(v) && (!_this.nocheckParent || !v.childNodes.length);
         });
 
         if (this.sort) {
@@ -799,17 +801,40 @@
           return false;
         }
 
-        var len = this.getCheckedNodes().length;
-
-        if (len > this.max) {
+        if (!node.checked && node.hasChildCount > this.max) {
           return true;
         }
 
-        if (node.childNodes.length > this.max) {
+        var len = this.getCheckedNodes().length;
+        console.log(len, this.getUnCheckLeafsCount(node));
+
+        if (!node.checked && len + (node.isLeaf ? 1 : this.getUnCheckLeafsCount(node)) > this.max) {
           return true;
         }
 
         return false;
+      }
+    }, {
+      key: "getUnCheckLeafsCount",
+      value: function getUnCheckLeafsCount(node) {
+        var _this3 = this;
+
+        var count = this._checkVerify(node) && !node.checked ? 1 : 0;
+        node.childNodes.forEach(function (v) {
+          count += _this3.getUnCheckLeafsCount(v);
+        });
+        return count;
+      }
+    }, {
+      key: "_checkVerify",
+      value: function _checkVerify(node) {
+        if (typeof this.checkFilter === 'function') {
+          return this.checkFilter(node);
+        } else if (this.checkFilterLeaf) {
+          return node.isLeaf;
+        } else {
+          return true;
+        }
       }
     }]);
 
@@ -1353,6 +1378,8 @@
       this.store = new TreeStore({
         data: this._data,
         max: ops.max,
+        expandLevel: typeof ops.expandLevel === 'number' ? ops.expandLevel : 1,
+        // 默认展开1级节点
         beforeCheck: ops.beforeCheck || null,
         showLine: ops.showLine || false,
         // 是否显示连接线
@@ -1361,6 +1388,10 @@
         showCheckbox: ops.showCheckbox || false,
         showRadio: ops.showRadio || false,
         highlightCurrent: ops.highlightCurrent || false,
+        checkFilterLeaf: ops.checkFilterLeaf || false,
+        // 过滤非叶子节点
+        checkFilter: ops.checkFilter || null,
+        // 过滤选中节点
         accordion: ops.accordion || false,
         // 手风琴模式
         lazy: ops.lazy || false,

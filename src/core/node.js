@@ -53,7 +53,7 @@ export default class Node {
   }
 
   initData () {
-    if (this.level > 1 && !(this.parent?.expanded)) {
+    if (this.level > this.store.expandLevel && this.store.expandLevel !== -1 && !(this.parent?.expanded)) {
       this.visbile = false
       return
     }
@@ -186,7 +186,7 @@ export default class Node {
     const dom = document.createElement('span')
     dom.className = 'expand'
 
-    if (this.level < 1 || this.expanded) {
+    if (this.level < this.store.expandLevel || this.store.expandLevel === -1 || this.expanded) {
       dom.classList.add('expanded')
       this.expanded = true
     }
@@ -302,6 +302,8 @@ export default class Node {
 
     if (typeof data.isLeaf === 'boolean') {
       this.isLeaf = data.isLeaf
+    } else if (!data.children && !this.store.lazy) {
+      this.isLeaf = true
     }
 
     let children
