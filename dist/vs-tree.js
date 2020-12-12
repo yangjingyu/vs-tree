@@ -374,7 +374,14 @@
       value: function handleCheckChange(e) {
         var checked = e.target.checked;
 
-        if (checked && this.store.max && this.store.checkMaxNodes(this)) {
+        if (typeof this.store.beforeCheck === 'function') {
+          if (!this.store.beforeCheck(this)) {
+            e.target.checked = !checked;
+            return;
+          }
+        }
+
+        if (checked && this.store.checkMaxNodes(this)) {
           this.store.limitAlert();
           e.target.checked = false;
           return;
@@ -788,6 +795,10 @@
     }, {
       key: "checkMaxNodes",
       value: function checkMaxNodes(node) {
+        if (!this.max) {
+          return false;
+        }
+
         var len = this.getCheckedNodes().length;
 
         if (len > this.max) {
@@ -1342,6 +1353,7 @@
       this.store = new TreeStore({
         data: this._data,
         max: ops.max,
+        beforeCheck: ops.beforeCheck || null,
         showLine: ops.showLine || false,
         // 是否显示连接线
         showIcon: ops.showIcon || false,

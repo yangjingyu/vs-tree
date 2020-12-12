@@ -251,7 +251,15 @@ export default class Node {
 
   handleCheckChange (e) {
     const checked = e.target.checked
-    if (checked && this.store.max && this.store.checkMaxNodes(this)) {
+
+    if (typeof this.store.beforeCheck === 'function') {
+      if (!this.store.beforeCheck(this)) {
+        e.target.checked = !checked
+        return
+      }
+    }
+
+    if (checked && this.store.checkMaxNodes(this)) {
       this.store.limitAlert()
       e.target.checked = false
       return

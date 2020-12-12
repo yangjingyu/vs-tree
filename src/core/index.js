@@ -52,6 +52,7 @@ export default class Tree {
     this.store = new TreeStore({
       data: this._data,
       max: ops.max,
+      beforeCheck: ops.beforeCheck || null,
       showLine: ops.showLine || false, // 是否显示连接线
       showIcon: ops.showIcon || false,
       onlyShowLeafIcon: ops.onlyShowLeafIcon || false,

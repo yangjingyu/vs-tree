@@ -77,6 +77,10 @@ export default class TreeStore {
 
   // 验证是否已经选到最大
   checkMaxNodes (node) {
+    if (!this.max) {
+      return false
+    }
+
     const len = this.getCheckedNodes().length
     if (len > this.max) {
       return true
