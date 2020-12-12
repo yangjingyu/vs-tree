@@ -195,7 +195,7 @@ export default class Node {
       e.stopPropagation()
       if (this.loading) return
       const expand = !dom.classList.contains('expanded')
-      dom.classList.toggle('expanded')
+      // dom.classList.toggle('expanded')
       this.setExpand(expand)
     }, {
       passive: false
@@ -419,19 +419,27 @@ export default class Node {
   }
 
   // 设置默认展开
-  setExpand (expand) {
+  setExpand (expand, noUpdate) {
     this.expanded = expand
     this.updateExpand(this.expanded)
     this.setAccordion(expand)
 
+    if (this.expandEl) {
+      if (expand) {
+        this.expandEl.classList.add('expanded')
+      } else {
+        this.expandEl.classList.remove('expanded')
+      }
+    }
+
     if (this.store.lazy && !this.loaded) {
       this.loadData((data) => {
         if (data) {
-          this.store.update()
+          !noUpdate && this.store.update()
         }
       })
     } else {
-      this.store.update()
+      !noUpdate && this.store.update()
     }
   }
 
@@ -442,9 +450,6 @@ export default class Node {
       if (preExpand === this) return
       if (preExpand) {
         preExpand.setExpand(false)
-        if (preExpand.expandEl) {
-          preExpand.expandEl.classList.remove('expanded')
-        }
       }
       this.store.expandMap[this.parent.id] = this
     }

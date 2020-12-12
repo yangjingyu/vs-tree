@@ -30,22 +30,22 @@ export default class TreeStore {
 
   // 更新节点列表
   updateNodes () {
-    this.nodes = this.getAllNodes()
+    this.nodes = this.flattenTreeData()
     this.nodesChange(this.nodes)
   }
 
   // 获取节点列表
-  getAllNodes () {
+  flattenTreeData () {
     const nodes = []
-    const expand = (val) => {
+    const dig = (val) => {
       nodes.push(val)
       if (val.childNodes && val.childNodes.length) {
         val.childNodes.forEach(element => {
-          expand(element)
+          dig(element)
         })
       }
     }
-    expand(this.root)
+    dig(this.root)
     return nodes
   }
 

@@ -122,13 +122,25 @@ export default class Tree {
   render () {
     this.data = this.nodes.filter(v => {
       // 过滤隐藏节点 ｜ 隐藏root节点
-      return v.visbile && !(this.store.hideRoot && v.level === 0) && this.hasKeyword(v)
+      return this.hasKeyword(v) && v.visbile && !(this.store.hideRoot && v.level === 0)
     })
     this.vlist.update(this.data)
   }
 
+  // TODO:
   hasKeyword (v) {
-    return v.data.name && v.data.name.includes(this.keyword)
+    if (!this.keyword) return true
+    let boo = v.data.name && v.data.name.includes(this.keyword)
+    if (!boo) {
+      v.childNodes.forEach(node => {
+        if (!boo) {
+          boo = this.hasKeyword(node)
+        }
+      })
+    } else {
+      v.parent && v.parent.setExpand(true, true)
+    }
+    return boo
   }
 
   // 过滤节点

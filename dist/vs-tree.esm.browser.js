@@ -351,8 +351,7 @@ var Node = /*#__PURE__*/function () {
       dom.addEventListener('click', function (e) {
         e.stopPropagation();
         if (_this4.loading) return;
-        var expand = !dom.classList.contains('expanded');
-        dom.classList.toggle('expanded');
+        var expand = !dom.classList.contains('expanded'); // dom.classList.toggle('expanded')
 
         _this4.setExpand(expand);
       }, {
@@ -612,21 +611,29 @@ var Node = /*#__PURE__*/function () {
 
   }, {
     key: "setExpand",
-    value: function setExpand(expand) {
+    value: function setExpand(expand, noUpdate) {
       var _this7 = this;
 
       this.expanded = expand;
       this.updateExpand(this.expanded);
       this.setAccordion(expand);
 
+      if (this.expandEl) {
+        if (expand) {
+          this.expandEl.classList.add('expanded');
+        } else {
+          this.expandEl.classList.remove('expanded');
+        }
+      }
+
       if (this.store.lazy && !this.loaded) {
         this.loadData(function (data) {
           if (data) {
-            _this7.store.update();
+            !noUpdate && _this7.store.update();
           }
         });
       } else {
-        this.store.update();
+        !noUpdate && this.store.update();
       }
     } // 更新手风琴状态
 
@@ -639,10 +646,6 @@ var Node = /*#__PURE__*/function () {
 
         if (preExpand) {
           preExpand.setExpand(false);
-
-          if (preExpand.expandEl) {
-            preExpand.expandEl.classList.remove('expanded');
-          }
         }
 
         this.store.expandMap[this.parent.id] = this;
@@ -770,26 +773,26 @@ var TreeStore = /*#__PURE__*/function () {
   }, {
     key: "updateNodes",
     value: function updateNodes() {
-      this.nodes = this.getAllNodes();
+      this.nodes = this.flattenTreeData();
       this.nodesChange(this.nodes);
     } // 获取节点列表
 
   }, {
-    key: "getAllNodes",
-    value: function getAllNodes() {
+    key: "flattenTreeData",
+    value: function flattenTreeData() {
       var nodes = [];
 
-      var expand = function expand(val) {
+      var dig = function dig(val) {
         nodes.push(val);
 
         if (val.childNodes && val.childNodes.length) {
           val.childNodes.forEach(function (element) {
-            expand(element);
+            dig(element);
           });
         }
       };
 
-      expand(this.root);
+      dig(this.root);
       return nodes;
     } // 根据ID获取节点
 
@@ -1501,14 +1504,30 @@ var Tree = /*#__PURE__*/function () {
 
       this.data = this.nodes.filter(function (v) {
         // 过滤隐藏节点 ｜ 隐藏root节点
-        return v.visbile && !(_this2.store.hideRoot && v.level === 0) && _this2.hasKeyword(v);
+        return _this2.hasKeyword(v) && v.visbile && !(_this2.store.hideRoot && v.level === 0);
       });
       this.vlist.update(this.data);
-    }
+    } // TODO:
+
   }, {
     key: "hasKeyword",
     value: function hasKeyword(v) {
-      return v.data.name && v.data.name.includes(this.keyword);
+      var _this3 = this;
+
+      if (!this.keyword) return true;
+      var boo = v.data.name && v.data.name.includes(this.keyword);
+
+      if (!boo) {
+        v.childNodes.forEach(function (node) {
+          if (!boo) {
+            boo = _this3.hasKeyword(node);
+          }
+        });
+      } else {
+        v.parent && v.parent.setExpand(true, true);
+      }
+
+      return boo;
     } // 过滤节点
 
   }, {
