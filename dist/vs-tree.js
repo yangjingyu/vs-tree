@@ -126,6 +126,16 @@
     throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
   }
 
+  function insterAfter(newElement, targetElement) {
+    var parent = targetElement.parentNode;
+
+    if (parent.lastChild == targetElement) {
+      parent.appendChild(newElement);
+    } else {
+      parent.insertBefore(newElement, targetElement.nextSibling);
+    }
+  }
+
   var setepId = 0;
 
   var Node = /*#__PURE__*/function () {
@@ -635,12 +645,64 @@
         if (this.store.lazy && !this.loaded) {
           this.loadData(function (data) {
             if (data) {
-              !noUpdate && _this7.store.update();
+              !noUpdate && _this7.storeUpdate();
             }
           });
         } else {
-          !noUpdate && this.store.update();
+          !noUpdate && this.storeUpdate();
         }
+      }
+    }, {
+      key: "storeUpdate",
+      value: function storeUpdate() {
+        if (this.store.animation) {
+          this.createAnimation();
+        } else {
+          this.store.update();
+        }
+      } // 创建动画
+
+    }, {
+      key: "createAnimation",
+      value: function createAnimation() {
+        var _this8 = this;
+
+        var tg = document.createElement('div');
+        tg.className = 'vs-transition';
+
+        if (this.childNodes.length > this.store.showCount) {
+          for (var i = 0; i < this.store.showCount - 1; i++) {
+            var _v = this.childNodes[i];
+            tg.appendChild(_v.dom || _v.createNode());
+          }
+        } else {
+          this.childNodes.forEach(function (_v) {
+            tg.appendChild(_v.dom || _v.createNode());
+          });
+        }
+
+        insterAfter(tg, this.dom);
+        var animatHeight = this.childNodes.length * this.store.itemHeight + 'px';
+
+        if (this.expanded) {
+          setTimeout(function () {
+            tg.style.height = animatHeight;
+          }, 0);
+        } else {
+          tg.style.height = animatHeight;
+          setTimeout(function () {
+            tg.style.height = 0;
+          }, 0);
+        }
+
+        var transend = function transend() {
+          tg.removeEventListener('transitionend', transend);
+          tg.parentNode && tg.parentNode.removeChild(tg);
+
+          _this8.store.update();
+        };
+
+        tg.addEventListener('transitionend', transend);
       } // 更新手风琴状态
 
     }, {
@@ -661,7 +723,7 @@
     }, {
       key: "loadData",
       value: function loadData(callback) {
-        var _this8 = this;
+        var _this9 = this;
 
         if (this.loading) return;
         this.loading = true;
@@ -672,28 +734,28 @@
 
         var resolve = function resolve() {
           var children = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-          _this8.loaded = true;
-          _this8.loading = false;
+          _this9.loaded = true;
+          _this9.loading = false;
 
-          if (_this8.expandEl) {
-            _this8.expandEl.classList.remove('is-loading');
+          if (_this9.expandEl) {
+            _this9.expandEl.classList.remove('is-loading');
           }
 
           if (children.length) {
             children.forEach(function (data) {
-              _this8.insertChild({
+              _this9.insertChild({
                 data: data,
-                store: _this8.store
+                store: _this9.store
               });
             });
 
-            _this8.childNodes[0].updateCheckedParent();
+            _this9.childNodes[0].updateCheckedParent();
 
-            _this8.store.updateNodes();
+            _this9.store.updateNodes();
           }
 
           if (callback) {
-            callback.call(_this8, children);
+            callback.call(_this9, children);
           }
         };
 
@@ -703,13 +765,13 @@
     }, {
       key: "remove",
       value: function remove() {
-        var _this9 = this;
+        var _this10 = this;
 
         var parent = this.parent;
         if (!parent) return;
         var children = parent.childNodes || [];
         var index = children.findIndex(function (d) {
-          return d.id === _this9.id;
+          return d.id === _this10.id;
         });
 
         if (index > -1) {
@@ -1434,7 +1496,10 @@
       this.store = new TreeStore({
         data: this._data,
         max: ops.max,
-        hideRoot: ops.hideRoot,
+        showCount: this.showCount,
+        itemHeight: this.itemHeight,
+        hideRoot: ops.hideRoot || false,
+        animation: ops.animation || false,
         expandLevel: typeof ops.expandLevel === 'number' ? ops.expandLevel : 1,
         // 默认展开1级节点
         beforeCheck: ops.beforeCheck || null,
@@ -1577,6 +1642,7 @@
         props: {
           data: Array | Object,
           options: Object,
+          animation: Boolean,
           hideRoot: Boolean,
           showCheckbox: Boolean,
           showRadio: Boolean,

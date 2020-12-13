@@ -17,6 +17,7 @@
 | radioParentoOnly | 每个父节点下唯一                                     | Boolean               | false   |
 | highlightCurrent | 是否高亮选中当前项                                   | Boolean               | false   |
 | accordion        | 手风琴模式                                           | Boolean               | false   |
+| animation        | 开启动画                                           | Boolean               | false   |
 | nocheckParent    | 禁止父节点选中                                       | Boolean               | false   |
 | sort             | 对选中列表排序                                       | Boolean               | false   |
 | checkOnClickNode | 是否在点击节点的时候选中节点                         | Boolean               | false   |

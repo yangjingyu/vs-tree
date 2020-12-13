@@ -57,7 +57,10 @@ export default class Tree {
     this.store = new TreeStore({
       data: this._data,
       max: ops.max,
-      hideRoot: ops.hideRoot,
+      showCount: this.showCount,
+      itemHeight: this.itemHeight,
+      hideRoot: ops.hideRoot || false,
+      animation: ops.animation || false,
       expandLevel: typeof ops.expandLevel === 'number' ? ops.expandLevel : 1, // 默认展开1级节点
       beforeCheck: ops.beforeCheck || null,
       showLine: ops.showLine || false, // 是否显示连接线

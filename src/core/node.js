@@ -1,4 +1,5 @@
 
+import { insterAfter } from './utils'
 let setepId = 0
 
 export default class Node {
@@ -435,12 +436,59 @@ export default class Node {
     if (this.store.lazy && !this.loaded) {
       this.loadData((data) => {
         if (data) {
-          !noUpdate && this.store.update()
+          !noUpdate && this.storeUpdate()
         }
       })
     } else {
-      !noUpdate && this.store.update()
+      !noUpdate && this.storeUpdate()
     }
+  }
+
+  storeUpdate () {
+    if (this.store.animation) {
+      this.createAnimation()
+    } else {
+      this.store.update()
+    }
+  }
+
+  // 创建动画
+  createAnimation () {
+    const tg = document.createElement('div')
+    tg.className = 'vs-transition'
+
+    if (this.childNodes.length > this.store.showCount) {
+      for (let i = 0; i < this.store.showCount - 1; i++) {
+        const _v = this.childNodes[i]
+        tg.appendChild(_v.dom || _v.createNode())
+      }
+    } else {
+      this.childNodes.forEach((_v) => {
+        tg.appendChild(_v.dom || _v.createNode())
+      })
+    }
+
+    insterAfter(tg, this.dom)
+
+    const animatHeight = (this.childNodes.length * this.store.itemHeight) + 'px'
+    if (this.expanded) {
+      setTimeout(() => {
+        tg.style.height = animatHeight
+      }, 0)
+    } else {
+      tg.style.height = animatHeight
+      setTimeout(() => {
+        tg.style.height = 0
+      }, 0)
+    }
+
+    const transend = () => {
+      tg.removeEventListener('transitionend', transend)
+      tg.parentNode && tg.parentNode.removeChild(tg)
+      this.store.update()
+    }
+
+    tg.addEventListener('transitionend', transend)
   }
 
   // 更新手风琴状态

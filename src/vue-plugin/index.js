@@ -5,6 +5,7 @@ export default (VsTree) => {
       props: {
         data: Array | Object,
         options: Object,
+        animation: Boolean,
         hideRoot: Boolean,
         showCheckbox: Boolean,
         showRadio: Boolean,
