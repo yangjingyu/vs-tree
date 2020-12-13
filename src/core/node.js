@@ -454,6 +454,7 @@ export default class Node {
 
   // 创建动画
   createAnimation () {
+    this.transitionNode && this.transitionNode.parentNode && this.transitionNode.parentNode.removeChild(this.transitionNode)
     const tg = document.createElement('div')
     tg.className = 'vs-transition'
 
@@ -470,7 +471,7 @@ export default class Node {
 
     insterAfter(tg, this.dom)
 
-    const animatHeight = (this.childNodes.length * this.store.itemHeight) + 'px'
+    const animatHeight = ((this.childNodes.length > this.store.showCount ? this.store.showCount : this.childNodes.length) * this.store.itemHeight) + 'px'
     if (this.expanded) {
       setTimeout(() => {
         tg.style.height = animatHeight
@@ -485,10 +486,13 @@ export default class Node {
     const transend = () => {
       tg.removeEventListener('transitionend', transend)
       tg.parentNode && tg.parentNode.removeChild(tg)
+      tg.removeEventListener('transitionend', transend)
       this.store.update()
     }
 
     tg.addEventListener('transitionend', transend)
+
+    this.transitionNode = tg
   }
 
   // 更新手风琴状态

@@ -667,6 +667,7 @@
       value: function createAnimation() {
         var _this8 = this;
 
+        this.transitionNode && this.transitionNode.parentNode && this.transitionNode.parentNode.removeChild(this.transitionNode);
         var tg = document.createElement('div');
         tg.className = 'vs-transition';
 
@@ -682,7 +683,7 @@
         }
 
         insterAfter(tg, this.dom);
-        var animatHeight = this.childNodes.length * this.store.itemHeight + 'px';
+        var animatHeight = (this.childNodes.length > this.store.showCount ? this.store.showCount : this.childNodes.length) * this.store.itemHeight + 'px';
 
         if (this.expanded) {
           setTimeout(function () {
@@ -698,11 +699,13 @@
         var transend = function transend() {
           tg.removeEventListener('transitionend', transend);
           tg.parentNode && tg.parentNode.removeChild(tg);
+          tg.removeEventListener('transitionend', transend);
 
           _this8.store.update();
         };
 
         tg.addEventListener('transitionend', transend);
+        this.transitionNode = tg;
       } // 更新手风琴状态
 
     }, {
