@@ -154,7 +154,7 @@
           throw new Error('format must return object! \nformat: function(data) {\n  return {name, children, isLeaf}\n}');
         }
 
-        var props = ['name', 'children', 'isLeaf', 'icon'];
+        var props = ['id', 'name', 'children', 'isLeaf', 'icon'];
         props.forEach(function (key) {
           if (Object.prototype.hasOwnProperty.call(_data, key)) {
             _this.data[key] = _data[key];

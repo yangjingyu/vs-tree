@@ -116,7 +116,7 @@ load: function (node, resolve) {
 
 ### format
 
-目前仅支持，name、children、isLeaf、icon
+目前仅支持，id, name、children、isLeaf、icon
 
 ```js
 format: function(data) {

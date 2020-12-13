@@ -23,7 +23,7 @@ export default class Node {
       if (typeof _data !== 'object') {
         throw new Error('format must return object! \nformat: function(data) {\n  return {name, children, isLeaf}\n}')
       }
-      const props = ['name', 'children', 'isLeaf', 'icon']
+      const props = ['id', 'name', 'children', 'isLeaf', 'icon']
       props.forEach(key => {
         if (Object.prototype.hasOwnProperty.call(_data, key)) {
           this.data[key] = _data[key]
