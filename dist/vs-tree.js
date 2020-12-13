@@ -1508,11 +1508,12 @@
       value: function render() {
         var _this2 = this;
 
+        var update = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
         this.data = this.nodes.filter(function (v) {
           // 过滤隐藏节点 ｜ 隐藏root节点
           return _this2.hasKeyword(v) && v.visbile && !(_this2.store.hideRoot && v.level === 0);
         });
-        this.vlist.update(this.data);
+        update && this.vlist.update(this.data);
       } // TODO:
 
     }, {
@@ -1530,7 +1531,7 @@
             }
           });
         } else {
-          v.parent && v.parent.setExpand(true, true);
+          v.parent && (v.parent.requireExpand = true);
         }
 
         return boo;
@@ -1541,6 +1542,13 @@
       value: function filter() {
         var keyword = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
         this.keyword = keyword;
+        this.render(false);
+        this.data.forEach(function (v) {
+          if (v.requireExpand) {
+            v.requireExpand = false;
+            v.setExpand(true, true);
+          }
+        });
         this.render();
         return this.data;
       } // 根据ID获取节点

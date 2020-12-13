@@ -119,12 +119,12 @@ export default class Tree {
     this.render()
   }
 
-  render () {
+  render (update = true) {
     this.data = this.nodes.filter(v => {
       // 过滤隐藏节点 ｜ 隐藏root节点
       return this.hasKeyword(v) && v.visbile && !(this.store.hideRoot && v.level === 0)
     })
-    this.vlist.update(this.data)
+    update && this.vlist.update(this.data)
   }
 
   // TODO:
@@ -138,7 +138,7 @@ export default class Tree {
         }
       })
     } else {
-      v.parent && v.parent.setExpand(true, true)
+      v.parent && (v.parent.requireExpand = true)
     }
     return boo
   }
@@ -146,6 +146,13 @@ export default class Tree {
   // 过滤节点
   filter (keyword = '') {
     this.keyword = keyword
+    this.render(false)
+    this.data.forEach(v => {
+      if (v.requireExpand) {
+        v.requireExpand = false
+        v.setExpand(true, true)
+      }
+    })
     this.render()
     return this.data
   }
