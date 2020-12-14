@@ -33,8 +33,14 @@
         data: root[0],
         showCheckbox: true,
         max: 0,
-        searchFilter: function(node, data) {
-          return true
+        searchFilter: function(keyword, node, data) {
+          return node.isLeaf && data.extra && data.extra.keyword && data.extra.keyword.includes(keyword)
+        },
+        searchRender: function(node, data) {
+          // return '<span style="color: #999;">（'+ node.parent.data.name +'）</span>'
+          return () => {
+            return node.data.name + '<span style="color: #999;">（'+ node.parent.data.name +'）</span>'
+          }
         },
         checkFilter: function (node) {
           return node.isLeaf
@@ -63,6 +69,7 @@
             extra: {
               dname: parent && parent.data.name,
               did: parent && parent.data.data.did,
+              keyword: user && (user.mobile + user.mail + user.pinyin),
             }
           }
         },

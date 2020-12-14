@@ -25,6 +25,7 @@ xhr.onload = function (e) {
       }
     }
   })
+  console.log(infomap['100002955460']);
   postMessage && postMessage({
     id: 1,
     list: list,
@@ -33,5 +34,5 @@ xhr.onload = function (e) {
     umap: umap,
     infomap: infomap
   });
-  close && close()
+  typeof window !== 'object' && close()
 }

@@ -498,7 +498,7 @@
       value: function createText() {
         var dom = document.createElement('span');
         dom.innerText = this.data.name;
-        dom.className = 'name';
+        dom.className = 'vs-tree-text';
         return dom;
       }
     }, {
@@ -1489,7 +1489,25 @@
                 dom.classList.remove('vs-search-only-leaf');
               }
 
-              this.wrapper.appendChild(dom);
+              if (dataSource.store.isSearch && dataSource.store.searchRender) {
+                var newNode = dom.cloneNode(true);
+                var searchNode = dataSource.store.searchRender(dataSource);
+
+                if (searchNode instanceof HTMLElement) {
+                  newNode.appendChild(searchNode);
+                } else if (typeof searchNode === 'function') {
+                  newNode.querySelector('.vs-tree-text').innerHTML = searchNode();
+                } else {
+                  var _node = document.createElement('div');
+
+                  _node.innerHTML = searchNode;
+                  newNode.appendChild(_node);
+                }
+
+                this.wrapper.appendChild(newNode);
+              } else {
+                this.wrapper.appendChild(dom);
+              }
             } else {
               console.warn("Cannot get the data-key '".concat(dataKey, "' from data-sources."));
             }
@@ -1627,6 +1645,7 @@
         // 只允许叶子节点选中
         checkOnClickNode: ops.checkOnClickNode || false,
         format: ops.format || null,
+        searchRender: ops.searchRender || null,
         update: function update() {
           _this.render();
         },
@@ -1698,7 +1717,7 @@
         if (!this.keyword) return;
 
         if (typeof this.searchFilter === 'function') {
-          return this.searchFilter(v, v.data);
+          return this.searchFilter(this.keyword, v, v.data);
         }
 
         return v.data.name && v.data.name.includes(this.keyword);
@@ -1713,6 +1732,7 @@
         var onlySearchLeaf = arguments.length > 1 ? arguments[1] : undefined;
         this.keyword = keyword;
         this.store.onlySearchLeaf = onlySearchLeaf && !!keyword;
+        this.store.isSearch = !!keyword;
 
         if (this.store.onlySearchLeaf) {
           var data = this.nodes.filter(function (v) {

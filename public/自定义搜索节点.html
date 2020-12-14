@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>vs-tree2.0_节点过滤</title>
+  <title>vs-tree2.0_自定义搜索节点</title>
   <link rel="stylesheet" href="../dist/vs-tree.css">
   <link rel="stylesheet" href="./static/css/index.css">
 </head>
@@ -43,7 +43,13 @@
     console.time('render:tree');
     const tree = new vsTree.default('#tree', {
       data: data,
-      showCheckbox: true
+      showCheckbox: true,
+      searchRender: function (node, data) {
+        // return '<span style="color: #999;">（'+ node.parent.data.name +'）</span>'
+        return () => {
+          return node.data.name + (node.parent ? '<span style="color: #999;">（' + node.parent.data.name + '）</span>' : '')
+        }
+      }
     });
     console.timeEnd('render:tree');
 

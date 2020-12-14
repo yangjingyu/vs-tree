@@ -91,6 +91,7 @@ export default class Tree {
       nocheckParent: ops.nocheckParent || false, // 只允许叶子节点选中
       checkOnClickNode: ops.checkOnClickNode || false,
       format: ops.format || null,
+      searchRender: ops.searchRender || null,
       update: () => {
         this.render()
       },
@@ -151,7 +152,7 @@ export default class Tree {
   checkFilter (v) {
     if (!this.keyword) return
     if (typeof this.searchFilter === 'function') {
-      return this.searchFilter(v, v.data)
+      return this.searchFilter(this.keyword, v, v.data)
     }
     return v.data.name && v.data.name.includes(this.keyword)
   }
@@ -161,6 +162,7 @@ export default class Tree {
     this.keyword = keyword
 
     this.store.onlySearchLeaf = onlySearchLeaf && !!keyword
+    this.store.isSearch = !!keyword
     if (this.store.onlySearchLeaf) {
       const data = this.nodes.filter(v => !v.childNodes.length && this.checkFilter(v) && !(this.store.hideRoot && v.level === 0))
       this.vlist.update(data)

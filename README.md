@@ -72,7 +72,10 @@
 | checkFilter | 过滤掉的节点不计入统计 | node | true, false ｜
 | format | 格式化数据 | data | {name,children,isLeaf,icon} ｜
 | contextmenu | 鼠标右键事件 | event, node | void ｜
-| searchFilter | 搜索过滤 | node, data | node[] ｜
+| searchFilter | 搜索过滤 | keyword, node, data | node[] ｜
+| searchRender | 搜索渲染 | node, data | string,Element,Function ｜
+
+> searchRender 返回 Function 时替换掉原有text, 否则追加到text后
 
 #### renderContent
 

@@ -106,7 +106,22 @@ export default class Vlist {
           } else {
             dom.classList.remove('vs-search-only-leaf')
           }
-          this.wrapper.appendChild(dom)
+          if (dataSource.store.isSearch && dataSource.store.searchRender) {
+            const newNode = dom.cloneNode(true)
+            const searchNode = dataSource.store.searchRender(dataSource)
+            if (searchNode instanceof HTMLElement) {
+              newNode.appendChild(searchNode)
+            } else if (typeof searchNode === 'function') {
+              newNode.querySelector('.vs-tree-text').innerHTML = searchNode()
+            } else {
+              const _node = document.createElement('div')
+              _node.innerHTML = searchNode
+              newNode.appendChild(_node)
+            }
+            this.wrapper.appendChild(newNode)
+          } else {
+            this.wrapper.appendChild(dom)
+          }
         } else {
           console.warn(`Cannot get the data-key '${dataKey}' from data-sources.`)
         }

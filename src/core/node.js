@@ -282,7 +282,7 @@ export default class Node {
   createText () {
     const dom = document.createElement('span')
     dom.innerText = this.data.name
-    dom.className = 'name'
+    dom.className = 'vs-tree-text'
     return dom
   }
 
