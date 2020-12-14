@@ -14,62 +14,56 @@
   <input id="search" type="text" autocomplete="off" placeholder="输入关键字进行过滤">
   <div id="tree" class="tree-demo"></div>
   <button id="checked" type="button">获取选中元素</button>
-  <script>
-    console.time('create:data')
-    var list = []
-    var xhr = new XMLHttpRequest()
-    xhr.open('GET', './static/data.txt', true)
-    xhr.send()
-    xhr.onload = function (e) {
-      list = xhr.response.split('\r\n').map(v => v && JSON.parse(v))
-      var data = list.filter(v => v && v.obj === 'department' && v.data.pdid === '-1')
-      console.timeEnd('create:data')
-      init(data)
-    }
-  </script>
+  <button id="getNodeById" type="button">根据ID获取节点</button>
+  <input id="maxValue" type="number" value="0">
+  <button id="setMax" type="button">设置最大可选</button>
   <script src="../dist/vs-tree.js"></script>
+  <script>console.time('create:data')</script>
+  <script src="./static/js/work.js"></script>
   <script>
     var tree;
-    function init (data) {
+    function postMessage(data) {
+      console.timeEnd('create:data')
+      init()
+    }
+    function init() {
       console.time('render:tree');
       var time = Date.now()
-      const umap = {}
-      const infomap = {}
-      list.forEach(v => {
-        if (v.obj === 'department_user') {
-          if (umap[v.data.did]) {
-            umap[v.data.did].push(v.data)
-          } else {
-            umap[v.data.did] = [v.data]
-          }
-        } else if (v.obj === 'user') {
-          infomap[v.data.uid] = v.data
-        }
-      })
       tree = new vsTree.default('#tree', {
-        data: data[0],
+        data: root[0],
         showCheckbox: true,
-        max: 988,
+        max: 0,
+        searchFilter: function(node, data) {
+          return true
+        },
         checkFilter: function (node) {
           return node.isLeaf
         },
-        limitAlert: function() {
+        limitAlert: function () {
           alert('超过最大可选')
         },
-        format: function(data) {
+        format: function (data, node) {
           var child = []
           if (data.obj === 'department') {
-            child = list.filter(v => v.obj === 'department' && v.data.pdid === data.data.did)
+            child = depts.filter(v => v.obj === 'department' && v.data.pdid === data.data.did)
             child = child.concat(umap[data.data.did] || [])
             return {
+              id: data.data.did,
               name: data.data.name || '---',
               children: child
             }
           }
+          const user = infomap[data.uid]
+          const parent = node.parent;
           return {
-            name: infomap[data.uid] && infomap[data.uid].name,
+            id: parent && (parent.data.data.did + '_' + data.uid),
+            name: user && user.name,
             isLeaf: true,
-            children: []
+            children: [],
+            extra: {
+              dname: parent && parent.data.name,
+              did: parent && parent.data.data.did,
+            }
           }
         },
         renderContent: function (h, node) {
@@ -114,7 +108,21 @@
     }
 
     document.getElementById('search').addEventListener('input', (e) => {
-      tree.filter(e.target.value)
+      // tree.filter(e.target.value, true)
+      tree.filter(e.target.value, (node, data) => {
+        return data.name && data.name.includes(e.target.value)
+      }, {
+        onlySearchLeaf: true
+      })
+    })
+
+    document.getElementById('setMax').addEventListener('click', (e) => {
+      tree.setMaxValue(document.getElementById('maxValue').value || 0)
+    })
+
+    document.getElementById('getNodeById').addEventListener('click', (e) => {
+      const id = "287573_100003049742"
+      tree.getNodeById(id) && tree.getNodeById(id).setChecked(true);
     })
   </script>
 </body>

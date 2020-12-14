@@ -6,6 +6,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  white-space: nowrap;
 
   &:hover {
     background-color: #eee;
@@ -271,4 +272,42 @@
   height: 0;
   transition: all .3s ease;
   overflow-y: hidden;
+}
+
+.vs-tree-node {
+  &.vs-drag-over-gap-top, 
+  &.vs-drag-over-gap-bottom {
+    position: relative;
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 2px;
+    }
+  }
+  
+  &.vs-drag-over-gap-top {
+    &::before {
+      top: 0;
+      background-color: #1989fa;
+    }
+  }
+  
+  &.vs-drag-over-gap-bottom {
+    &::before {
+      bottom: 0;
+      background-color: red;
+    }
+  }
+}
+
+
+.vs-search-only-leaf {
+  .vs-tree-inner {
+    padding-left: 0!important;
+    .expand-empty {
+      display: none;
+    }
+  }
 }

@@ -10,7 +10,7 @@ export default class Vlist {
 
     this.$el = opts.root
 
-    this.$el.style.maxHeight = '400px'
+    this.$el.style.maxHeight = opts.maxHeight || '400px'
     this.$el.style.overflowY = 'auto'
 
     this.dataSources = opts.data
@@ -100,7 +100,13 @@ export default class Vlist {
       if (dataSource) {
         const uniqueKey = typeof dataKey === 'function' ? dataKey(dataSource) : dataSource[dataKey]
         if (typeof uniqueKey === 'string' || typeof uniqueKey === 'number') {
-          this.wrapper.appendChild(dataSource.createNode())
+          const dom = dataSource.createNode()
+          if (dataSource.store.onlySearchLeaf) {
+            dom.classList.add('vs-search-only-leaf')
+          } else {
+            dom.classList.remove('vs-search-only-leaf')
+          }
+          this.wrapper.appendChild(dom)
         } else {
           console.warn(`Cannot get the data-key '${dataKey}' from data-sources.`)
         }

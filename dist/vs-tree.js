@@ -129,11 +129,45 @@
   function insterAfter(newElement, targetElement) {
     var parent = targetElement.parentNode;
 
-    if (parent.lastChild == targetElement) {
+    if (parent.lastChild === targetElement) {
       parent.appendChild(newElement);
     } else {
       parent.insertBefore(newElement, targetElement.nextSibling);
     }
+  }
+
+  function getOffset(ele) {
+    var el = ele;
+    var _x = 0;
+    var _y = 0;
+
+    while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
+      _x += el.offsetLeft - el.scrollLeft;
+      _y += el.offsetTop - el.scrollTop;
+      el = el.offsetParent;
+    }
+
+    return {
+      top: _y,
+      left: _x
+    };
+  }
+
+  function onDragEnterGap(e, treeNode) {
+    var offsetTop = (getOffset)(treeNode.dom).top;
+    var offsetHeight = treeNode.dom.offsetHeight;
+    var pageY = e.pageY;
+    var gapHeight = 2;
+
+    if (pageY > offsetTop + offsetHeight - 5) {
+      return 1; // bottom
+    }
+
+    if (pageY < offsetTop + gapHeight) {
+      return -1; // top
+    }
+
+    return 0;
   }
 
   var setepId = 0;
@@ -155,24 +189,23 @@
       this.level = 0;
       this.childNodes = [];
       this.store = ops.store;
+      this.parent = ops.parent;
       this.data = ops.data;
 
       if (typeof this.store.format === 'function' && !ops.data._vsroot) {
-        var _data = this.store.format(Object.assign({}, ops.data));
+        var _data = this.store.format(Object.assign({}, ops.data), this);
 
         if (_typeof(_data) !== 'object') {
-          throw new Error('format must return object! \nformat: function(data) {\n  return {name, children, isLeaf}\n}');
+          throw new Error('format must return object! \nformat: function(data) {\n  return {id, name, children, isLeaf}\n}');
         }
 
-        var props = ['id', 'name', 'children', 'isLeaf', 'icon'];
+        var props = ['id', 'name', 'children', 'isLeaf', 'icon', 'extra'];
         props.forEach(function (key) {
           if (Object.prototype.hasOwnProperty.call(_data, key)) {
             _this.data[key] = _data[key];
           }
         });
       }
-
-      this.parent = ops.parent;
 
       if (this.store.expandKeys.includes(this.data.id)) {
         this.expanded = true;
@@ -218,6 +251,7 @@
 
         var dom = document.createElement('div');
         dom.className = 'vs-tree-node';
+        dom.setAttribute('vs-index', this.id);
         dom.appendChild(this.createInner());
 
         if (this.store.renderContent) {
@@ -257,6 +291,11 @@
             _this2.store.contextmenu(e, _this2);
           }
         });
+
+        if (this.store.draggable) {
+          this.createDragable(dom);
+        }
+
         this.dom = dom;
         return dom;
       }
@@ -483,6 +522,7 @@
       key: "setData",
       value: function setData(data) {
         this.store.dataMap.set(data.id, this);
+        this.store.nodeMap.set(this.id, this);
         this.data = data;
         this.childNodes = [];
 
@@ -706,6 +746,42 @@
 
         tg.addEventListener('transitionend', transend);
         this.transitionNode = tg;
+      } // 创建拖拽
+
+    }, {
+      key: "createDragable",
+      value: function createDragable(dom) {
+        var _this9 = this;
+
+        dom.draggable = true;
+        dom.addEventListener('dragstart', function (e) {
+          console.log(e);
+        });
+        dom.addEventListener('dragenter', function (e) {
+          e.stopPropagation();
+          var key = e.target.getAttribute('vs-index');
+          if (!key) return;
+          var enterGap = onDragEnterGap(e, _this9);
+          if (dom === e.target && enterGap === 0) return;
+          console.log(_this9.store.nodeMap);
+          console.log(_this9.store.nodeMap.get(Number(key)));
+          e.target.classList.add('vs-drag-enter');
+
+          if (enterGap === -1) {
+            e.target.classList.remove('vs-drag-over-gap-bottom');
+            e.target.classList.add('vs-drag-over-gap-top');
+          }
+
+          if (enterGap === 1) {
+            e.target.classList.remove('vs-drag-over-gap-top');
+            e.target.classList.add('vs-drag-over-gap-bottom');
+          }
+        });
+        dom.addEventListener('dragleave', function (e) {
+          e.target.classList.remove('vs-drag-enter');
+          e.target.classList.remove('vs-drag-over-gap-bottom');
+          e.target.classList.remove('vs-drag-over-gap-top');
+        });
       } // 更新手风琴状态
 
     }, {
@@ -726,7 +802,7 @@
     }, {
       key: "loadData",
       value: function loadData(callback) {
-        var _this9 = this;
+        var _this10 = this;
 
         if (this.loading) return;
         this.loading = true;
@@ -737,28 +813,28 @@
 
         var resolve = function resolve() {
           var children = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-          _this9.loaded = true;
-          _this9.loading = false;
+          _this10.loaded = true;
+          _this10.loading = false;
 
-          if (_this9.expandEl) {
-            _this9.expandEl.classList.remove('is-loading');
+          if (_this10.expandEl) {
+            _this10.expandEl.classList.remove('is-loading');
           }
 
           if (children.length) {
             children.forEach(function (data) {
-              _this9.insertChild({
+              _this10.insertChild({
                 data: data,
-                store: _this9.store
+                store: _this10.store
               });
             });
 
-            _this9.childNodes[0].updateCheckedParent();
+            _this10.childNodes[0].updateCheckedParent();
 
-            _this9.store.updateNodes();
+            _this10.store.updateNodes();
           }
 
           if (callback) {
-            callback.call(_this9, children);
+            callback.call(_this10, children);
           }
         };
 
@@ -768,13 +844,13 @@
     }, {
       key: "remove",
       value: function remove() {
-        var _this10 = this;
+        var _this11 = this;
 
         var parent = this.parent;
         if (!parent) return;
         var children = parent.childNodes || [];
         var index = children.findIndex(function (d) {
-          return d.id === _this10.id;
+          return d.id === _this11.id;
         });
 
         if (index > -1) {
@@ -823,7 +899,8 @@
       }
 
       this.nodes = [];
-      this.dataMap = new Map(); // 当前选中节点
+      this.dataMap = new Map();
+      this.nodeMap = new Map(); // 当前选中节点
 
       this.radioMap = {}; // 当前展开节点
 
@@ -1306,7 +1383,7 @@
 
       this.range = null;
       this.$el = opts.root;
-      this.$el.style.maxHeight = '400px';
+      this.$el.style.maxHeight = opts.maxHeight || '400px';
       this.$el.style.overflowY = 'auto';
       this.dataSources = opts.data;
       this.wrapper = document.createElement('div');
@@ -1404,7 +1481,15 @@
             var uniqueKey = typeof dataKey === 'function' ? dataKey(dataSource) : dataSource[dataKey];
 
             if (typeof uniqueKey === 'string' || typeof uniqueKey === 'number') {
-              this.wrapper.appendChild(dataSource.createNode());
+              var dom = dataSource.createNode();
+
+              if (dataSource.store.onlySearchLeaf) {
+                dom.classList.add('vs-search-only-leaf');
+              } else {
+                dom.classList.remove('vs-search-only-leaf');
+              }
+
+              this.wrapper.appendChild(dom);
             } else {
               console.warn("Cannot get the data-key '".concat(dataKey, "' from data-sources."));
             }
@@ -1496,6 +1581,7 @@
       this.data = []; // 关键字过滤
 
       this.keyword = '';
+      this.searchFilter = ops.searchFilter;
       this.store = new TreeStore({
         data: this._data,
         max: ops.max,
@@ -1503,6 +1589,7 @@
         itemHeight: this.itemHeight,
         hideRoot: ops.hideRoot || false,
         animation: ops.animation || false,
+        // 动画
         expandLevel: typeof ops.expandLevel === 'number' ? ops.expandLevel : 1,
         // 默认展开1级节点
         beforeCheck: ops.beforeCheck || null,
@@ -1519,6 +1606,7 @@
         // 过滤选中节点
         accordion: ops.accordion || false,
         // 手风琴模式
+        draggable: ops.draggable || false,
         lazy: ops.lazy || false,
         sort: ops.sort || false,
         indent: ops.indent || 10,
@@ -1590,7 +1678,7 @@
         var _this3 = this;
 
         if (!this.keyword) return true;
-        var boo = v.data.name && v.data.name.includes(this.keyword);
+        var boo = this.checkFilter(v);
 
         if (!boo) {
           v.childNodes.forEach(function (node) {
@@ -1603,13 +1691,37 @@
         }
 
         return boo;
+      }
+    }, {
+      key: "checkFilter",
+      value: function checkFilter(v) {
+        if (!this.keyword) return;
+
+        if (typeof this.searchFilter === 'function') {
+          return this.searchFilter(v, v.data);
+        }
+
+        return v.data.name && v.data.name.includes(this.keyword);
       } // 过滤节点
 
     }, {
       key: "filter",
       value: function filter() {
+        var _this4 = this;
+
         var keyword = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+        var onlySearchLeaf = arguments.length > 1 ? arguments[1] : undefined;
         this.keyword = keyword;
+        this.store.onlySearchLeaf = onlySearchLeaf && !!keyword;
+
+        if (this.store.onlySearchLeaf) {
+          var data = this.nodes.filter(function (v) {
+            return !v.childNodes.length && _this4.checkFilter(v) && !(_this4.store.hideRoot && v.level === 0);
+          });
+          this.vlist.update(data);
+          return data;
+        }
+
         this.render(false);
         this.data.forEach(function (v) {
           if (v.requireExpand) {
@@ -1631,6 +1743,13 @@
       key: "getCheckedNodes",
       value: function getCheckedNodes() {
         return this.store.getCheckedNodes();
+      } // 设置最大可选
+
+    }, {
+      key: "setMaxValue",
+      value: function setMaxValue() {
+        var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+        this.store.max = value;
       }
     }]);
 
@@ -1646,6 +1765,7 @@
           data: Array | Object,
           options: Object,
           animation: Boolean,
+          draggable: Boolean,
           hideRoot: Boolean,
           showCheckbox: Boolean,
           showRadio: Boolean,
@@ -1692,6 +1812,12 @@
             tree: {}
           };
         },
+        watch: {
+          max: function max() {
+            var newVal = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+            this.setMaxValue(newVal);
+          }
+        },
         mounted: function mounted() {
           this._vsinit();
         },
@@ -1728,6 +1854,10 @@
           },
           filter: function filter(value) {
             return this.tree.tree.filter(value);
+          },
+          setMaxValue: function setMaxValue() {
+            var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+            this.tree.tree.setMaxValue(value);
           }
         }
       });

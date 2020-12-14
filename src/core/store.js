@@ -10,6 +10,7 @@ export default class TreeStore {
     this.nodes = []
 
     this.dataMap = new Map()
+    this.nodeMap = new Map()
 
     // 当前选中节点
     this.radioMap = {}

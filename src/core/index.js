@@ -53,6 +53,7 @@ export default class Tree {
     this.data = []
     // 关键字过滤
     this.keyword = ''
+    this.searchFilter = ops.searchFilter
 
     this.store = new TreeStore({
       data: this._data,
@@ -60,7 +61,7 @@ export default class Tree {
       showCount: this.showCount,
       itemHeight: this.itemHeight,
       hideRoot: ops.hideRoot || false,
-      animation: ops.animation || false,
+      animation: ops.animation || false, // 动画
       expandLevel: typeof ops.expandLevel === 'number' ? ops.expandLevel : 1, // 默认展开1级节点
       beforeCheck: ops.beforeCheck || null,
       showLine: ops.showLine || false, // 是否显示连接线
@@ -72,6 +73,7 @@ export default class Tree {
       checkFilterLeaf: ops.checkFilterLeaf || false, // 过滤非叶子节点
       checkFilter: ops.checkFilter || null, // 过滤选中节点
       accordion: ops.accordion || false, // 手风琴模式
+      draggable: ops.draggable || false,
       lazy: ops.lazy || false,
       sort: ops.sort || false,
       indent: ops.indent || 10,
@@ -133,7 +135,7 @@ export default class Tree {
   // TODO:
   hasKeyword (v) {
     if (!this.keyword) return true
-    let boo = v.data.name && v.data.name.includes(this.keyword)
+    let boo = this.checkFilter(v)
     if (!boo) {
       v.childNodes.forEach(node => {
         if (!boo) {
@@ -146,9 +148,25 @@ export default class Tree {
     return boo
   }
 
+  checkFilter (v) {
+    if (!this.keyword) return
+    if (typeof this.searchFilter === 'function') {
+      return this.searchFilter(v, v.data)
+    }
+    return v.data.name && v.data.name.includes(this.keyword)
+  }
+
   // 过滤节点
-  filter (keyword = '') {
+  filter (keyword = '', onlySearchLeaf) {
     this.keyword = keyword
+
+    this.store.onlySearchLeaf = onlySearchLeaf && !!keyword
+    if (this.store.onlySearchLeaf) {
+      const data = this.nodes.filter(v => !v.childNodes.length && this.checkFilter(v) && !(this.store.hideRoot && v.level === 0))
+      this.vlist.update(data)
+      return data
+    }
+
     this.render(false)
     this.data.forEach(v => {
       if (v.requireExpand) {
@@ -168,5 +186,10 @@ export default class Tree {
   // 获取选中节点
   getCheckedNodes () {
     return this.store.getCheckedNodes()
+  }
+
+  // 设置最大可选
+  setMaxValue (value = 0) {
+    this.store.max = value
   }
 }

@@ -4,16 +4,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>vs-tree2.0_最大可选</title>
+  <title>vs-tree2.0_基础示例</title>
   <link rel="stylesheet" href="../dist/vs-tree.css">
   <link rel="stylesheet" href="./static/css/index.css">
 </head>
 
 <body>
   <div id="tree"></div>
-  <button id="checked" type="button">获取选中元素</button>
-  <input id="maxValue" type="number" value="0">
-  <button id="setMax" type="button">设置最大可选</button>
   <script src="../dist/vs-tree.js"></script>
   <script>
     console.time('create:data')
@@ -43,29 +40,11 @@
     }
     console.timeEnd('create:data')
     console.time('render:tree');
-    console.log(vsTree);
     const tree = new vsTree.default('#tree', {
       data: data,
-      showCheckbox: true,
-      max: 11,
-      // checkFilterLeaf: true,
-      showCount: 30,
-      itemHeight: 26,
-      disabledKeys: ["104", "105"],
-      limitAlert: function () {
-        alert('超过最大可选')
-      },
+      draggable: true
     });
     console.timeEnd('render:tree');
-
-    document.getElementById("checked").onclick = function () {
-      console.log(tree);
-      console.log(tree.getCheckedNodes());
-    }
-
-    document.getElementById('setMax').addEventListener('click', (e) => {
-      tree.setMaxValue(document.getElementById('maxValue').value || 0)
-    })
   </script>
 </body>
 

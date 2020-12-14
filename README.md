@@ -18,6 +18,7 @@
 | highlightCurrent | 是否高亮选中当前项                                   | Boolean               | false   |
 | accordion        | 手风琴模式                                           | Boolean               | false   |
 | animation        | 开启动画                                           | Boolean               | false   |
+| draggable        | 开启拖拽                                           | Boolean               | false   |
 | nocheckParent    | 禁止父节点选中                                       | Boolean               | false   |
 | sort             | 对选中列表排序                                       | Boolean               | false   |
 | checkOnClickNode | 是否在点击节点的时候选中节点                         | Boolean               | false   |
@@ -43,6 +44,7 @@
 | getCheckedNodes | 获取选中节点           | -    |
 | getNodeById     | 根据 ID 获取 Node 节点 | id   |
 | filter     | 过滤节点     | keyword    |
+| setMaxValue     | 设置最大可选     | number    |
 
 ### Node 方法
 
@@ -117,7 +119,7 @@ load: function (node, resolve) {
 
 ### format
 
-目前仅支持，id, name、children、isLeaf、icon
+目前仅支持，id, name、children、isLeaf、icon、extra
 
 ```js
 format: function(data) {

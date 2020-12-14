@@ -1,5 +1,5 @@
 
-import { insterAfter } from './utils'
+import { insterAfter, onDragEnterGap } from './utils'
 let setepId = 0
 
 export default class Node {
@@ -18,21 +18,21 @@ export default class Node {
 
     this.store = ops.store
 
+    this.parent = ops.parent
+
     this.data = ops.data
     if (typeof this.store.format === 'function' && !ops.data._vsroot) {
-      const _data = this.store.format(Object.assign({}, ops.data))
+      const _data = this.store.format(Object.assign({}, ops.data), this)
       if (typeof _data !== 'object') {
-        throw new Error('format must return object! \nformat: function(data) {\n  return {name, children, isLeaf}\n}')
+        throw new Error('format must return object! \nformat: function(data) {\n  return {id, name, children, isLeaf}\n}')
       }
-      const props = ['id', 'name', 'children', 'isLeaf', 'icon']
+      const props = ['id', 'name', 'children', 'isLeaf', 'icon', 'extra']
       props.forEach(key => {
         if (Object.prototype.hasOwnProperty.call(_data, key)) {
           this.data[key] = _data[key]
         }
       })
     }
-
-    this.parent = ops.parent
 
     if (this.store.expandKeys.includes(this.data.id)) {
       this.expanded = true
@@ -70,6 +70,7 @@ export default class Node {
 
     const dom = document.createElement('div')
     dom.className = 'vs-tree-node'
+    dom.setAttribute('vs-index', this.id)
 
     dom.appendChild(this.createInner())
 
@@ -105,6 +106,9 @@ export default class Node {
         this.store.contextmenu(e, this)
       }
     })
+    if (this.store.draggable) {
+      this.createDragable(dom)
+    }
 
     this.dom = dom
     return dom
@@ -298,6 +302,7 @@ export default class Node {
 
   setData (data) {
     this.store.dataMap.set(data.id, this)
+    this.store.nodeMap.set(this.id, this)
     this.data = data
     this.childNodes = []
 
@@ -493,6 +498,43 @@ export default class Node {
     tg.addEventListener('transitionend', transend)
 
     this.transitionNode = tg
+  }
+
+  // 创建拖拽
+  createDragable (dom) {
+    dom.draggable = true
+
+    dom.addEventListener('dragstart', (e) => {
+      console.log(e)
+    })
+
+    dom.addEventListener('dragenter', (e) => {
+      e.stopPropagation()
+      const key = e.target.getAttribute('vs-index')
+      if (!key) return
+      const enterGap = onDragEnterGap(e, this)
+      if (dom === e.target && enterGap === 0) return
+
+      console.log(this.store.nodeMap)
+      console.log(this.store.nodeMap.get(Number(key)))
+
+      e.target.classList.add('vs-drag-enter')
+
+      if (enterGap === -1) {
+        e.target.classList.remove('vs-drag-over-gap-bottom')
+        e.target.classList.add('vs-drag-over-gap-top')
+      }
+      if (enterGap === 1) {
+        e.target.classList.remove('vs-drag-over-gap-top')
+        e.target.classList.add('vs-drag-over-gap-bottom')
+      }
+    })
+
+    dom.addEventListener('dragleave', (e) => {
+      e.target.classList.remove('vs-drag-enter')
+      e.target.classList.remove('vs-drag-over-gap-bottom')
+      e.target.classList.remove('vs-drag-over-gap-top')
+    })
   }
 
   // 更新手风琴状态

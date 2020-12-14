@@ -12,6 +12,7 @@
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;
+  white-space: nowrap;
 }
 .vs-tree-node:hover {
   background-color: #eee;
@@ -262,4 +263,30 @@
   -webkit-transition: all 0.3s ease;
   transition: all 0.3s ease;
   overflow-y: hidden;
+}
+.vs-tree-node.vs-drag-over-gap-top,
+.vs-tree-node.vs-drag-over-gap-bottom {
+  position: relative;
+}
+.vs-tree-node.vs-drag-over-gap-top::before,
+.vs-tree-node.vs-drag-over-gap-bottom::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+}
+.vs-tree-node.vs-drag-over-gap-top::before {
+  top: 0;
+  background-color: #1989fa;
+}
+.vs-tree-node.vs-drag-over-gap-bottom::before {
+  bottom: 0;
+  background-color: red;
+}
+.vs-search-only-leaf .vs-tree-inner {
+  padding-left: 0!important;
+}
+.vs-search-only-leaf .vs-tree-inner .expand-empty {
+  display: none;
 }

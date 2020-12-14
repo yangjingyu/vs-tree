@@ -6,6 +6,7 @@ export default (VsTree) => {
         data: Array | Object,
         options: Object,
         animation: Boolean,
+        draggable: Boolean,
         hideRoot: Boolean,
         showCheckbox: Boolean,
         showRadio: Boolean,
@@ -53,6 +54,11 @@ export default (VsTree) => {
           tree: {}
         }
       },
+      watch: {
+        max (newVal = 0) {
+          this.setMaxValue(newVal)
+        }
+      },
       mounted () {
         this._vsinit()
       },
@@ -88,6 +94,9 @@ export default (VsTree) => {
         },
         filter (value) {
           return this.tree.tree.filter(value)
+        },
+        setMaxValue (value = 0) {
+          this.tree.tree.setMaxValue(value)
         }
       }
     })
