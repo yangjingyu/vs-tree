@@ -1800,6 +1800,7 @@
           disabledKeys: Array,
           checkedKeys: Array,
           expandKeys: Array,
+          keyword: String,
           expandLevel: {
             type: Number,
             default: 1
@@ -1831,6 +1832,9 @@
           max: function max() {
             var newVal = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
             this.setMaxValue(newVal);
+          },
+          keyword: function keyword(newVal) {
+            this.filter(newVal);
           }
         },
         mounted: function mounted() {

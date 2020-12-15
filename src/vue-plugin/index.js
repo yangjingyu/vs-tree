@@ -28,6 +28,7 @@ export default (VsTree) => {
         disabledKeys: Array,
         checkedKeys: Array,
         expandKeys: Array,
+        keyword: String,
         expandLevel: {
           type: Number,
           default: 1
@@ -59,6 +60,9 @@ export default (VsTree) => {
       watch: {
         max (newVal = 0) {
           this.setMaxValue(newVal)
+        },
+        keyword (newVal) {
+          this.filter(newVal)
         }
       },
       mounted () {

@@ -1794,6 +1794,7 @@ var plugin = (function (VsTree) {
         disabledKeys: Array,
         checkedKeys: Array,
         expandKeys: Array,
+        keyword: String,
         expandLevel: {
           type: Number,
           default: 1
@@ -1825,6 +1826,9 @@ var plugin = (function (VsTree) {
         max: function max() {
           var newVal = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
           this.setMaxValue(newVal);
+        },
+        keyword: function keyword(newVal) {
+          this.filter(newVal);
         }
       },
       mounted: function mounted() {
