@@ -106,20 +106,29 @@ export default class Vlist {
           } else {
             dom.classList.remove('vs-search-only-leaf')
           }
+
           if (dataSource.store.isSearch && dataSource.store.searchRender) {
-            const newNode = dom.cloneNode(true)
+            const oldNode = dom.querySelector('.vs-tree-text')
+            const newNode = oldNode.cloneNode(true)
+            dataSource.oldNode = oldNode
             const searchNode = dataSource.store.searchRender(dataSource)
             if (searchNode instanceof HTMLElement) {
               newNode.appendChild(searchNode)
             } else if (typeof searchNode === 'function') {
-              newNode.querySelector('.vs-tree-text').innerHTML = searchNode()
+              newNode.innerHTML = searchNode()
             } else {
               const _node = document.createElement('div')
               _node.innerHTML = searchNode
               newNode.appendChild(_node)
             }
-            this.wrapper.appendChild(newNode)
+            oldNode.parentNode.replaceChild(newNode, oldNode)
+            this.wrapper.appendChild(dom)
           } else {
+            if (dataSource.oldNode) {
+              const oldNode = dom.querySelector('.vs-tree-text')
+              oldNode && oldNode.parentNode.replaceChild(dataSource.oldNode, oldNode)
+              dataSource.oldNode = null
+            }
             this.wrapper.appendChild(dom)
           }
         } else {
