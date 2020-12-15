@@ -1,7 +1,6 @@
 export default (VsTree) => {
   return (Vue, options = {}) => {
     Vue.component('vs-tree', {
-      template: '<div ref="tree" id="tree"></div>',
       props: {
         data: Array | Object,
         options: Object,
@@ -66,7 +65,9 @@ export default (VsTree) => {
         }
       },
       mounted () {
-        this._vsinit()
+        this.$nextTick(() => {
+          this._vsinit()
+        })
       },
       methods: {
         _vsinit () {
@@ -104,6 +105,11 @@ export default (VsTree) => {
         setMaxValue (value = 0) {
           this.tree.tree.setMaxValue(value)
         }
+      },
+      render (h) {
+        return h('div', {
+          ref: 'tree'
+        })
       }
     })
   }

@@ -458,6 +458,7 @@ var Node = /*#__PURE__*/function () {
 
         _this5.handleCheckChange(e);
       });
+      this.checkboxEl = checkbox;
       return dom;
     }
   }, {
@@ -657,6 +658,14 @@ var Node = /*#__PURE__*/function () {
       if (!this.store.showCheckbox) return;
       this.updateChecked(checked);
       this.updateCheckedParent(checked);
+    } // 设置禁止选中
+
+  }, {
+    key: "setDisabled",
+    value: function setDisabled() {
+      var disabled = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+      this.disabled = disabled;
+      this.checkboxEl && (this.checkboxEl.disabled = disabled);
     } // 设置默认展开
 
   }, {
@@ -1767,7 +1776,6 @@ var plugin = (function (VsTree) {
   return function (Vue) {
     var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
     Vue.component('vs-tree', {
-      template: '<div ref="tree" id="tree"></div>',
       props: {
         data: Array | Object,
         options: Object,
@@ -1832,29 +1840,33 @@ var plugin = (function (VsTree) {
         }
       },
       mounted: function mounted() {
-        this._vsinit();
+        var _this = this;
+
+        this.$nextTick(function () {
+          _this._vsinit();
+        });
       },
       methods: {
         _vsinit: function _vsinit() {
-          var _this = this;
+          var _this2 = this;
 
           console.time('render:tree');
           this.tree.tree = new VsTree(this.$refs.tree, Object.assign({}, options, this.$props, _objectSpread2(_objectSpread2({}, this.options), {}, {
             data: this.data,
             click: function click(event, node) {
-              _this.$emit('click', event, node);
+              _this2.$emit('click', event, node);
             },
             check: function check(event, node) {
-              _this.$emit('check', event, node);
+              _this2.$emit('check', event, node);
             },
             change: function change(node) {
-              _this.$emit('change', node);
+              _this2.$emit('change', node);
             },
             contextmenu: function contextmenu(event, node) {
-              _this.$emit('node-contextmenu', event, node);
+              _this2.$emit('node-contextmenu', event, node);
             },
             limitAlert: function limitAlert() {
-              _this.$emit('limit-alert');
+              _this2.$emit('limit-alert');
             }
           })));
           console.timeEnd('render:tree');
@@ -1872,6 +1884,11 @@ var plugin = (function (VsTree) {
           var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
           this.tree.tree.setMaxValue(value);
         }
+      },
+      render: function render(h) {
+        return h('div', {
+          ref: 'tree'
+        });
       }
     });
   };

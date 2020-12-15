@@ -251,6 +251,8 @@ export default class Node {
       this.handleCheckChange(e)
     })
 
+    this.checkboxEl = checkbox
+
     return dom
   }
 
@@ -422,6 +424,12 @@ export default class Node {
     if (!this.store.showCheckbox) return
     this.updateChecked(checked)
     this.updateCheckedParent(checked)
+  }
+
+  // 设置禁止选中
+  setDisabled (disabled = true) {
+    this.disabled = disabled
+    this.checkboxEl && (this.checkboxEl.disabled = disabled)
   }
 
   // 设置默认展开
