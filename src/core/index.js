@@ -24,6 +24,7 @@ export default class Tree {
     if (!(this.$el instanceof HTMLElement)) {
       throw Error('请为组件提供根节点')
     }
+
     this.$el.classList.add('vs-tree')
 
     if (ops.theme) {
@@ -58,67 +59,78 @@ export default class Tree {
     // 关键字过滤
     this.keyword = ''
     this.searchFilter = ops.searchFilter
+    this.ready = ops.ready || noop
 
-    this.store = new TreeStore({
-      data: this._data,
-      max: ops.max,
-      strictLeaf: ops.strictLeaf || false,
-      showCount: this.showCount,
-      itemHeight: this.itemHeight,
-      hideRoot: ops.hideRoot || false,
-      animation: ops.animation || false, // 动画
-      expandLevel: typeof ops.expandLevel === 'number' ? ops.expandLevel : 1, // 默认展开1级节点
-      beforeCheck: ops.beforeCheck || null,
-      showLine: ops.showLine || false, // 是否显示连接线
-      showIcon: ops.showIcon || false,
-      onlyShowLeafIcon: ops.onlyShowLeafIcon || false,
-      showCheckbox: ops.showCheckbox || false,
-      showRadio: ops.showRadio || false,
-      highlightCurrent: ops.highlightCurrent || false,
-      checkFilterLeaf: ops.checkFilterLeaf || false, // 过滤非叶子节点
-      checkFilter: ops.checkFilter || null, // 过滤选中节点
-      accordion: ops.accordion || false, // 手风琴模式
-      draggable: ops.draggable || false,
-      lazy: ops.lazy || false,
-      sort: ops.sort || false,
-      indent: ops.indent || 10,
-      checkedKeys: ops.checkedKeys || [],
-      expandKeys: ops.expandKeys || [],
-      disabledKeys: ops.disabledKeys || [],
-      limitAlert: ops.limitAlert || noop,
-      click: ops.click || noop,
-      check: ops.check || noop, // 复选框被点击时出发
-      change: ops.change || noop,
-      load: ops.load || noop,
-      contextmenu: ops.contextmenu || null,
-      radioParentoOnly: ops.radioParentoOnly || false, // 每个父节点下唯一，仅raido模式有效
-      renderContent: ops.renderContent || null,
-      nocheckParent: ops.nocheckParent || false, // 只允许叶子节点选中
-      checkOnClickNode: ops.checkOnClickNode || false,
-      format: ops.format || null,
-      searchRender: ops.searchRender || null,
-      searchDisabledChecked: ops.searchDisabledChecked || false,
-      expandClass: ops.expandClass || 'vs-expand-icon',
-      update: () => {
-        this.render()
-      },
-      nodesChange: (nodes) => {
-        this.nodes = nodes
-        this.vlist && this.render()
+    const start = () => {
+      this.store = new TreeStore({
+        data: this._data,
+        max: ops.max,
+        strictLeaf: ops.strictLeaf || false,
+        showCount: this.showCount,
+        itemHeight: this.itemHeight,
+        hideRoot: ops.hideRoot || false,
+        animation: ops.animation || false, // 动画
+        expandLevel: typeof ops.expandLevel === 'number' ? ops.expandLevel : 1, // 默认展开1级节点
+        beforeCheck: ops.beforeCheck || null,
+        showLine: ops.showLine || false, // 是否显示连接线
+        showIcon: ops.showIcon || false,
+        onlyShowLeafIcon: ops.onlyShowLeafIcon || false,
+        showCheckbox: ops.showCheckbox || false,
+        showRadio: ops.showRadio || false,
+        highlightCurrent: ops.highlightCurrent || false,
+        checkFilterLeaf: ops.checkFilterLeaf || false, // 过滤非叶子节点
+        checkFilter: ops.checkFilter || null, // 过滤选中节点
+        accordion: ops.accordion || false, // 手风琴模式
+        draggable: ops.draggable || false,
+        lazy: ops.lazy || false,
+        sort: ops.sort || false,
+        indent: ops.indent || 10,
+        checkedKeys: ops.checkedKeys || [],
+        expandKeys: ops.expandKeys || [],
+        disabledKeys: ops.disabledKeys || [],
+        limitAlert: ops.limitAlert || noop,
+        click: ops.click || noop,
+        check: ops.check || noop, // 复选框被点击时出发
+        change: ops.change || noop,
+        load: ops.load || noop,
+        contextmenu: ops.contextmenu || null,
+        radioParentoOnly: ops.radioParentoOnly || false, // 每个父节点下唯一，仅raido模式有效
+        renderContent: ops.renderContent || null,
+        nocheckParent: ops.nocheckParent || false, // 只允许叶子节点选中
+        checkOnClickNode: ops.checkOnClickNode || false,
+        format: ops.format || null,
+        searchRender: ops.searchRender || null,
+        searchDisabledChecked: ops.searchDisabledChecked || false,
+        expandClass: ops.expandClass || 'vs-expand-icon',
+        update: () => {
+          this.render()
+        },
+        nodesChange: (nodes) => {
+          this.nodes = nodes
+          this.vlist && this.render()
+        }
+      })
+
+      this.store.setData(this._data)
+
+      if (this.store.hideRoot) {
+        // 跟节点创建dom
+        this.store.root.createNode()
       }
-    })
 
-    this.store.setData(this._data)
+      this.init()
 
-    if (this.store.hideRoot) {
-      // 跟节点创建dom
-      this.store.root.createNode()
+      // 设置默认选中
+      this.store.setDefaultChecked()
     }
 
-    this.init()
-
-    // 设置默认选中
-    this.store.setDefaultChecked()
+    if (ops.async) {
+      setTimeout(() => {
+        start()
+      }, 0)
+    } else {
+      start()
+    }
   }
 
   init () {
@@ -130,6 +142,7 @@ export default class Tree {
       keeps: this.showCount
     })
     this.render()
+    this.ready && this.ready(this)
   }
 
   render (update = true) {

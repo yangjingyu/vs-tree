@@ -1,3 +1,9 @@
+.vs-loading {
+  min-height: 100px;
+  background-image: url(./oval.svg);
+  background-position: center center;
+  background-repeat: no-repeat;
+}
 .vs-tree-node {
   height: 26px;
   cursor: pointer;

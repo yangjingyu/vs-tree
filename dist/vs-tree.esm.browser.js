@@ -1623,73 +1623,87 @@ var Tree = /*#__PURE__*/function () {
 
     this.keyword = '';
     this.searchFilter = ops.searchFilter;
-    this.store = new TreeStore({
-      data: this._data,
-      max: ops.max,
-      strictLeaf: ops.strictLeaf || false,
-      showCount: this.showCount,
-      itemHeight: this.itemHeight,
-      hideRoot: ops.hideRoot || false,
-      animation: ops.animation || false,
-      // 动画
-      expandLevel: typeof ops.expandLevel === 'number' ? ops.expandLevel : 1,
-      // 默认展开1级节点
-      beforeCheck: ops.beforeCheck || null,
-      showLine: ops.showLine || false,
-      // 是否显示连接线
-      showIcon: ops.showIcon || false,
-      onlyShowLeafIcon: ops.onlyShowLeafIcon || false,
-      showCheckbox: ops.showCheckbox || false,
-      showRadio: ops.showRadio || false,
-      highlightCurrent: ops.highlightCurrent || false,
-      checkFilterLeaf: ops.checkFilterLeaf || false,
-      // 过滤非叶子节点
-      checkFilter: ops.checkFilter || null,
-      // 过滤选中节点
-      accordion: ops.accordion || false,
-      // 手风琴模式
-      draggable: ops.draggable || false,
-      lazy: ops.lazy || false,
-      sort: ops.sort || false,
-      indent: ops.indent || 10,
-      checkedKeys: ops.checkedKeys || [],
-      expandKeys: ops.expandKeys || [],
-      disabledKeys: ops.disabledKeys || [],
-      limitAlert: ops.limitAlert || noop,
-      click: ops.click || noop,
-      check: ops.check || noop,
-      // 复选框被点击时出发
-      change: ops.change || noop,
-      load: ops.load || noop,
-      contextmenu: ops.contextmenu || null,
-      radioParentoOnly: ops.radioParentoOnly || false,
-      // 每个父节点下唯一，仅raido模式有效
-      renderContent: ops.renderContent || null,
-      nocheckParent: ops.nocheckParent || false,
-      // 只允许叶子节点选中
-      checkOnClickNode: ops.checkOnClickNode || false,
-      format: ops.format || null,
-      searchRender: ops.searchRender || null,
-      searchDisabledChecked: ops.searchDisabledChecked || false,
-      expandClass: ops.expandClass || 'vs-expand-icon',
-      update: function update() {
-        _this.render();
-      },
-      nodesChange: function nodesChange(nodes) {
-        _this.nodes = nodes;
-        _this.vlist && _this.render();
+    this.ready = ops.ready || noop;
+
+    var start = function start() {
+      _this.store = new TreeStore({
+        data: _this._data,
+        max: ops.max,
+        strictLeaf: ops.strictLeaf || false,
+        showCount: _this.showCount,
+        itemHeight: _this.itemHeight,
+        hideRoot: ops.hideRoot || false,
+        animation: ops.animation || false,
+        // 动画
+        expandLevel: typeof ops.expandLevel === 'number' ? ops.expandLevel : 1,
+        // 默认展开1级节点
+        beforeCheck: ops.beforeCheck || null,
+        showLine: ops.showLine || false,
+        // 是否显示连接线
+        showIcon: ops.showIcon || false,
+        onlyShowLeafIcon: ops.onlyShowLeafIcon || false,
+        showCheckbox: ops.showCheckbox || false,
+        showRadio: ops.showRadio || false,
+        highlightCurrent: ops.highlightCurrent || false,
+        checkFilterLeaf: ops.checkFilterLeaf || false,
+        // 过滤非叶子节点
+        checkFilter: ops.checkFilter || null,
+        // 过滤选中节点
+        accordion: ops.accordion || false,
+        // 手风琴模式
+        draggable: ops.draggable || false,
+        lazy: ops.lazy || false,
+        sort: ops.sort || false,
+        indent: ops.indent || 10,
+        checkedKeys: ops.checkedKeys || [],
+        expandKeys: ops.expandKeys || [],
+        disabledKeys: ops.disabledKeys || [],
+        limitAlert: ops.limitAlert || noop,
+        click: ops.click || noop,
+        check: ops.check || noop,
+        // 复选框被点击时出发
+        change: ops.change || noop,
+        load: ops.load || noop,
+        contextmenu: ops.contextmenu || null,
+        radioParentoOnly: ops.radioParentoOnly || false,
+        // 每个父节点下唯一，仅raido模式有效
+        renderContent: ops.renderContent || null,
+        nocheckParent: ops.nocheckParent || false,
+        // 只允许叶子节点选中
+        checkOnClickNode: ops.checkOnClickNode || false,
+        format: ops.format || null,
+        searchRender: ops.searchRender || null,
+        searchDisabledChecked: ops.searchDisabledChecked || false,
+        expandClass: ops.expandClass || 'vs-expand-icon',
+        update: function update() {
+          _this.render();
+        },
+        nodesChange: function nodesChange(nodes) {
+          _this.nodes = nodes;
+          _this.vlist && _this.render();
+        }
+      });
+
+      _this.store.setData(_this._data);
+
+      if (_this.store.hideRoot) {
+        // 跟节点创建dom
+        _this.store.root.createNode();
       }
-    });
-    this.store.setData(this._data);
 
-    if (this.store.hideRoot) {
-      // 跟节点创建dom
-      this.store.root.createNode();
+      _this.init(); // 设置默认选中
+
+
+      _this.store.setDefaultChecked();
+    };
+
+    if (ops.async) {
+      setTimeout(function () {
+        start();
+      }, 0);
+    } else {
+      start();
     }
-
-    this.init(); // 设置默认选中
-
-    this.store.setDefaultChecked();
   }
 
   _createClass(Tree, [{
@@ -1703,6 +1717,7 @@ var Tree = /*#__PURE__*/function () {
         keeps: this.showCount
       });
       this.render();
+      this.ready && this.ready(this);
     }
   }, {
     key: "render",
@@ -1809,6 +1824,7 @@ var plugin = (function (VsTree) {
       props: {
         data: Array | Object,
         options: Object,
+        async: Boolean,
         animation: Boolean,
         draggable: Boolean,
         hideRoot: Boolean,

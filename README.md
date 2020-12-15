@@ -8,6 +8,7 @@
 | ---------------- | ---------------------------------------------------- | --------------------- | -------------- |
 | el               | 选择器, 或 HTMLElement                               | string 或 HTMLElement |                |
 | data             | 展示数据                                             | Object、 Array        |                |
+| async         | 延时渲染                                       | Boolean               | false          |
 | hideRoot         | 是否展示根节点                                       | Boolean               | false          |
 | showLine         | 是否展示连接线                                       | Boolean               | false          |
 | showIcon         | 是否显示图标                                         | Boolean               | false          |
@@ -23,7 +24,7 @@
 | sort             | 对选中列表排序                                       | Boolean               | false          |
 | checkOnClickNode | 是否在点击节点的时候选中节点                         | Boolean               | false          |
 | lazy             | 异步加载节点                                         | Boolean               | false          |
-| strictLeaf       | 严格依赖isLeaf，不提供时如无子节点则不渲染 展开图标  | Boolean               | false          |
+| strictLeaf       | 严格依赖isLeaf，不提供时如无子节点则不渲染展开图标  | Boolean               | false          |
 | max              | 最大可选数量                                         | Number                | 0              |
 | checkFilterLeaf  | 选中结果过滤掉叶子节点， 异步加载时需手需提供 isLeaf | Boolean               | false          |
 | rootName         | 根节点名称，仅 data 为数组时有效，此时不会默认       | String                | null           |

@@ -4,6 +4,7 @@ export default (VsTree) => {
       props: {
         data: Array | Object,
         options: Object,
+        async: Boolean,
         animation: Boolean,
         draggable: Boolean,
         hideRoot: Boolean,
