@@ -612,18 +612,18 @@
         if (allChecked) {
           this.parent.checked = true;
           this.parent.indeterminate = false;
-          this.parent.checkboxNode.checked = true;
-          this.parent.dom.classList.remove('is-indeterminate');
+          this.parent.checkboxNode && (this.parent.checkboxNode.checked = true);
+          this.parent.dom && this.parent.dom.classList.remove('is-indeterminate');
         } else if (someChecked) {
           this.parent.checked = false;
           this.parent.indeterminate = true;
-          this.parent.checkboxNode.checked = false;
-          this.parent.dom.classList.add('is-indeterminate');
+          this.parent.checkboxNode && (this.parent.checkboxNode.checked = false);
+          this.parent.dom && this.parent.dom.classList.add('is-indeterminate');
         } else {
           this.parent.checked = false;
           this.parent.indeterminate = false;
-          this.parent.checkboxNode.checked = false;
-          this.parent.dom.classList.remove('is-indeterminate');
+          this.parent.checkboxNode && (this.parent.checkboxNode.checked = false);
+          this.parent.dom && this.parent.dom.classList.remove('is-indeterminate');
         }
 
         this.parent.updateCheckedParent();
