@@ -19,6 +19,7 @@ export default (VsTree) => {
         sort: Boolean,
         checkOnClickNode: Boolean,
         checkFilterLeaf: Boolean,
+        strictLeaf: Boolean,
         rootName: String,
         max: Number,
         lazy: Boolean,
