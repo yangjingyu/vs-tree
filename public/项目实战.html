@@ -36,11 +36,18 @@
         searchFilter: function(keyword, node, data) {
           return node.isLeaf && data.extra && data.extra.keyword && data.extra.keyword.includes(keyword)
         },
-        searchRender: function(node, data) {
-          // return '<span style="color: #999;">（'+ node.parent.data.name +'）</span>'
-          return () => {
-            return node.data.name + '<span style="color: #999;">（'+ node.parent.data.name +'）</span>'
+        searchRender: function(node, oldDom) {
+          const dom = oldDom.querySelector('.vs-tree-text')
+          dom.innerHTML = node.data.name + (node.parent ? '<span style="color: #999;">（'+ node.parent.data.name +'）</span>' : '')
+          const checkbox = oldDom.querySelector('.vs-checkbox__original')
+          if (node.checked) {
+            checkbox.disabled = true
+          } else {
+            oldDom.querySelector('.vs-checkbox__original').addEventListener('change', e => {
+              node.setChecked(e.target.checked)
+            });
           }
+          return oldDom
         },
         checkFilter: function (node) {
           return node.isLeaf
@@ -116,11 +123,7 @@
 
     document.getElementById('search').addEventListener('input', (e) => {
       // tree.filter(e.target.value, true)
-      tree.filter(e.target.value, (node, data) => {
-        return data.name && data.name.includes(e.target.value)
-      }, {
-        onlySearchLeaf: true
-      })
+      tree.filter(e.target.value, true)
     })
 
     document.getElementById('setMax').addEventListener('click', (e) => {

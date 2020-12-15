@@ -108,27 +108,12 @@ export default class Vlist {
           }
 
           if (dataSource.store.isSearch && dataSource.store.searchRender) {
-            const oldNode = dom.querySelector('.vs-tree-text')
-            const newNode = oldNode.cloneNode(true)
-            dataSource.oldNode = oldNode
-            const searchNode = dataSource.store.searchRender(dataSource)
-            if (searchNode instanceof HTMLElement) {
-              newNode.appendChild(searchNode)
-            } else if (typeof searchNode === 'function') {
-              newNode.innerHTML = searchNode()
-            } else {
-              const _node = document.createElement('div')
-              _node.innerHTML = searchNode
-              newNode.appendChild(_node)
+            const searchNode = dataSource.store.searchRender(dataSource, dom.cloneNode(true))
+            if (!(searchNode instanceof HTMLElement)) {
+              throw Error('searchRender must return HTMLElement')
             }
-            oldNode.parentNode.replaceChild(newNode, oldNode)
-            this.wrapper.appendChild(dom)
+            this.wrapper.appendChild(searchNode)
           } else {
-            if (dataSource.oldNode) {
-              const oldNode = dom.querySelector('.vs-tree-text')
-              oldNode && oldNode.parentNode.replaceChild(dataSource.oldNode, oldNode)
-              dataSource.oldNode = null
-            }
             this.wrapper.appendChild(dom)
           }
         } else {

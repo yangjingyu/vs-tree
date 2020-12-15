@@ -92,6 +92,7 @@ export default class Tree {
       checkOnClickNode: ops.checkOnClickNode || false,
       format: ops.format || null,
       searchRender: ops.searchRender || null,
+      searchDisabledChecked: ops.searchDisabledChecked || false,
       update: () => {
         this.render()
       },

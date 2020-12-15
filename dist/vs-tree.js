@@ -1490,32 +1490,14 @@
               }
 
               if (dataSource.store.isSearch && dataSource.store.searchRender) {
-                var oldNode = dom.querySelector('.vs-tree-text');
-                var newNode = oldNode.cloneNode(true);
-                dataSource.oldNode = oldNode;
-                var searchNode = dataSource.store.searchRender(dataSource);
+                var searchNode = dataSource.store.searchRender(dataSource, dom.cloneNode(true));
 
-                if (searchNode instanceof HTMLElement) {
-                  newNode.appendChild(searchNode);
-                } else if (typeof searchNode === 'function') {
-                  newNode.innerHTML = searchNode();
-                } else {
-                  var _node = document.createElement('div');
-
-                  _node.innerHTML = searchNode;
-                  newNode.appendChild(_node);
+                if (!(searchNode instanceof HTMLElement)) {
+                  throw Error('searchRender must return HTMLElement');
                 }
 
-                oldNode.parentNode.replaceChild(newNode, oldNode);
-                this.wrapper.appendChild(dom);
+                this.wrapper.appendChild(searchNode);
               } else {
-                if (dataSource.oldNode) {
-                  var _oldNode = dom.querySelector('.vs-tree-text');
-
-                  _oldNode && _oldNode.parentNode.replaceChild(dataSource.oldNode, _oldNode);
-                  dataSource.oldNode = null;
-                }
-
                 this.wrapper.appendChild(dom);
               }
             } else {
@@ -1656,6 +1638,7 @@
         checkOnClickNode: ops.checkOnClickNode || false,
         format: ops.format || null,
         searchRender: ops.searchRender || null,
+        searchDisabledChecked: ops.searchDisabledChecked || false,
         update: function update() {
           _this.render();
         },
