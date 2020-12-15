@@ -62,6 +62,7 @@ export default class Tree {
     this.store = new TreeStore({
       data: this._data,
       max: ops.max,
+      strictLeaf: ops.strictLeaf || false,
       showCount: this.showCount,
       itemHeight: this.itemHeight,
       hideRoot: ops.hideRoot || false,

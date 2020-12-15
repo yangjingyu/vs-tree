@@ -34,6 +34,7 @@
         showCheckbox: true,
         max: 0,
         theme: 'element',
+        strictLeaf: true,
         searchFilter: function(keyword, node, data) {
           return node.isLeaf && data.extra && data.extra.keyword && data.extra.keyword.includes(keyword)
         },

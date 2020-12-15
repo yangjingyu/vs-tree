@@ -132,8 +132,14 @@ export default class Node {
       dom.style.paddingLeft = (this.level + level) * this.store.indent + 'px'
     }
 
-    const checkDom = (this.childNodes?.length || this.store.lazy) && !this.isLeaf ? this.createExpand() : this.createExpandEmpty()
-    dom.appendChild(checkDom)
+    let expandDom
+    if (this.store.strictLeaf) {
+      expandDom = !this.isLeaf ? this.createExpand() : this.createExpandEmpty()
+    } else {
+      expandDom = (this.childNodes?.length || this.store.lazy) && !this.isLeaf ? this.createExpand() : this.createExpandEmpty()
+    }
+
+    dom.appendChild(expandDom)
     if (this.store.showCheckbox || this.store.showRadio) {
       if (!this.store.nocheckParent || !this.childNodes.length) {
         dom.appendChild(this.createCheckbox())

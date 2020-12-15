@@ -23,11 +23,12 @@
 | sort             | 对选中列表排序                                       | Boolean               | false          |
 | checkOnClickNode | 是否在点击节点的时候选中节点                         | Boolean               | false          |
 | lazy             | 异步加载节点                                         | Boolean               | false          |
+| strictLeaf       | 严格依赖isLeaf，不提供时如无子节点则不渲染 展开图标  | Boolean               | false          |
 | max              | 最大可选数量                                         | Number                | 0              |
 | checkFilterLeaf  | 选中结果过滤掉叶子节点， 异步加载时需手需提供 isLeaf | Boolean               | false          |
 | rootName         | 根节点名称，仅 data 为数组时有效，此时不会默认       | String                | null           |
 | expandClass      | 展开收起图标class                                    | String                | vs-expand-icon |
-| theme            | 皮肤风格,仅支持 'element'                               | String                | null           |
+| theme            | 皮肤风格,仅支持 'element'                            | String                | null           |
 | disabledKeys     | 禁止操作                                             | Array                 | null           |
 | checkedKeys      | 默认选中                                             | Array                 | null           |
 | expandKeys       | 默认展开                                             | Array                 | null           |
