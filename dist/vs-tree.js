@@ -1818,7 +1818,9 @@
           },
           beforeCheck: Function,
           renderContent: Function,
-          checkFilter: Function
+          checkFilter: Function,
+          searchFilter: Function,
+          searchRender: Function
         },
         data: function data() {
           return {
