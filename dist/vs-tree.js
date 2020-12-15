@@ -1,1 +1,1946 @@
-!function(e,t){"object"==typeof exports&&"undefined"!=typeof module?t(exports):"function"==typeof define&&define.amd?define(["exports"],t):t((e="undefined"!=typeof globalThis?globalThis:e||self).vsTree={})}(this,(function(e){"use strict";function t(e){return(t="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e})(e)}function i(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function n(e,t){for(var i=0;i<t.length;i++){var n=t[i];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(e,n.key,n)}}function a(e,t,i){return t&&n(e.prototype,t),i&&n(e,i),e}function s(e,t,i){return t in e?Object.defineProperty(e,t,{value:i,enumerable:!0,configurable:!0,writable:!0}):e[t]=i,e}function r(e,t){var i=Object.keys(e);if(Object.getOwnPropertySymbols){var n=Object.getOwnPropertySymbols(e);t&&(n=n.filter((function(t){return Object.getOwnPropertyDescriptor(e,t).enumerable}))),i.push.apply(i,n)}return i}function o(e){for(var t=1;t<arguments.length;t++){var i=null!=arguments[t]?arguments[t]:{};t%2?r(Object(i),!0).forEach((function(t){s(e,t,i[t])})):Object.getOwnPropertyDescriptors?Object.defineProperties(e,Object.getOwnPropertyDescriptors(i)):r(Object(i)).forEach((function(t){Object.defineProperty(e,t,Object.getOwnPropertyDescriptor(i,t))}))}return e}function h(e){return function(e){if(Array.isArray(e))return d(e)}(e)||function(e){if("undefined"!=typeof Symbol&&Symbol.iterator in Object(e))return Array.from(e)}(e)||function(e,t){if(!e)return;if("string"==typeof e)return d(e,t);var i=Object.prototype.toString.call(e).slice(8,-1);"Object"===i&&e.constructor&&(i=e.constructor.name);if("Map"===i||"Set"===i)return Array.from(e);if("Arguments"===i||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(i))return d(e,t)}(e)||function(){throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}()}function d(e,t){(null==t||t>e.length)&&(t=e.length);for(var i=0,n=new Array(t);i<t;i++)n[i]=e[i];return n}function c(e,t){var i=function(e){for(var t=e,i=0,n=0;t&&!isNaN(t.offsetLeft)&&!isNaN(t.offsetTop);)i+=t.offsetLeft-t.scrollLeft,n+=t.offsetTop-t.scrollTop,t=t.offsetParent;return{top:n,left:i}}(t.dom).top,n=t.dom.offsetHeight,a=e.pageY;return a>i+n-5?1:a<i+2?-1:0}var l,u=0,f=function(){function e(n){var a=this;if(i(this,e),this.id=u++,this.checked=!1,this.expanded=!1,this.indeterminate=!1,this.visbile=!1,this.disabled=!1,this.loaded=!1,this.isLeaf=!1,this.level=0,this.childNodes=[],this.store=n.store,this.parent=n.parent,this.data=n.data,"function"==typeof this.store.format&&!n.data._vsroot){var s=this.store.format(Object.assign({},n.data),this);if("object"!==t(s))throw new Error("format must return object! \nformat: function(data) {\n  return {id, name, children, isLeaf}\n}");["id","name","children","isLeaf","icon","extra"].forEach((function(e){Object.prototype.hasOwnProperty.call(s,e)&&(a.data[e]=s[e])}))}this.store.expandKeys.includes(this.data.id)&&(this.expanded=!0),this.store.disabledKeys.includes(this.data.id)&&(this.disabled=!0),this.parent&&(this.level=this.parent.level+1),this.data&&this.setData(this.data),this.initData()}return a(e,[{key:"initData",value:function(){var e;!(this.level>this.store.expandLevel&&-1!==this.store.expandLevel)||null!==(e=this.parent)&&void 0!==e&&e.expanded?this.visbile=!0:this.visbile=!1}},{key:"createNode",value:function(){var e=this;if(this.dom)return this.checkboxNode&&(this.checkboxNode.checked=this.checked),this.radioNode&&(this.radioNode.checked=this.checked),this.dom;var t=document.createElement("div");return t.className="vs-tree-node",t.setAttribute("vs-index",this.id),!this.isLeaf&&this.childNodes.length&&t.setAttribute("vs-child",!0),t.appendChild(this.createInner()),this.store.renderContent&&t.appendChild(this.createContent()),t.addEventListener("click",(function(i){i.stopPropagation(),e.store.highlightCurrent&&(e.store.selectedCurrent&&e.store.selectedCurrent.dom.classList.remove("selected"),t.classList.add("selected")),e.store.checkOnClickNode&&!e.disabled&&e.handleCheckChange({target:{checked:!e.checked}}),e.store.selectedCurrent=e,e.store.click(i,e)}),{passive:!1}),t.addEventListener("contextmenu",(function(t){e.store.contextmenu&&"function"==typeof e.store.contextmenu&&(t.stopPropagation(),t.preventDefault(),e.store.contextmenu(t,e))})),this.store.draggable&&this.createDragable(t),this.dom=t,t}},{key:"createInner",value:function(){var e=document.createElement("div");e.className="vs-tree-inner";var t,i,n=this.store.hideRoot?-1:0;if(this.store.showLine)for(var a=0;a<this.level+n;a++){var s=document.createElement("span");s.className="vs-indent-unit",e.appendChild(s)}else e.style.paddingLeft=(this.level+n)*this.store.indent+"px";this.store.strictLeaf?t=this.isLeaf?this.createExpandEmpty():this.createExpand():t=(null!==(i=this.childNodes)&&void 0!==i&&i.length||this.store.lazy)&&!this.isLeaf?this.createExpand():this.createExpandEmpty();return e.appendChild(t),(this.store.showCheckbox||this.store.showRadio)&&(this.store.nocheckParent&&this.childNodes.length||e.appendChild(this.createCheckbox())),this.store.showIcon&&(this.store.onlyShowLeafIcon&&this.childNodes.length&&!this.isLeaf||e.appendChild(this.createIcon())),e.appendChild(this.createText()),e}},{key:"cusmtomNode",value:function(e,t){var i=this,n=document.createElement(e);return t.text&&(n.innerText=t.text),t.className&&(n.className=t.className),t.children&&t.children.forEach((function(e){n.appendChild(e)})),"function"==typeof t.click&&n.addEventListener("click",(function(e){e.stopPropagation(),t.click(e,i)}),{passive:!1}),n}},{key:"createContent",value:function(){var e=this.store.renderContent(this.cusmtomNode.bind(this),this);return e?(e.addEventListener("click",(function(e){e.stopPropagation()}),{passive:!1}),e):document.createElement("span")}},{key:"createExpandEmpty",value:function(){var e=document.createElement("span");return e.className="expand-empty "+this.store.expandClass,e}},{key:"createExpand",value:function(){var e=this,t=document.createElement("span");return t.className="expand "+this.store.expandClass,(this.level<this.store.expandLevel||-1===this.store.expandLevel||this.expanded)&&(t.classList.add("expanded"),this.expanded=!0),t.addEventListener("click",(function(i){if(i.stopPropagation(),!e.loading){var n=!t.classList.contains("expanded");e.setExpand(n)}}),{passive:!1}),this.expandEl=t,t}},{key:"createCheckbox",value:function(){var e=this,t="checkbox";this.store.showRadio&&(t="radio");var i=document.createElement("label");i.className="vs-".concat(t);var n=document.createElement("span");n.className="vs-".concat(t,"__inner");var a=document.createElement("input");return a.type=t,a.checked=this.checked,a.disabled=this.disabled,a.className="vs-".concat(t,"__original"),a.name="radio"===t?"vs-radio"+(this.store.radioParentoOnly?this.parent.id:""):"vs-checkbox","radio"===t?(a.name="vs-radio"+(this.store.radioParentoOnly?this.parent.id:""),this.radioNode=a):(a.name="vs-checkbox",this.checkboxNode=a),i.appendChild(a),i.appendChild(n),i.addEventListener("click",(function(e){e.stopPropagation()}),{passive:!1}),a.addEventListener("click",(function(t){e.store.check(t,e)}),{passive:!1}),a.addEventListener("change",(function(t){t.stopPropagation(),e.handleCheckChange(t)})),this.checkboxEl=a,i}},{key:"handleCheckChange",value:function(e){var t=e.target.checked;if("function"!=typeof this.store.beforeCheck||this.store.beforeCheck(this)){if(t&&this.store.checkMaxNodes(this))return this.store.limitAlert(),void(e.target.checked=!1);this.store.showRadio?this.updateRadioChecked(t):(this.updateChecked(t),this.updateCheckedParent(t)),this.store.change(this)}else e.target.checked=!t}},{key:"createText",value:function(){var e=document.createElement("span");return e.innerText=this.data.name,e.className="vs-tree-text",e}},{key:"createIcon",value:function(){var e=document.createElement("span");return e.className=this.isLeaf||!this.childNodes.length?"vs-icon-leaf":"vs-icon-parent",this.data.icon&&(this.data.icon instanceof HTMLElement?(e.style.backgroundImage="none",e.appendChild(this.data.icon)):e.classList.add(this.data.icon)),e}},{key:"setData",value:function(t){var i;this.store.dataMap.set(t.id,this),this.store.nodeMap.set(this.id,this),this.data=t,this.childNodes=[],"boolean"==typeof t.isLeaf?this.isLeaf=t.isLeaf:t.children||this.store.lazy||(this.isLeaf=!0),(i=0===this.level&&this.data instanceof e?this.data:this.data.children||[]).length&&(this.loaded=!0);for(var n=0,a=i.length;n<a;n++)this.insertChild({data:i[n]})}},{key:"insertChild",value:function(t){return t instanceof e||(Object.assign(t,{parent:this,store:this.store}),t=new e(t)),t.level=this.level+1,this.childNodes.push(t),t}},{key:"updateExpand",value:function(e){var t=this;this.childNodes.length&&this.childNodes.forEach((function(i){e&&t.expanded?i.visbile=!0:i.visbile=!1,i.updateExpand(e)}))}},{key:"updateChecked",value:function(e){this.disabled||(this.checked=e,this.sortId=Date.now(),this.checkboxNode&&(this.checkboxNode.checked=e),this.parent&&(this.parent.indeterminate=!1),this.dom&&this.dom.classList.remove("is-indeterminate"),this.childNodes.length&&this.childNodes.forEach((function(t){t.updateChecked(e)})))}},{key:"updateCheckedParent",value:function(){if(this.parent&&!this.store.nocheckParent){var e=this.parent.childNodes.every((function(e){return e.checked})),t=this.parent.childNodes.some((function(e){return e.checked||e.indeterminate}));e?(this.parent.checked=!0,this.parent.indeterminate=!1,this.parent.checkboxNode&&(this.parent.checkboxNode.checked=!0),this.parent.dom&&this.parent.dom.classList.remove("is-indeterminate")):t?(this.parent.checked=!1,this.parent.indeterminate=!0,this.parent.checkboxNode&&(this.parent.checkboxNode.checked=!1),this.parent.dom&&this.parent.dom.classList.add("is-indeterminate")):(this.parent.checked=!1,this.parent.indeterminate=!1,this.parent.checkboxNode&&(this.parent.checkboxNode.checked=!1),this.parent.dom&&this.parent.dom.classList.remove("is-indeterminate")),this.parent.updateCheckedParent()}}},{key:"updateRadioChecked",value:function(e){this.store.radioParentoOnly?(this.store.radioMap[this.parent.id]&&(this.store.radioMap[this.parent.id].checked=!1),this.store.radioMap[this.parent.id]=this):(this.store.radioNode&&(this.store.radioNode=!1),this.store.radioNode=this),this.checked=e,this.radioNode&&(this.radioNode.checked=e)}},{key:"setChecked",value:function(e,t){!t&&this.disabled||(this.store.showRadio?this.updateRadioChecked(e):this.store.showCheckbox&&(this.updateChecked(e),this.updateCheckedParent(e)))}},{key:"setDisabled",value:function(){var e=!(arguments.length>0&&void 0!==arguments[0])||arguments[0];this.disabled=e,this.checkboxEl&&(this.checkboxEl.disabled=e)}},{key:"setExpand",value:function(e,t){var i=this;this.expanded=e,this.updateExpand(this.expanded),this.setAccordion(e),this.expandEl&&(e?this.expandEl.classList.add("expanded"):this.expandEl.classList.remove("expanded")),this.store.lazy&&!this.loaded?this.loadData((function(e){e&&!t&&i.storeUpdate()})):!t&&this.storeUpdate()}},{key:"storeUpdate",value:function(){this.store.animation?this.createAnimation():this.store.update()}},{key:"createAnimation",value:function(){var e=this;this.transitionNode&&this.transitionNode.parentNode&&this.transitionNode.parentNode.removeChild(this.transitionNode);var t,i,n,a=document.createElement("div");if(a.className="vs-transition",this.childNodes.length>this.store.showCount)for(var s=0;s<this.store.showCount-1;s++){var r=this.childNodes[s];a.appendChild(r.dom||r.createNode())}else this.childNodes.forEach((function(e){a.appendChild(e.dom||e.createNode())}));t=a,i=this.dom,(n=i.parentNode).lastChild===i?n.appendChild(t):n.insertBefore(t,i.nextSibling);var o=(this.childNodes.length>this.store.showCount?this.store.showCount:this.childNodes.length)*this.store.itemHeight+"px";this.expanded?setTimeout((function(){a.style.height=o}),0):(a.style.height=o,setTimeout((function(){a.style.height=0}),0));a.addEventListener("transitionend",(function t(){a.removeEventListener("transitionend",t),a.parentNode&&a.parentNode.removeChild(a),a.removeEventListener("transitionend",t),e.store.update()})),this.transitionNode=a}},{key:"createDragable",value:function(e){var t=this;e.draggable=!0,e.addEventListener("dragstart",(function(e){console.log(e)})),e.addEventListener("dragenter",(function(i){i.stopPropagation();var n=i.target.getAttribute("vs-index");if(n){var a=c(i,t);e===i.target&&0===a||(console.log(t.store.nodeMap),console.log(t.store.nodeMap.get(Number(n))),i.target.classList.add("vs-drag-enter"),-1===a&&(i.target.classList.remove("vs-drag-over-gap-bottom"),i.target.classList.add("vs-drag-over-gap-top")),1===a&&(i.target.classList.remove("vs-drag-over-gap-top"),i.target.classList.add("vs-drag-over-gap-bottom")))}})),e.addEventListener("dragleave",(function(e){e.target.classList.remove("vs-drag-enter"),e.target.classList.remove("vs-drag-over-gap-bottom"),e.target.classList.remove("vs-drag-over-gap-top")}))}},{key:"setAccordion",value:function(e){if(this.store.accordion&&this.parent&&e){var t=this.store.expandMap[this.parent.id];if(t===this)return;t&&t.setExpand(!1),this.store.expandMap[this.parent.id]=this}}},{key:"loadData",value:function(e){var t=this;if(!this.loading){this.loading=!0,this.expandEl&&this.expandEl.classList.add("is-loading");this.store.load(this,(function(){var i=arguments.length>0&&void 0!==arguments[0]?arguments[0]:[];t.loaded=!0,t.loading=!1,t.expandEl&&t.expandEl.classList.remove("is-loading"),i.length&&(i.forEach((function(e){t.insertChild({data:e,store:t.store})})),t.childNodes[0].updateCheckedParent(),t.store.updateNodes()),e&&e.call(t,i)}))}}},{key:"remove",value:function(){var e=this,t=this.parent;if(t){var i=t.childNodes||[],n=i.findIndex((function(t){return t.id===e.id}));n>-1&&i.splice(n,1),this.store.updateNodes()}}},{key:"append",value:function(e){if(e&&"object"===t(e)){var i=this.dom;0!==this.childNodes.length&&(i=null);var n=this.insertChild({data:e,store:this.store});i&&(delete this.dom,i.parentNode.replaceChild(this.createNode(),i)),n.updateCheckedParent(),this.store.updateNodes()}}}]),e}(),p=function(){function e(t){for(var n in i(this,e),t)Object.prototype.hasOwnProperty.call(t,n)&&(this[n]=t[n]);this.nodes=[],this.dataMap=new Map,this.nodeMap=new Map,this.radioMap={},this.expandMap={},this.root=new f({data:this.data,store:this})}return a(e,[{key:"setData",value:function(e){this.root.setData(e),this.updateNodes()}},{key:"updateNodes",value:function(){this.nodes=this.flattenTreeData(),this.nodesChange(this.nodes)}},{key:"flattenTreeData",value:function(){var e=[];return function t(i){e.push(i),i.childNodes&&i.childNodes.length&&i.childNodes.forEach((function(e){t(e)}))}(this.root),e}},{key:"getNodeById",value:function(e){return this.dataMap.get(e)}},{key:"getCheckedNodes",value:function(){var e=this,t=this.nodes.filter((function(t){return t.checked&&!t.data._vsroot&&e._checkVerify(t)&&(!e.nocheckParent||!t.childNodes.length)}));return this.sort?t.sort((function(e,t){return e.sortId-t.sortId})).map((function(e){return e.data})):t.map((function(e){return e.data}))}},{key:"setDefaultChecked",value:function(){var e=this;this.checkedKeys.forEach((function(t){var i=e.getNodeById(t);i?i.setChecked(!0,!0):console.warn("not found node by "+t)}))}},{key:"checkMaxNodes",value:function(e){if(!this.max)return!1;if(!e.checked&&e.hasChildCount>this.max)return!0;var t=this.getCheckedNodes().length;return!e.checked&&t+(e.isLeaf?1:this.getUnCheckLeafsCount(e))>this.max}},{key:"getUnCheckLeafsCount",value:function(e){var t=this,i=this._checkVerify(e)&&!e.checked?1:0;return e.childNodes.forEach((function(e){i+=t.getUnCheckLeafsCount(e)})),i}},{key:"_checkVerify",value:function(e){return"function"==typeof this.checkFilter?this.checkFilter(e):!this.checkFilterLeaf||e.isLeaf}}]),e}(),v="FRONT",g="BEHIND",m="INIT",k="FIXED",y="DYNAMIC",x=function(){function e(t,n){i(this,e),this.init(t,n)}return a(e,[{key:"init",value:function(e,t){this.param=e,this.callUpdate=t,this.sizes=new Map,this.firstRangeTotalSize=0,this.firstRangeAverageSize=0,this.lastCalcIndex=0,this.fixedSizeValue=0,this.calcType=m,this.offset=0,this.direction="",this.range=Object.create(null),e&&this.checkRange(0,e.keeps-1)}},{key:"destroy",value:function(){this.init(null,null)}},{key:"getRange",value:function(){var e=Object.create(null);return e.start=this.range.start,e.end=this.range.end,e.padFront=this.range.padFront,e.padBehind=this.range.padBehind,e}},{key:"isBehind",value:function(){return this.direction===g}},{key:"isFront",value:function(){return this.direction===v}},{key:"getOffset",value:function(e){return(e<1?0:this.getIndexOffset(e))+this.param.slotHeaderSize}},{key:"updateParam",value:function(e,t){var i=this;this.param&&e in this.param&&("uniqueIds"===e&&this.sizes.forEach((function(e,n){t.includes(n)||i.sizes.delete(n)})),this.param[e]=t)}},{key:"saveSize",value:function(e,t){this.sizes.set(e,t),this.calcType===m?(this.fixedSizeValue=t,this.calcType=k):this.calcType===k&&this.fixedSizeValue!==t&&(this.calcType=y,delete this.fixedSizeValue),this.calcType!==k&&void 0!==this.firstRangeTotalSize&&(this.sizes.size<Math.min(this.param.keeps,this.param.uniqueIds.length)?(this.firstRangeTotalSize=h(this.sizes.values()).reduce((function(e,t){return e+t}),0),this.firstRangeAverageSize=Math.round(this.firstRangeTotalSize/this.sizes.size)):delete this.firstRangeTotalSize)}},{key:"handleDataSourcesChange",value:function(){var e=this.range.start;this.isFront()?e-=2:this.isBehind()&&(e+=2),e=Math.max(e,0),this.updateRange(this.range.start,this.getEndByStart(e))}},{key:"handleSlotSizeChange",value:function(){this.handleDataSourcesChange()}},{key:"handleScroll",value:function(e){this.direction=e<this.offset?v:g,this.offset=e,this.param&&(this.direction===v?this.handleFront():this.direction===g&&this.handleBehind())}},{key:"handleFront",value:function(){var e=this.getScrollOvers();if(!(e>this.range.start)){var t=Math.max(e-this.param.buffer,0);this.checkRange(t,this.getEndByStart(t))}}},{key:"handleBehind",value:function(){var e=this.getScrollOvers();e<this.range.start+this.param.buffer||this.checkRange(e,this.getEndByStart(e))}},{key:"getScrollOvers",value:function(){var e=this.offset-this.param.slotHeaderSize;if(e<=0)return 0;if(this.isFixedType())return Math.floor(e/this.fixedSizeValue);for(var t=0,i=0,n=0,a=this.param.uniqueIds.length;t<=a;){if(i=t+Math.floor((a-t)/2),(n=this.getIndexOffset(i))===e)return i;n<e?t=i+1:n>e&&(a=i-1)}return t>0?--t:0}},{key:"getIndexOffset",value:function(e){if(!e)return 0;for(var t=0,i=0,n=0;n<e;n++)t+="number"==typeof(i=this.sizes.get(this.param.uniqueIds[n]))?i:this.getEstimateSize();return this.lastCalcIndex=Math.max(this.lastCalcIndex,e-1),this.lastCalcIndex=Math.min(this.lastCalcIndex,this.getLastIndex()),t}},{key:"isFixedType",value:function(){return this.calcType===k}},{key:"getLastIndex",value:function(){return this.param.uniqueIds.length-1}},{key:"checkRange",value:function(e,t){var i=this.param.keeps;this.param.uniqueIds.length<=i?(e=0,t=this.getLastIndex()):t-e<i-1&&(e=t-i+1),this.range.start!==e&&this.updateRange(e,t)}},{key:"updateRange",value:function(e,t){this.range.start=e,this.range.end=t,this.range.padFront=this.getPadFront(),this.range.padBehind=this.getPadBehind(),this.callUpdate(this.getRange())}},{key:"getEndByStart",value:function(e){var t=e+this.param.keeps-1;return Math.min(t,this.getLastIndex())}},{key:"getPadFront",value:function(){return this.isFixedType()?this.fixedSizeValue*this.range.start:this.getIndexOffset(this.range.start)}},{key:"getPadBehind",value:function(){var e=this.range.end,t=this.getLastIndex();return this.isFixedType()?(t-e)*this.fixedSizeValue:this.lastCalcIndex===t?this.getIndexOffset(t)-this.getIndexOffset(e):(t-e)*this.getEstimateSize()}},{key:"getEstimateSize",value:function(){return this.isFixedType()?this.fixedSizeValue:this.firstRangeAverageSize||this.param.estimateSize}}]),e}(),b=function(){function e(t){i(this,e),this.range=null,this.$el=t.root,this.$el.style.maxHeight=t.maxHeight||"400px",this.$el.style.overflowY="auto",this.dataSources=t.data,this.wrapper=document.createElement("div"),this.wrapper.className="vs-virtual-list",this.$el.appendChild(this.wrapper),this.$el.addEventListener("scroll",this.onScroll.bind(this),{passive:!1}),this.keeps=t.keeps||20,this.estimateSize=t.estimateSize||26,this.dataKey="id",this.installVirtual()}return a(e,[{key:"getOffset",value:function(){var e=this.$el;return e?Math.ceil(e.scrollTop):0}},{key:"getClientSize",value:function(){var e=this.$el;return e?Math.ceil(e.clientHeight):0}},{key:"getScrollSize",value:function(){var e=this.$el;return e?Math.ceil(e.scrollHeight):0}},{key:"installVirtual",value:function(){this.virtual=new x({slotHeaderSize:0,slotFooterSize:0,keeps:this.keeps,estimateSize:this.estimateSize,buffer:Math.round(this.keeps/3),uniqueIds:this.getUniqueIdFromDataSources()},this.onRangeChanged.bind(this)),this.range=this.virtual.getRange(),this.render()}},{key:"getUniqueIdFromDataSources",value:function(){var e=this.dataKey;return this.dataSources.map((function(t){return"function"==typeof e?e(t):t[e]}))}},{key:"onRangeChanged",value:function(e){this.range=e,this.render()}},{key:"onScroll",value:function(){var e=this.getOffset(),t=this.getClientSize(),i=this.getScrollSize();e<0||e+t>i+1||!i||this.virtual.handleScroll(e)}},{key:"getRenderSlots",value:function(){var e=this.range,t=e.start,i=e.end,n=this.dataSources,a=this.dataKey;this.wrapper.innerHTML="";for(var s=t;s<=i;s++){var r=n[s];if(r){var o="function"==typeof a?a(r):r[a];if("string"==typeof o||"number"==typeof o){var h=r.createNode();if(r.store.onlySearchLeaf?h.classList.add("vs-search-only-leaf"):h.classList.remove("vs-search-only-leaf"),r.store.isSearch&&r.store.searchRender){var d=r.store.searchRender(r,h.cloneNode(!0));if(!(d instanceof HTMLElement))throw Error("searchRender must return HTMLElement");this.wrapper.appendChild(d)}else this.wrapper.appendChild(h)}else console.warn("Cannot get the data-key '".concat(a,"' from data-sources."))}else console.warn("Cannot get the index '".concat(s,"' from data-sources."))}}},{key:"update",value:function(e){this.dataSources=e,this.wrapper.innerHTML="",this.virtual.updateParam("uniqueIds",this.getUniqueIdFromDataSources()),this.virtual.handleDataSourcesChange()}},{key:"render",value:function(){var e=this.range,t=e.padFront,i=e.padBehind,n="".concat(t,"px 0px ").concat(i,"px");this.wrapper.style.padding=n,this.getRenderSlots()}}]),e}(),C=function(){},N=function(){function e(n,a){var s=this;i(this,e);var r=new Proxy(a,{get:function(e,t,i){return console.log("getting ".concat(t,"!")),Reflect.get(e,t,i)},set:function(e,t,i,n){return console.log("setting ".concat(t,"!")),Reflect.set(e,t,i,n)}});if(this.$options=r,this.$el="string"==typeof n?document.querySelector(n):n,!(this.$el instanceof HTMLElement))throw Error("请为组件提供根节点");if(this.$el.classList.add("vs-tree"),a.theme&&this.$el.classList.add("vs-theme-"+a.theme),Array.isArray(a.data))this._data={_vsroot:!0,name:a.rootName||"---",children:a.data},a.rootName||(a.hideRoot=!0);else{if("object"!==t(a.data))throw Error("参数data仅支持对象或数组！");this._data=a.data}this.itemHeight=a.itemHeight||26,this.showCount=a.showCount||20,this.maxHeight=a.maxHeight||"400px",this.dataKey=a.dataKey||"id",this.data=[],this.keyword="",this.searchFilter=a.searchFilter,this.store=new p({data:this._data,max:a.max,strictLeaf:a.strictLeaf||!1,showCount:this.showCount,itemHeight:this.itemHeight,hideRoot:a.hideRoot||!1,animation:a.animation||!1,expandLevel:"number"==typeof a.expandLevel?a.expandLevel:1,beforeCheck:a.beforeCheck||null,showLine:a.showLine||!1,showIcon:a.showIcon||!1,onlyShowLeafIcon:a.onlyShowLeafIcon||!1,showCheckbox:a.showCheckbox||!1,showRadio:a.showRadio||!1,highlightCurrent:a.highlightCurrent||!1,checkFilterLeaf:a.checkFilterLeaf||!1,checkFilter:a.checkFilter||null,accordion:a.accordion||!1,draggable:a.draggable||!1,lazy:a.lazy||!1,sort:a.sort||!1,indent:a.indent||10,checkedKeys:a.checkedKeys||[],expandKeys:a.expandKeys||[],disabledKeys:a.disabledKeys||[],limitAlert:a.limitAlert||C,click:a.click||C,check:a.check||C,change:a.change||C,load:a.load||C,contextmenu:a.contextmenu||null,radioParentoOnly:a.radioParentoOnly||!1,renderContent:a.renderContent||null,nocheckParent:a.nocheckParent||!1,checkOnClickNode:a.checkOnClickNode||!1,format:a.format||null,searchRender:a.searchRender||null,searchDisabledChecked:a.searchDisabledChecked||!1,expandClass:a.expandClass||"vs-expand-icon",update:function(){s.render()},nodesChange:function(e){s.nodes=e,s.vlist&&s.render()}}),this.store.setData(this._data),this.store.hideRoot&&this.store.root.createNode(),this.init(),this.store.setDefaultChecked()}return a(e,[{key:"init",value:function(){this.vlist=new b({root:this.$el,data:[],maxHeight:this.maxHeight,estimateSize:this.itemHeight,keeps:this.showCount}),this.render()}},{key:"render",value:function(){var e=this,t=!(arguments.length>0&&void 0!==arguments[0])||arguments[0];this.data=this.nodes.filter((function(t){return e.hasKeyword(t)&&t.visbile&&!(e.store.hideRoot&&0===t.level)})),t&&this.vlist.update(this.data)}},{key:"hasKeyword",value:function(e){var t=this;if(!this.keyword)return!0;var i=this.checkFilter(e);return i?e.parent&&(e.parent.requireExpand=!0):e.childNodes.forEach((function(e){i||(i=t.hasKeyword(e))})),i}},{key:"checkFilter",value:function(e){if(this.keyword)return"function"==typeof this.searchFilter?this.searchFilter(this.keyword,e,e.data):e.data.name&&e.data.name.includes(this.keyword)}},{key:"filter",value:function(){var e=this,t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:"",i=arguments.length>1?arguments[1]:void 0;if(this.keyword=t,this.store.onlySearchLeaf=i&&!!t,this.store.isSearch=!!t,this.store.onlySearchLeaf){var n=this.nodes.filter((function(t){return!t.childNodes.length&&e.checkFilter(t)&&!(e.store.hideRoot&&0===t.level)}));return this.vlist.update(n),n}return this.render(!1),this.data.forEach((function(e){e.requireExpand&&(e.requireExpand=!1,e.setExpand(!0,!0))})),this.render(),this.data}},{key:"getNodeById",value:function(e){return this.store.getNodeById(e)}},{key:"getCheckedNodes",value:function(){return this.store.getCheckedNodes()}},{key:"setMaxValue",value:function(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:0;this.store.max=e}}]),e}(),L=(l=N,function(e){var t=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{};e.component("vs-tree",{props:{data:Array|Object,options:Object,animation:Boolean,draggable:Boolean,hideRoot:Boolean,showCheckbox:Boolean,showRadio:Boolean,radioParentoOnly:Boolean,showLine:Boolean,showIcon:Boolean,onlyShowLeafIcon:Boolean,highlightCurrent:Boolean,accordion:Boolean,nocheckParent:Boolean,sort:Boolean,checkOnClickNode:Boolean,checkFilterLeaf:Boolean,strictLeaf:Boolean,rootName:String,max:Number,lazy:Boolean,load:Function,format:Function,disabledKeys:Array,checkedKeys:Array,expandKeys:Array,keyword:String,expandClass:String,theme:String,expandLevel:{type:Number,default:1},indent:{type:Number,default:10},showCount:{type:Number,default:20},itemHeight:{type:Number,default:26},beforeCheck:Function,renderContent:Function,checkFilter:Function,searchFilter:Function,searchRender:Function},data:function(){return{tree:{}}},watch:{max:function(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:0;this.setMaxValue(e)},keyword:function(e){this.filter(e)}},mounted:function(){var e=this;this.$nextTick((function(){e._vsinit()}))},methods:{_vsinit:function(){var e=this;console.time("render:tree"),this.tree.tree=new l(this.$refs.tree,Object.assign({},t,this.$props,o(o({},this.options),{},{data:this.data,click:function(t,i){e.$emit("click",t,i)},check:function(t,i){e.$emit("check",t,i)},change:function(t){e.$emit("change",t)},contextmenu:function(t,i){e.$emit("node-contextmenu",t,i)},limitAlert:function(){e.$emit("limit-alert")}}))),console.timeEnd("render:tree")},getNodeById:function(e){return this.tree.tree.getNodeById(e)},getCheckedNodes:function(){return this.tree.tree.getCheckedNodes()},filter:function(e){return this.tree.tree.filter(e)},setMaxValue:function(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:0;this.tree.tree.setMaxValue(e)}},render:function(e){return e("div",{ref:"tree"})}})});e.default=N,e.install=L,e.version="2.0.0",Object.defineProperty(e,"__esModule",{value:!0})}));
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+  typeof define === 'function' && define.amd ? define(['exports'], factory) :
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.vsTree = {}));
+}(this, (function (exports) { 'use strict';
+
+  var version = "2.0.0";
+
+  function _typeof(obj) {
+    "@babel/helpers - typeof";
+
+    if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+      _typeof = function (obj) {
+        return typeof obj;
+      };
+    } else {
+      _typeof = function (obj) {
+        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+      };
+    }
+
+    return _typeof(obj);
+  }
+
+  function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  }
+
+  function _defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }
+
+  function _createClass(Constructor, protoProps, staticProps) {
+    if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) _defineProperties(Constructor, staticProps);
+    return Constructor;
+  }
+
+  function _defineProperty(obj, key, value) {
+    if (key in obj) {
+      Object.defineProperty(obj, key, {
+        value: value,
+        enumerable: true,
+        configurable: true,
+        writable: true
+      });
+    } else {
+      obj[key] = value;
+    }
+
+    return obj;
+  }
+
+  function ownKeys(object, enumerableOnly) {
+    var keys = Object.keys(object);
+
+    if (Object.getOwnPropertySymbols) {
+      var symbols = Object.getOwnPropertySymbols(object);
+      if (enumerableOnly) symbols = symbols.filter(function (sym) {
+        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+      });
+      keys.push.apply(keys, symbols);
+    }
+
+    return keys;
+  }
+
+  function _objectSpread2(target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i] != null ? arguments[i] : {};
+
+      if (i % 2) {
+        ownKeys(Object(source), true).forEach(function (key) {
+          _defineProperty(target, key, source[key]);
+        });
+      } else if (Object.getOwnPropertyDescriptors) {
+        Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+      } else {
+        ownKeys(Object(source)).forEach(function (key) {
+          Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+        });
+      }
+    }
+
+    return target;
+  }
+
+  function _toConsumableArray(arr) {
+    return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
+  }
+
+  function _arrayWithoutHoles(arr) {
+    if (Array.isArray(arr)) return _arrayLikeToArray(arr);
+  }
+
+  function _iterableToArray(iter) {
+    if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
+  }
+
+  function _unsupportedIterableToArray(o, minLen) {
+    if (!o) return;
+    if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+    var n = Object.prototype.toString.call(o).slice(8, -1);
+    if (n === "Object" && o.constructor) n = o.constructor.name;
+    if (n === "Map" || n === "Set") return Array.from(o);
+    if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+  }
+
+  function _arrayLikeToArray(arr, len) {
+    if (len == null || len > arr.length) len = arr.length;
+
+    for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
+
+    return arr2;
+  }
+
+  function _nonIterableSpread() {
+    throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+  }
+
+  function insterAfter(newElement, targetElement) {
+    var parent = targetElement.parentNode;
+
+    if (parent.lastChild === targetElement) {
+      parent.appendChild(newElement);
+    } else {
+      parent.insertBefore(newElement, targetElement.nextSibling);
+    }
+  }
+
+  function getOffset(ele) {
+    var el = ele;
+    var _x = 0;
+    var _y = 0;
+
+    while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
+      _x += el.offsetLeft - el.scrollLeft;
+      _y += el.offsetTop - el.scrollTop;
+      el = el.offsetParent;
+    }
+
+    return {
+      top: _y,
+      left: _x
+    };
+  }
+
+  function onDragEnterGap(e, treeNode) {
+    var offsetTop = (getOffset)(treeNode.dom).top;
+    var offsetHeight = treeNode.dom.offsetHeight;
+    var pageY = e.pageY;
+    var gapHeight = 2;
+
+    if (pageY > offsetTop + offsetHeight - 5) {
+      return 1; // bottom
+    }
+
+    if (pageY < offsetTop + gapHeight) {
+      return -1; // top
+    }
+
+    return 0;
+  }
+
+  var setepId = 0;
+
+  var Node = /*#__PURE__*/function () {
+    function Node(ops) {
+      var _this = this;
+
+      _classCallCheck(this, Node);
+
+      this.id = setepId++;
+      this.checked = false;
+      this.expanded = false;
+      this.indeterminate = false;
+      this.visbile = false;
+      this.disabled = false;
+      this.loaded = false;
+      this.isLeaf = false;
+      this.level = 0;
+      this.childNodes = [];
+      this.store = ops.store;
+      this.parent = ops.parent;
+      this.data = ops.data;
+
+      if (typeof this.store.format === 'function' && !ops.data._vsroot) {
+        var _data = this.store.format(Object.assign({}, ops.data), this);
+
+        if (_typeof(_data) !== 'object') {
+          throw new Error('format must return object! \nformat: function(data) {\n  return {id, name, children, isLeaf}\n}');
+        }
+
+        var props = ['id', 'name', 'children', 'isLeaf', 'icon', 'extra'];
+        props.forEach(function (key) {
+          if (Object.prototype.hasOwnProperty.call(_data, key)) {
+            _this.data[key] = _data[key];
+          }
+        });
+      }
+
+      if (this.store.expandKeys.includes(this.data.id)) {
+        this.expanded = true;
+      }
+
+      if (this.store.disabledKeys.includes(this.data.id)) {
+        this.disabled = true;
+      }
+
+      if (this.parent) {
+        this.level = this.parent.level + 1;
+      }
+
+      if (this.data) {
+        this.setData(this.data);
+      }
+
+      this.initData();
+    }
+
+    _createClass(Node, [{
+      key: "initData",
+      value: function initData() {
+        var _this$parent;
+
+        if (this.level > this.store.expandLevel && this.store.expandLevel !== -1 && !((_this$parent = this.parent) !== null && _this$parent !== void 0 && _this$parent.expanded)) {
+          this.visbile = false;
+          return;
+        }
+
+        this.visbile = true;
+      }
+    }, {
+      key: "createNode",
+      value: function createNode() {
+        var _this2 = this;
+
+        if (this.dom) {
+          this.checkboxNode && (this.checkboxNode.checked = this.checked);
+          this.radioNode && (this.radioNode.checked = this.checked);
+          return this.dom;
+        }
+
+        var dom = document.createElement('div');
+        dom.className = 'vs-tree-node';
+        dom.setAttribute('vs-index', this.id);
+        !this.isLeaf && this.childNodes.length && dom.setAttribute('vs-child', true);
+        dom.appendChild(this.createInner());
+
+        if (this.store.renderContent) {
+          dom.appendChild(this.createContent());
+        }
+
+        dom.addEventListener('click', function (e) {
+          e.stopPropagation();
+
+          if (_this2.store.highlightCurrent) {
+            if (_this2.store.selectedCurrent) {
+              _this2.store.selectedCurrent.dom.classList.remove('selected');
+            }
+
+            dom.classList.add('selected');
+          }
+
+          if (_this2.store.checkOnClickNode && !_this2.disabled) {
+            _this2.handleCheckChange({
+              target: {
+                checked: !_this2.checked
+              }
+            });
+          }
+
+          _this2.store.selectedCurrent = _this2;
+
+          _this2.store.click(e, _this2);
+        }, {
+          passive: false
+        });
+        dom.addEventListener('contextmenu', function (e) {
+          if (_this2.store.contextmenu && typeof _this2.store.contextmenu === 'function') {
+            e.stopPropagation();
+            e.preventDefault();
+
+            _this2.store.contextmenu(e, _this2);
+          }
+        });
+
+        if (this.store.draggable) {
+          this.createDragable(dom);
+        }
+
+        this.dom = dom;
+        return dom;
+      }
+    }, {
+      key: "createInner",
+      value: function createInner() {
+        var dom = document.createElement('div');
+        dom.className = 'vs-tree-inner'; // 当隐藏根节点时减少一级缩进
+
+        var level = this.store.hideRoot ? -1 : 0;
+
+        if (this.store.showLine) {
+          for (var i = 0; i < this.level + level; i++) {
+            var indent = document.createElement('span');
+            indent.className = 'vs-indent-unit';
+            dom.appendChild(indent);
+          }
+        } else {
+          dom.style.paddingLeft = (this.level + level) * this.store.indent + 'px';
+        }
+
+        var expandDom;
+
+        if (this.store.strictLeaf) {
+          expandDom = !this.isLeaf ? this.createExpand() : this.createExpandEmpty();
+        } else {
+          var _this$childNodes;
+
+          expandDom = ((_this$childNodes = this.childNodes) !== null && _this$childNodes !== void 0 && _this$childNodes.length || this.store.lazy) && !this.isLeaf ? this.createExpand() : this.createExpandEmpty();
+        }
+
+        dom.appendChild(expandDom);
+
+        if (this.store.showCheckbox || this.store.showRadio) {
+          if (!this.store.nocheckParent || !this.childNodes.length) {
+            dom.appendChild(this.createCheckbox());
+          }
+        }
+
+        if (this.store.showIcon) {
+          if (!this.store.onlyShowLeafIcon || !this.childNodes.length || this.isLeaf) {
+            dom.appendChild(this.createIcon());
+          }
+        }
+
+        dom.appendChild(this.createText());
+        return dom;
+      } // 自定义Dom 节点
+
+    }, {
+      key: "cusmtomNode",
+      value: function cusmtomNode(name, info) {
+        var _this3 = this;
+
+        var box = document.createElement(name);
+        info.text && (box.innerText = info.text);
+        info.className && (box.className = info.className);
+
+        if (info.children) {
+          info.children.forEach(function (v) {
+            box.appendChild(v);
+          });
+        }
+
+        if (typeof info.click === 'function') {
+          box.addEventListener('click', function (e) {
+            e.stopPropagation();
+            info.click(e, _this3);
+          }, {
+            passive: false
+          });
+        }
+
+        return box;
+      } // 自定义内容
+
+    }, {
+      key: "createContent",
+      value: function createContent() {
+        var tpl = this.store.renderContent(this.cusmtomNode.bind(this), this);
+
+        if (!tpl) {
+          return document.createElement('span');
+        }
+
+        tpl.addEventListener('click', function (e) {
+          e.stopPropagation();
+        }, {
+          passive: false
+        });
+        return tpl;
+      } // 叶子节点-无需展开
+
+    }, {
+      key: "createExpandEmpty",
+      value: function createExpandEmpty() {
+        var dom = document.createElement('span');
+        dom.className = 'expand-empty ' + this.store.expandClass;
+        return dom;
+      } // 有子元素-需要展开
+
+    }, {
+      key: "createExpand",
+      value: function createExpand() {
+        var _this4 = this;
+
+        var dom = document.createElement('span');
+        dom.className = 'expand ' + this.store.expandClass;
+
+        if (this.level < this.store.expandLevel || this.store.expandLevel === -1 || this.expanded) {
+          dom.classList.add('expanded');
+          this.expanded = true;
+        }
+
+        dom.addEventListener('click', function (e) {
+          e.stopPropagation();
+          if (_this4.loading) return;
+          var expand = !dom.classList.contains('expanded'); // dom.classList.toggle('expanded')
+
+          _this4.setExpand(expand);
+        }, {
+          passive: false
+        });
+        this.expandEl = dom;
+        return dom;
+      }
+    }, {
+      key: "createCheckbox",
+      value: function createCheckbox() {
+        var _this5 = this;
+
+        var label = 'checkbox';
+
+        if (this.store.showRadio) {
+          label = 'radio';
+        }
+
+        var dom = document.createElement('label');
+        dom.className = "vs-".concat(label);
+        var inner = document.createElement('span');
+        inner.className = "vs-".concat(label, "__inner");
+        var checkbox = document.createElement('input');
+        checkbox.type = label;
+        checkbox.checked = this.checked;
+        checkbox.disabled = this.disabled;
+        checkbox.className = "vs-".concat(label, "__original");
+        checkbox.name = label === 'radio' ? 'vs-radio' + (this.store.radioParentoOnly ? this.parent.id : '') : 'vs-checkbox';
+
+        if (label === 'radio') {
+          checkbox.name = 'vs-radio' + (this.store.radioParentoOnly ? this.parent.id : '');
+          this.radioNode = checkbox;
+        } else {
+          checkbox.name = 'vs-checkbox';
+          this.checkboxNode = checkbox;
+        }
+
+        dom.appendChild(checkbox);
+        dom.appendChild(inner); // label 点击会出发两次
+
+        dom.addEventListener('click', function (e) {
+          e.stopPropagation();
+        }, {
+          passive: false
+        }); // 点击回调
+
+        checkbox.addEventListener('click', function (e) {
+          _this5.store.check(e, _this5);
+        }, {
+          passive: false
+        });
+        checkbox.addEventListener('change', function (e) {
+          e.stopPropagation();
+
+          _this5.handleCheckChange(e);
+        });
+        this.checkboxEl = checkbox;
+        return dom;
+      }
+    }, {
+      key: "handleCheckChange",
+      value: function handleCheckChange(e) {
+        var checked = e.target.checked;
+
+        if (typeof this.store.beforeCheck === 'function') {
+          if (!this.store.beforeCheck(this)) {
+            e.target.checked = !checked;
+            return;
+          }
+        }
+
+        if (checked && this.store.checkMaxNodes(this)) {
+          this.store.limitAlert();
+          e.target.checked = false;
+          return;
+        }
+
+        if (this.store.showRadio) {
+          this.updateRadioChecked(checked);
+        } else {
+          this.updateChecked(checked);
+          this.updateCheckedParent(checked);
+        }
+
+        this.store.change(this);
+      }
+    }, {
+      key: "createText",
+      value: function createText() {
+        var dom = document.createElement('span');
+        dom.innerText = this.data.name;
+        dom.className = 'vs-tree-text';
+        return dom;
+      }
+    }, {
+      key: "createIcon",
+      value: function createIcon() {
+        var icon = document.createElement('span');
+        icon.className = this.isLeaf || !this.childNodes.length ? 'vs-icon-leaf' : 'vs-icon-parent';
+
+        if (this.data.icon) {
+          if (this.data.icon instanceof HTMLElement) {
+            icon.style.backgroundImage = 'none';
+            icon.appendChild(this.data.icon);
+          } else {
+            icon.classList.add(this.data.icon);
+          }
+        }
+
+        return icon;
+      }
+    }, {
+      key: "setData",
+      value: function setData(data) {
+        this.store.dataMap.set(data.id, this);
+        this.store.nodeMap.set(this.id, this);
+        this.data = data;
+        this.childNodes = [];
+
+        if (typeof data.isLeaf === 'boolean') {
+          this.isLeaf = data.isLeaf;
+        } else if (!data.children && !this.store.lazy) {
+          this.isLeaf = true;
+        }
+
+        var children;
+
+        if (this.level === 0 && this.data instanceof Node) {
+          children = this.data;
+        } else {
+          children = this.data.children || [];
+        }
+
+        if (children.length) {
+          this.loaded = true;
+        }
+
+        for (var i = 0, j = children.length; i < j; i++) {
+          this.insertChild({
+            data: children[i]
+          });
+        }
+      }
+    }, {
+      key: "insertChild",
+      value: function insertChild(child) {
+        if (!(child instanceof Node)) {
+          Object.assign(child, {
+            parent: this,
+            store: this.store
+          });
+          child = new Node(child);
+        }
+
+        child.level = this.level + 1;
+        this.childNodes.push(child);
+        return child;
+      }
+    }, {
+      key: "updateExpand",
+      value: function updateExpand(expand) {
+        var _this6 = this;
+
+        if (this.childNodes.length) {
+          this.childNodes.forEach(function (v) {
+            if (expand && _this6.expanded) {
+              v.visbile = true;
+            } else {
+              v.visbile = false;
+            }
+
+            v.updateExpand(expand);
+          });
+        }
+      }
+    }, {
+      key: "updateChecked",
+      value: function updateChecked(check) {
+        if (this.disabled) return;
+        this.checked = check;
+        this.sortId = Date.now();
+        this.checkboxNode && (this.checkboxNode.checked = check);
+        this.parent && (this.parent.indeterminate = false);
+        this.dom && this.dom.classList.remove('is-indeterminate');
+
+        if (this.childNodes.length) {
+          this.childNodes.forEach(function (v) {
+            v.updateChecked(check);
+          });
+        }
+      }
+    }, {
+      key: "updateCheckedParent",
+      value: function updateCheckedParent() {
+        if (!this.parent || this.store.nocheckParent) return;
+        var allChecked = this.parent.childNodes.every(function (v) {
+          return v.checked;
+        });
+        var someChecked = this.parent.childNodes.some(function (v) {
+          return v.checked || v.indeterminate;
+        });
+
+        if (allChecked) {
+          this.parent.checked = true;
+          this.parent.indeterminate = false;
+          this.parent.checkboxNode && (this.parent.checkboxNode.checked = true);
+          this.parent.dom && this.parent.dom.classList.remove('is-indeterminate');
+        } else if (someChecked) {
+          this.parent.checked = false;
+          this.parent.indeterminate = true;
+          this.parent.checkboxNode && (this.parent.checkboxNode.checked = false);
+          this.parent.dom && this.parent.dom.classList.add('is-indeterminate');
+        } else {
+          this.parent.checked = false;
+          this.parent.indeterminate = false;
+          this.parent.checkboxNode && (this.parent.checkboxNode.checked = false);
+          this.parent.dom && this.parent.dom.classList.remove('is-indeterminate');
+        }
+
+        this.parent.updateCheckedParent();
+      } // 更新单选节点选中
+
+    }, {
+      key: "updateRadioChecked",
+      value: function updateRadioChecked(checked) {
+        // 父节点下唯一
+        if (this.store.radioParentoOnly) {
+          if (this.store.radioMap[this.parent.id]) {
+            this.store.radioMap[this.parent.id].checked = false;
+          }
+
+          this.store.radioMap[this.parent.id] = this;
+        } else {
+          if (this.store.radioNode) {
+            this.store.radioNode = false;
+          }
+
+          this.store.radioNode = this;
+        }
+
+        this.checked = checked;
+        this.radioNode && (this.radioNode.checked = checked);
+      } // 设置是否选中
+
+    }, {
+      key: "setChecked",
+      value: function setChecked(checked, isInitDefault) {
+        if (!isInitDefault && this.disabled) return;
+
+        if (this.store.showRadio) {
+          this.updateRadioChecked(checked);
+          return;
+        }
+
+        if (!this.store.showCheckbox) return;
+        this.updateChecked(checked);
+        this.updateCheckedParent(checked);
+      } // 设置禁止选中
+
+    }, {
+      key: "setDisabled",
+      value: function setDisabled() {
+        var disabled = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+        this.disabled = disabled;
+        this.checkboxEl && (this.checkboxEl.disabled = disabled);
+      } // 设置默认展开
+
+    }, {
+      key: "setExpand",
+      value: function setExpand(expand, noUpdate) {
+        var _this7 = this;
+
+        this.expanded = expand;
+        this.updateExpand(this.expanded);
+        this.setAccordion(expand);
+
+        if (this.expandEl) {
+          if (expand) {
+            this.expandEl.classList.add('expanded');
+          } else {
+            this.expandEl.classList.remove('expanded');
+          }
+        }
+
+        if (this.store.lazy && !this.loaded) {
+          this.loadData(function (data) {
+            if (data) {
+              !noUpdate && _this7.storeUpdate();
+            }
+          });
+        } else {
+          !noUpdate && this.storeUpdate();
+        }
+      }
+    }, {
+      key: "storeUpdate",
+      value: function storeUpdate() {
+        if (this.store.animation) {
+          this.createAnimation();
+        } else {
+          this.store.update();
+        }
+      } // 创建动画
+
+    }, {
+      key: "createAnimation",
+      value: function createAnimation() {
+        var _this8 = this;
+
+        this.transitionNode && this.transitionNode.parentNode && this.transitionNode.parentNode.removeChild(this.transitionNode);
+        var tg = document.createElement('div');
+        tg.className = 'vs-transition';
+
+        if (this.childNodes.length > this.store.showCount) {
+          for (var i = 0; i < this.store.showCount - 1; i++) {
+            var _v = this.childNodes[i];
+            tg.appendChild(_v.dom || _v.createNode());
+          }
+        } else {
+          this.childNodes.forEach(function (_v) {
+            tg.appendChild(_v.dom || _v.createNode());
+          });
+        }
+
+        insterAfter(tg, this.dom);
+        var animatHeight = (this.childNodes.length > this.store.showCount ? this.store.showCount : this.childNodes.length) * this.store.itemHeight + 'px';
+
+        if (this.expanded) {
+          setTimeout(function () {
+            tg.style.height = animatHeight;
+          }, 0);
+        } else {
+          tg.style.height = animatHeight;
+          setTimeout(function () {
+            tg.style.height = 0;
+          }, 0);
+        }
+
+        var transend = function transend() {
+          tg.removeEventListener('transitionend', transend);
+          tg.parentNode && tg.parentNode.removeChild(tg);
+          tg.removeEventListener('transitionend', transend);
+
+          _this8.store.update();
+        };
+
+        tg.addEventListener('transitionend', transend);
+        this.transitionNode = tg;
+      } // 创建拖拽
+
+    }, {
+      key: "createDragable",
+      value: function createDragable(dom) {
+        var _this9 = this;
+
+        dom.draggable = true;
+        dom.addEventListener('dragstart', function (e) {
+          e.stopPropagation();
+        }); // Chorme下，拖拽必须禁止默认事件否则drop事件不会触发
+
+        dom.addEventListener('dragover', function (e) {
+          e.preventDefault();
+        });
+        var key;
+        dom.addEventListener('dragenter', function (e) {
+          e.stopPropagation();
+          e.preventDefault();
+          key = e.target.getAttribute('vs-index');
+          if (!key) return;
+          var enterGap = onDragEnterGap(e, _this9);
+          _this9.store.dropPostion = enterGap;
+          if (dom === e.target && enterGap === 0) return;
+          e.target.classList.add('vs-drag-enter');
+
+          if (enterGap === -1) {
+            e.target.classList.remove('vs-drag-over-gap-bottom');
+            e.target.classList.add('vs-drag-over-gap-top');
+          }
+
+          if (enterGap === 1) {
+            e.target.classList.remove('vs-drag-over-gap-top');
+            e.target.classList.add('vs-drag-over-gap-bottom');
+          }
+        });
+        dom.addEventListener('dragleave', function (e) {
+          e.target.classList.remove('vs-drag-enter');
+          e.target.classList.remove('vs-drag-over-gap-bottom');
+          e.target.classList.remove('vs-drag-over-gap-top');
+        });
+        dom.addEventListener('drop', function (e) {
+          var current = _this9.store.nodeMap.get(Number(key));
+
+          if (current) {
+            _this9.store.dropNode = current;
+            console.log(current, _this9.store.dropPostion);
+          }
+
+          console.log(e, 'drop');
+        });
+      } // 更新手风琴状态
+
+    }, {
+      key: "setAccordion",
+      value: function setAccordion(expand) {
+        if (this.store.accordion && this.parent && expand) {
+          var preExpand = this.store.expandMap[this.parent.id];
+          if (preExpand === this) return;
+
+          if (preExpand) {
+            preExpand.setExpand(false);
+          }
+
+          this.store.expandMap[this.parent.id] = this;
+        }
+      } // 加载数据
+
+    }, {
+      key: "loadData",
+      value: function loadData(callback) {
+        var _this10 = this;
+
+        if (this.loading) return;
+        this.loading = true;
+
+        if (this.expandEl) {
+          this.expandEl.classList.add('is-loading');
+        }
+
+        var resolve = function resolve() {
+          var children = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+          _this10.loaded = true;
+          _this10.loading = false;
+
+          if (_this10.expandEl) {
+            _this10.expandEl.classList.remove('is-loading');
+          }
+
+          if (children.length) {
+            children.forEach(function (data) {
+              _this10.insertChild({
+                data: data,
+                store: _this10.store
+              });
+            });
+
+            _this10.childNodes[0].updateCheckedParent();
+
+            _this10.store.updateNodes();
+          }
+
+          if (callback) {
+            callback.call(_this10, children);
+          }
+        };
+
+        this.store.load(this, resolve);
+      } // 删除节点
+
+    }, {
+      key: "remove",
+      value: function remove() {
+        var _this11 = this;
+
+        var parent = this.parent;
+        if (!parent) return;
+        var children = parent.childNodes || [];
+        var index = children.findIndex(function (d) {
+          return d.id === _this11.id;
+        });
+
+        if (index > -1) {
+          children.splice(index, 1);
+        }
+
+        this.store.updateNodes();
+      } // 添加节点
+
+    }, {
+      key: "append",
+      value: function append(data) {
+        if (!data || _typeof(data) !== 'object') return;
+        var olddom = this.dom;
+
+        if (this.childNodes.length !== 0) {
+          olddom = null;
+        }
+
+        var node = this.insertChild({
+          data: data,
+          store: this.store
+        });
+
+        if (olddom) {
+          delete this.dom;
+          olddom.parentNode.replaceChild(this.createNode(), olddom);
+        }
+
+        node.updateCheckedParent();
+        this.store.updateNodes();
+      }
+    }]);
+
+    return Node;
+  }();
+
+  var TreeStore = /*#__PURE__*/function () {
+    function TreeStore(options) {
+      _classCallCheck(this, TreeStore);
+
+      for (var option in options) {
+        if (Object.prototype.hasOwnProperty.call(options, option)) {
+          this[option] = options[option];
+        }
+      }
+
+      this.nodes = [];
+      this.dataMap = new Map();
+      this.nodeMap = new Map(); // 当前选中节点
+
+      this.radioMap = {}; // 当前展开节点
+
+      this.expandMap = {};
+      this.root = new Node({
+        data: this.data,
+        store: this
+      });
+    }
+
+    _createClass(TreeStore, [{
+      key: "setData",
+      value: function setData(val) {
+        this.root.setData(val);
+        this.updateNodes();
+      } // 更新节点列表
+
+    }, {
+      key: "updateNodes",
+      value: function updateNodes() {
+        this.nodes = this.flattenTreeData();
+        this.nodesChange(this.nodes);
+      } // 获取节点列表
+
+    }, {
+      key: "flattenTreeData",
+      value: function flattenTreeData() {
+        var nodes = [];
+
+        var dig = function dig(val) {
+          nodes.push(val);
+
+          if (val.childNodes && val.childNodes.length) {
+            val.childNodes.forEach(function (element) {
+              dig(element);
+            });
+          }
+        };
+
+        dig(this.root);
+        return nodes;
+      } // 根据ID获取节点
+
+    }, {
+      key: "getNodeById",
+      value: function getNodeById(id) {
+        return this.dataMap.get(id);
+      } // 获取选中节点
+
+    }, {
+      key: "getCheckedNodes",
+      value: function getCheckedNodes() {
+        var _this = this;
+
+        var nodes = this.nodes.filter(function (v) {
+          return v.checked && !v.data._vsroot && _this._checkVerify(v) && (!_this.nocheckParent || !v.childNodes.length);
+        });
+
+        if (this.sort) {
+          return nodes.sort(function (a, b) {
+            return a.sortId - b.sortId;
+          }).map(function (v) {
+            return v.data;
+          });
+        }
+
+        return nodes.map(function (v) {
+          return v.data;
+        });
+      } // 设置默认选中
+
+    }, {
+      key: "setDefaultChecked",
+      value: function setDefaultChecked() {
+        var _this2 = this;
+
+        this.checkedKeys.forEach(function (id) {
+          var node = _this2.getNodeById(id);
+
+          if (node) {
+            node.setChecked(true, true);
+          } else {
+            console.warn('not found node by ' + id);
+          }
+        });
+      } // 验证是否已经选到最大
+
+    }, {
+      key: "checkMaxNodes",
+      value: function checkMaxNodes(node) {
+        if (!this.max) {
+          return false;
+        }
+
+        if (!node.checked && node.hasChildCount > this.max) {
+          return true;
+        }
+
+        var len = this.getCheckedNodes().length;
+
+        if (!node.checked && len + (node.isLeaf ? 1 : this.getUnCheckLeafsCount(node)) > this.max) {
+          return true;
+        }
+
+        return false;
+      }
+    }, {
+      key: "getUnCheckLeafsCount",
+      value: function getUnCheckLeafsCount(node) {
+        var _this3 = this;
+
+        var count = this._checkVerify(node) && !node.checked ? 1 : 0;
+        node.childNodes.forEach(function (v) {
+          count += _this3.getUnCheckLeafsCount(v);
+        });
+        return count;
+      }
+    }, {
+      key: "_checkVerify",
+      value: function _checkVerify(node) {
+        if (typeof this.checkFilter === 'function') {
+          return this.checkFilter(node);
+        } else if (this.checkFilterLeaf) {
+          return node.isLeaf;
+        } else {
+          return true;
+        }
+      }
+    }]);
+
+    return TreeStore;
+  }();
+
+  /**
+   * virtual list core calculating center
+   */
+  var DIRECTION_TYPE = {
+    FRONT: 'FRONT',
+    // scroll up or left
+    BEHIND: 'BEHIND' // scroll down or right
+
+  };
+  var CALC_TYPE = {
+    INIT: 'INIT',
+    FIXED: 'FIXED',
+    DYNAMIC: 'DYNAMIC'
+  };
+  var LEADING_BUFFER = 2;
+
+  var Virtual = /*#__PURE__*/function () {
+    function Virtual(param, callUpdate) {
+      _classCallCheck(this, Virtual);
+
+      this.init(param, callUpdate);
+    }
+
+    _createClass(Virtual, [{
+      key: "init",
+      value: function init(param, callUpdate) {
+        // param data
+        this.param = param;
+        this.callUpdate = callUpdate; // size data
+
+        this.sizes = new Map();
+        this.firstRangeTotalSize = 0;
+        this.firstRangeAverageSize = 0;
+        this.lastCalcIndex = 0;
+        this.fixedSizeValue = 0;
+        this.calcType = CALC_TYPE.INIT; // scroll data
+
+        this.offset = 0;
+        this.direction = ''; // range data
+
+        this.range = Object.create(null);
+
+        if (param) {
+          this.checkRange(0, param.keeps - 1);
+        } // benchmark test data
+        // this.__bsearchCalls = 0
+        // this.__getIndexOffsetCalls = 0
+
+      }
+    }, {
+      key: "destroy",
+      value: function destroy() {
+        this.init(null, null);
+      } // return current render range
+
+    }, {
+      key: "getRange",
+      value: function getRange() {
+        var range = Object.create(null);
+        range.start = this.range.start;
+        range.end = this.range.end;
+        range.padFront = this.range.padFront;
+        range.padBehind = this.range.padBehind;
+        return range;
+      }
+    }, {
+      key: "isBehind",
+      value: function isBehind() {
+        return this.direction === DIRECTION_TYPE.BEHIND;
+      }
+    }, {
+      key: "isFront",
+      value: function isFront() {
+        return this.direction === DIRECTION_TYPE.FRONT;
+      } // return start index offset
+
+    }, {
+      key: "getOffset",
+      value: function getOffset(start) {
+        return (start < 1 ? 0 : this.getIndexOffset(start)) + this.param.slotHeaderSize;
+      }
+    }, {
+      key: "updateParam",
+      value: function updateParam(key, value) {
+        var _this = this;
+
+        if (this.param && key in this.param) {
+          // if uniqueIds change, find out deleted id and remove from size map
+          if (key === 'uniqueIds') {
+            this.sizes.forEach(function (v, key) {
+              if (!value.includes(key)) {
+                _this.sizes.delete(key);
+              }
+            });
+          }
+
+          this.param[key] = value;
+        }
+      } // save each size map by id
+
+    }, {
+      key: "saveSize",
+      value: function saveSize(id, size) {
+        this.sizes.set(id, size); // we assume size type is fixed at the beginning and remember first size value
+        // if there is no size value different from this at next comming saving
+        // we think it's a fixed size list, otherwise is dynamic size list
+
+        if (this.calcType === CALC_TYPE.INIT) {
+          this.fixedSizeValue = size;
+          this.calcType = CALC_TYPE.FIXED;
+        } else if (this.calcType === CALC_TYPE.FIXED && this.fixedSizeValue !== size) {
+          this.calcType = CALC_TYPE.DYNAMIC; // it's no use at all
+
+          delete this.fixedSizeValue;
+        } // calculate the average size only in the first range
+
+
+        if (this.calcType !== CALC_TYPE.FIXED && typeof this.firstRangeTotalSize !== 'undefined') {
+          if (this.sizes.size < Math.min(this.param.keeps, this.param.uniqueIds.length)) {
+            this.firstRangeTotalSize = _toConsumableArray(this.sizes.values()).reduce(function (acc, val) {
+              return acc + val;
+            }, 0);
+            this.firstRangeAverageSize = Math.round(this.firstRangeTotalSize / this.sizes.size);
+          } else {
+            // it's done using
+            delete this.firstRangeTotalSize;
+          }
+        }
+      } // in some special situation (e.g. length change) we need to update in a row
+      // try goiong to render next range by a leading buffer according to current direction
+
+    }, {
+      key: "handleDataSourcesChange",
+      value: function handleDataSourcesChange() {
+        var start = this.range.start;
+
+        if (this.isFront()) {
+          start = start - LEADING_BUFFER;
+        } else if (this.isBehind()) {
+          start = start + LEADING_BUFFER;
+        }
+
+        start = Math.max(start, 0);
+        this.updateRange(this.range.start, this.getEndByStart(start));
+      } // when slot size change, we also need force update
+
+    }, {
+      key: "handleSlotSizeChange",
+      value: function handleSlotSizeChange() {
+        this.handleDataSourcesChange();
+      } // calculating range on scroll
+
+    }, {
+      key: "handleScroll",
+      value: function handleScroll(offset) {
+        this.direction = offset < this.offset ? DIRECTION_TYPE.FRONT : DIRECTION_TYPE.BEHIND;
+        this.offset = offset;
+
+        if (!this.param) {
+          return;
+        }
+
+        if (this.direction === DIRECTION_TYPE.FRONT) {
+          this.handleFront();
+        } else if (this.direction === DIRECTION_TYPE.BEHIND) {
+          this.handleBehind();
+        }
+      } // ----------- public method end -----------
+
+    }, {
+      key: "handleFront",
+      value: function handleFront() {
+        var overs = this.getScrollOvers(); // should not change range if start doesn't exceed overs
+
+        if (overs > this.range.start) {
+          return;
+        } // move up start by a buffer length, and make sure its safety
+
+
+        var start = Math.max(overs - this.param.buffer, 0);
+        this.checkRange(start, this.getEndByStart(start));
+      }
+    }, {
+      key: "handleBehind",
+      value: function handleBehind() {
+        var overs = this.getScrollOvers(); // range should not change if scroll overs within buffer
+
+        if (overs < this.range.start + this.param.buffer) {
+          return;
+        }
+
+        this.checkRange(overs, this.getEndByStart(overs));
+      } // return the pass overs according to current scroll offset
+
+    }, {
+      key: "getScrollOvers",
+      value: function getScrollOvers() {
+        // if slot header exist, we need subtract its size
+        var offset = this.offset - this.param.slotHeaderSize;
+
+        if (offset <= 0) {
+          return 0;
+        } // if is fixed type, that can be easily
+
+
+        if (this.isFixedType()) {
+          return Math.floor(offset / this.fixedSizeValue);
+        }
+
+        var low = 0;
+        var middle = 0;
+        var middleOffset = 0;
+        var high = this.param.uniqueIds.length;
+
+        while (low <= high) {
+          // this.__bsearchCalls++
+          middle = low + Math.floor((high - low) / 2);
+          middleOffset = this.getIndexOffset(middle);
+
+          if (middleOffset === offset) {
+            return middle;
+          } else if (middleOffset < offset) {
+            low = middle + 1;
+          } else if (middleOffset > offset) {
+            high = middle - 1;
+          }
+        }
+
+        return low > 0 ? --low : 0;
+      } // return a scroll offset from given index, can efficiency be improved more here?
+      // although the call frequency is very high, its only a superposition of numbers
+
+    }, {
+      key: "getIndexOffset",
+      value: function getIndexOffset(givenIndex) {
+        if (!givenIndex) {
+          return 0;
+        }
+
+        var offset = 0;
+        var indexSize = 0;
+
+        for (var index = 0; index < givenIndex; index++) {
+          // this.__getIndexOffsetCalls++
+          indexSize = this.sizes.get(this.param.uniqueIds[index]);
+          offset = offset + (typeof indexSize === 'number' ? indexSize : this.getEstimateSize());
+        } // remember last calculate index
+
+
+        this.lastCalcIndex = Math.max(this.lastCalcIndex, givenIndex - 1);
+        this.lastCalcIndex = Math.min(this.lastCalcIndex, this.getLastIndex());
+        return offset;
+      } // is fixed size type
+
+    }, {
+      key: "isFixedType",
+      value: function isFixedType() {
+        return this.calcType === CALC_TYPE.FIXED;
+      } // return the real last index
+
+    }, {
+      key: "getLastIndex",
+      value: function getLastIndex() {
+        return this.param.uniqueIds.length - 1;
+      } // in some conditions range is broke, we need correct it
+      // and then decide whether need update to next range
+
+    }, {
+      key: "checkRange",
+      value: function checkRange(start, end) {
+        var keeps = this.param.keeps;
+        var total = this.param.uniqueIds.length; // datas less than keeps, render all
+
+        if (total <= keeps) {
+          start = 0;
+          end = this.getLastIndex();
+        } else if (end - start < keeps - 1) {
+          // if range length is less than keeps, corrent it base on end
+          start = end - keeps + 1;
+        }
+
+        if (this.range.start !== start) {
+          this.updateRange(start, end);
+        }
+      } // setting to a new range and rerender
+
+    }, {
+      key: "updateRange",
+      value: function updateRange(start, end) {
+        this.range.start = start;
+        this.range.end = end;
+        this.range.padFront = this.getPadFront();
+        this.range.padBehind = this.getPadBehind();
+        this.callUpdate(this.getRange());
+      } // return end base on start
+
+    }, {
+      key: "getEndByStart",
+      value: function getEndByStart(start) {
+        var theoryEnd = start + this.param.keeps - 1;
+        var truelyEnd = Math.min(theoryEnd, this.getLastIndex());
+        return truelyEnd;
+      } // return total front offset
+
+    }, {
+      key: "getPadFront",
+      value: function getPadFront() {
+        if (this.isFixedType()) {
+          return this.fixedSizeValue * this.range.start;
+        } else {
+          return this.getIndexOffset(this.range.start);
+        }
+      } // return total behind offset
+
+    }, {
+      key: "getPadBehind",
+      value: function getPadBehind() {
+        var end = this.range.end;
+        var lastIndex = this.getLastIndex();
+
+        if (this.isFixedType()) {
+          return (lastIndex - end) * this.fixedSizeValue;
+        } // if it's all calculated, return the exactly offset
+
+
+        if (this.lastCalcIndex === lastIndex) {
+          return this.getIndexOffset(lastIndex) - this.getIndexOffset(end);
+        } else {
+          // if not, use a estimated value
+          return (lastIndex - end) * this.getEstimateSize();
+        }
+      } // get the item estimate size
+
+    }, {
+      key: "getEstimateSize",
+      value: function getEstimateSize() {
+        return this.isFixedType() ? this.fixedSizeValue : this.firstRangeAverageSize || this.param.estimateSize;
+      }
+    }]);
+
+    return Virtual;
+  }();
+
+  var Vlist = /*#__PURE__*/function () {
+    function Vlist(opts) {
+      _classCallCheck(this, Vlist);
+
+      this.range = null;
+      this.$el = opts.root;
+      this.$el.style.maxHeight = opts.maxHeight || '400px';
+      this.$el.style.overflowY = 'auto';
+      this.dataSources = opts.data;
+      this.wrapper = document.createElement('div');
+      this.wrapper.className = 'vs-virtual-list';
+      this.$el.appendChild(this.wrapper);
+      this.$el.addEventListener('scroll', this.onScroll.bind(this), {
+        passive: false
+      });
+      this.keeps = opts.keeps || 20;
+      this.estimateSize = opts.estimateSize || 26;
+      this.dataKey = 'id';
+      this.installVirtual();
+    } // return current scroll offset
+
+
+    _createClass(Vlist, [{
+      key: "getOffset",
+      value: function getOffset() {
+        var root = this.$el;
+        return root ? Math.ceil(root.scrollTop) : 0;
+      } // return client viewport size
+
+    }, {
+      key: "getClientSize",
+      value: function getClientSize() {
+        var root = this.$el;
+        return root ? Math.ceil(root.clientHeight) : 0;
+      } // return all scroll size
+
+    }, {
+      key: "getScrollSize",
+      value: function getScrollSize() {
+        var root = this.$el;
+        return root ? Math.ceil(root.scrollHeight) : 0;
+      } // ----------- public method end -----------
+
+    }, {
+      key: "installVirtual",
+      value: function installVirtual() {
+        this.virtual = new Virtual({
+          slotHeaderSize: 0,
+          slotFooterSize: 0,
+          keeps: this.keeps,
+          estimateSize: this.estimateSize,
+          buffer: Math.round(this.keeps / 3),
+          // recommend for a third of keeps
+          uniqueIds: this.getUniqueIdFromDataSources()
+        }, this.onRangeChanged.bind(this)); // sync initial range
+
+        this.range = this.virtual.getRange();
+        this.render();
+      }
+    }, {
+      key: "getUniqueIdFromDataSources",
+      value: function getUniqueIdFromDataSources() {
+        var dataKey = this.dataKey;
+        return this.dataSources.map(function (dataSource) {
+          return typeof dataKey === 'function' ? dataKey(dataSource) : dataSource[dataKey];
+        });
+      } // here is the rerendering entry
+
+    }, {
+      key: "onRangeChanged",
+      value: function onRangeChanged(range) {
+        this.range = range;
+        this.render();
+      }
+    }, {
+      key: "onScroll",
+      value: function onScroll() {
+        var offset = this.getOffset();
+        var clientSize = this.getClientSize();
+        var scrollSize = this.getScrollSize(); // iOS scroll-spring-back behavior will make direction mistake
+
+        if (offset < 0 || offset + clientSize > scrollSize + 1 || !scrollSize) {
+          return;
+        }
+
+        this.virtual.handleScroll(offset);
+      }
+    }, {
+      key: "getRenderSlots",
+      value: function getRenderSlots() {
+        var _this$range = this.range,
+            start = _this$range.start,
+            end = _this$range.end;
+        var dataSources = this.dataSources,
+            dataKey = this.dataKey;
+        this.wrapper.innerHTML = '';
+
+        for (var index = start; index <= end; index++) {
+          var dataSource = dataSources[index];
+
+          if (dataSource) {
+            var uniqueKey = typeof dataKey === 'function' ? dataKey(dataSource) : dataSource[dataKey];
+
+            if (typeof uniqueKey === 'string' || typeof uniqueKey === 'number') {
+              var dom = dataSource.createNode();
+
+              if (dataSource.store.onlySearchLeaf) {
+                dom.classList.add('vs-search-only-leaf');
+              } else {
+                dom.classList.remove('vs-search-only-leaf');
+              }
+
+              if (dataSource.store.isSearch && dataSource.store.searchRender) {
+                var searchNode = dataSource.store.searchRender(dataSource, dom.cloneNode(true));
+
+                if (!(searchNode instanceof HTMLElement)) {
+                  throw Error('searchRender must return HTMLElement');
+                }
+
+                this.wrapper.appendChild(searchNode);
+              } else {
+                this.wrapper.appendChild(dom);
+              }
+            } else {
+              console.warn("Cannot get the data-key '".concat(dataKey, "' from data-sources."));
+            }
+          } else {
+            console.warn("Cannot get the index '".concat(index, "' from data-sources."));
+          }
+        }
+      }
+    }, {
+      key: "update",
+      value: function update(data) {
+        this.dataSources = data;
+        this.wrapper.innerHTML = '';
+        this.virtual.updateParam('uniqueIds', this.getUniqueIdFromDataSources());
+        this.virtual.handleDataSourcesChange();
+      }
+    }, {
+      key: "render",
+      value: function render() {
+        var _this$range2 = this.range,
+            padFront = _this$range2.padFront,
+            padBehind = _this$range2.padBehind;
+        var paddingStyle = "".concat(padFront, "px 0px ").concat(padBehind, "px");
+        this.wrapper.style.padding = paddingStyle;
+        this.getRenderSlots();
+      }
+    }]);
+
+    return Vlist;
+  }();
+
+  var noop = function noop() {};
+
+  var Tree = /*#__PURE__*/function () {
+    function Tree(selector, ops) {
+      var _this = this;
+
+      _classCallCheck(this, Tree);
+
+      var obj = new Proxy(ops, {
+        get: function get(target, propKey, receiver) {
+          console.log("getting ".concat(propKey, "!"));
+          return Reflect.get(target, propKey, receiver);
+        },
+        set: function set(target, propKey, value, receiver) {
+          console.log("setting ".concat(propKey, "!"));
+          return Reflect.set(target, propKey, value, receiver);
+        }
+      });
+      this.$options = obj;
+
+      if (typeof selector === 'string') {
+        this.$el = document.querySelector(selector);
+      } else {
+        this.$el = selector;
+      }
+
+      if (!(this.$el instanceof HTMLElement)) {
+        throw Error('请为组件提供根节点');
+      }
+
+      this.$el.classList.add('vs-tree');
+
+      if (ops.theme) {
+        this.$el.classList.add('vs-theme-' + ops.theme);
+      }
+
+      if (Array.isArray(ops.data)) {
+        this._data = {
+          _vsroot: true,
+          name: ops.rootName || '---',
+          children: ops.data
+        };
+
+        if (!ops.rootName) {
+          ops.hideRoot = true;
+        }
+      } else if (_typeof(ops.data) === 'object') {
+        this._data = ops.data;
+      } else {
+        throw Error('参数data仅支持对象或数组！');
+      } // 每一项的高度
+
+
+      this.itemHeight = ops.itemHeight || 26; // 当前可见数量
+
+      this.showCount = ops.showCount || 20; // 最大高度
+
+      this.maxHeight = ops.maxHeight || '400px'; // 唯一ID
+
+      this.dataKey = ops.dataKey || 'id'; // 当前可见项
+
+      this.data = []; // 关键字过滤
+
+      this.keyword = '';
+      this.searchFilter = ops.searchFilter;
+      this.store = new TreeStore({
+        data: this._data,
+        max: ops.max,
+        strictLeaf: ops.strictLeaf || false,
+        showCount: this.showCount,
+        itemHeight: this.itemHeight,
+        hideRoot: ops.hideRoot || false,
+        animation: ops.animation || false,
+        // 动画
+        expandLevel: typeof ops.expandLevel === 'number' ? ops.expandLevel : 1,
+        // 默认展开1级节点
+        beforeCheck: ops.beforeCheck || null,
+        showLine: ops.showLine || false,
+        // 是否显示连接线
+        showIcon: ops.showIcon || false,
+        onlyShowLeafIcon: ops.onlyShowLeafIcon || false,
+        showCheckbox: ops.showCheckbox || false,
+        showRadio: ops.showRadio || false,
+        highlightCurrent: ops.highlightCurrent || false,
+        checkFilterLeaf: ops.checkFilterLeaf || false,
+        // 过滤非叶子节点
+        checkFilter: ops.checkFilter || null,
+        // 过滤选中节点
+        accordion: ops.accordion || false,
+        // 手风琴模式
+        draggable: ops.draggable || false,
+        lazy: ops.lazy || false,
+        sort: ops.sort || false,
+        indent: ops.indent || 10,
+        checkedKeys: ops.checkedKeys || [],
+        expandKeys: ops.expandKeys || [],
+        disabledKeys: ops.disabledKeys || [],
+        limitAlert: ops.limitAlert || noop,
+        click: ops.click || noop,
+        check: ops.check || noop,
+        // 复选框被点击时出发
+        change: ops.change || noop,
+        load: ops.load || noop,
+        contextmenu: ops.contextmenu || null,
+        radioParentoOnly: ops.radioParentoOnly || false,
+        // 每个父节点下唯一，仅raido模式有效
+        renderContent: ops.renderContent || null,
+        nocheckParent: ops.nocheckParent || false,
+        // 只允许叶子节点选中
+        checkOnClickNode: ops.checkOnClickNode || false,
+        format: ops.format || null,
+        searchRender: ops.searchRender || null,
+        searchDisabledChecked: ops.searchDisabledChecked || false,
+        expandClass: ops.expandClass || 'vs-expand-icon',
+        update: function update() {
+          _this.render();
+        },
+        nodesChange: function nodesChange(nodes) {
+          _this.nodes = nodes;
+          _this.vlist && _this.render();
+        }
+      });
+      this.store.setData(this._data);
+
+      if (this.store.hideRoot) {
+        // 跟节点创建dom
+        this.store.root.createNode();
+      }
+
+      this.init(); // 设置默认选中
+
+      this.store.setDefaultChecked();
+    }
+
+    _createClass(Tree, [{
+      key: "init",
+      value: function init() {
+        this.vlist = new Vlist({
+          root: this.$el,
+          data: [],
+          maxHeight: this.maxHeight,
+          estimateSize: this.itemHeight,
+          keeps: this.showCount
+        });
+        this.render();
+      }
+    }, {
+      key: "render",
+      value: function render() {
+        var _this2 = this;
+
+        var update = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+        this.data = this.nodes.filter(function (v) {
+          // 过滤隐藏节点 ｜ 隐藏root节点
+          return _this2.hasKeyword(v) && v.visbile && !(_this2.store.hideRoot && v.level === 0);
+        });
+        update && this.vlist.update(this.data);
+      } // TODO:
+
+    }, {
+      key: "hasKeyword",
+      value: function hasKeyword(v) {
+        var _this3 = this;
+
+        if (!this.keyword) return true;
+        var boo = this.checkFilter(v);
+
+        if (!boo) {
+          v.childNodes.forEach(function (node) {
+            if (!boo) {
+              boo = _this3.hasKeyword(node);
+            }
+          });
+        } else {
+          v.parent && (v.parent.requireExpand = true);
+        }
+
+        return boo;
+      }
+    }, {
+      key: "checkFilter",
+      value: function checkFilter(v) {
+        if (!this.keyword) return;
+
+        if (typeof this.searchFilter === 'function') {
+          return this.searchFilter(this.keyword, v, v.data);
+        }
+
+        return v.data.name && v.data.name.includes(this.keyword);
+      } // 过滤节点
+
+    }, {
+      key: "filter",
+      value: function filter() {
+        var _this4 = this;
+
+        var keyword = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+        var onlySearchLeaf = arguments.length > 1 ? arguments[1] : undefined;
+        this.keyword = keyword;
+        this.store.onlySearchLeaf = onlySearchLeaf && !!keyword;
+        this.store.isSearch = !!keyword;
+
+        if (this.store.onlySearchLeaf) {
+          var data = this.nodes.filter(function (v) {
+            return !v.childNodes.length && _this4.checkFilter(v) && !(_this4.store.hideRoot && v.level === 0);
+          });
+          this.vlist.update(data);
+          return data;
+        }
+
+        this.render(false);
+        this.data.forEach(function (v) {
+          if (v.requireExpand) {
+            v.requireExpand = false;
+            v.setExpand(true, true);
+          }
+        });
+        this.render();
+        return this.data;
+      } // 根据ID获取节点
+
+    }, {
+      key: "getNodeById",
+      value: function getNodeById(id) {
+        return this.store.getNodeById(id);
+      } // 获取选中节点
+
+    }, {
+      key: "getCheckedNodes",
+      value: function getCheckedNodes() {
+        return this.store.getCheckedNodes();
+      } // 设置最大可选
+
+    }, {
+      key: "setMaxValue",
+      value: function setMaxValue() {
+        var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+        this.store.max = value;
+      }
+    }]);
+
+    return Tree;
+  }();
+
+  var plugin = (function (VsTree) {
+    return function (Vue) {
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      Vue.component('vs-tree', {
+        props: {
+          data: Array | Object,
+          options: Object,
+          animation: Boolean,
+          draggable: Boolean,
+          hideRoot: Boolean,
+          showCheckbox: Boolean,
+          showRadio: Boolean,
+          radioParentoOnly: Boolean,
+          showLine: Boolean,
+          showIcon: Boolean,
+          onlyShowLeafIcon: Boolean,
+          highlightCurrent: Boolean,
+          accordion: Boolean,
+          nocheckParent: Boolean,
+          sort: Boolean,
+          checkOnClickNode: Boolean,
+          checkFilterLeaf: Boolean,
+          strictLeaf: Boolean,
+          rootName: String,
+          max: Number,
+          lazy: Boolean,
+          load: Function,
+          format: Function,
+          disabledKeys: Array,
+          checkedKeys: Array,
+          expandKeys: Array,
+          keyword: String,
+          expandClass: String,
+          theme: String,
+          expandLevel: {
+            type: Number,
+            default: 1
+          },
+          indent: {
+            type: Number,
+            default: 10
+          },
+          showCount: {
+            type: Number,
+            default: 20
+          },
+          itemHeight: {
+            type: Number,
+            default: 26
+          },
+          beforeCheck: Function,
+          renderContent: Function,
+          checkFilter: Function,
+          searchFilter: Function,
+          searchRender: Function
+        },
+        data: function data() {
+          return {
+            tree: {}
+          };
+        },
+        watch: {
+          max: function max() {
+            var newVal = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+            this.setMaxValue(newVal);
+          },
+          keyword: function keyword(newVal) {
+            this.filter(newVal);
+          }
+        },
+        mounted: function mounted() {
+          var _this = this;
+
+          this.$nextTick(function () {
+            _this._vsinit();
+          });
+        },
+        methods: {
+          _vsinit: function _vsinit() {
+            var _this2 = this;
+
+            console.time('render:tree');
+            this.tree.tree = new VsTree(this.$refs.tree, Object.assign({}, options, this.$props, _objectSpread2(_objectSpread2({}, this.options), {}, {
+              data: this.data,
+              click: function click(event, node) {
+                _this2.$emit('click', event, node);
+              },
+              check: function check(event, node) {
+                _this2.$emit('check', event, node);
+              },
+              change: function change(node) {
+                _this2.$emit('change', node);
+              },
+              contextmenu: function contextmenu(event, node) {
+                _this2.$emit('node-contextmenu', event, node);
+              },
+              limitAlert: function limitAlert() {
+                _this2.$emit('limit-alert');
+              }
+            })));
+            console.timeEnd('render:tree');
+          },
+          getNodeById: function getNodeById(id) {
+            return this.tree.tree.getNodeById(id);
+          },
+          getCheckedNodes: function getCheckedNodes() {
+            return this.tree.tree.getCheckedNodes();
+          },
+          filter: function filter(value) {
+            return this.tree.tree.filter(value);
+          },
+          setMaxValue: function setMaxValue() {
+            var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+            this.tree.tree.setMaxValue(value);
+          }
+        },
+        render: function render(h) {
+          return h('div', {
+            ref: 'tree'
+          });
+        }
+      });
+    };
+  });
+
+  var version$1 = version; // Vue 插件
+
+  var install = plugin(Tree);
+
+  exports.default = Tree;
+  exports.install = install;
+  exports.version = version$1;
+
+  Object.defineProperty(exports, '__esModule', { value: true });
+
+})));

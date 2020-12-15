@@ -522,18 +522,23 @@ export default class Node {
     dom.draggable = true
 
     dom.addEventListener('dragstart', (e) => {
-      console.log(e)
+      e.stopPropagation()
     })
 
+    // Chorme下，拖拽必须禁止默认事件否则drop事件不会触发
+    dom.addEventListener('dragover', (e) => {
+      e.preventDefault()
+    })
+
+    let key
     dom.addEventListener('dragenter', (e) => {
       e.stopPropagation()
-      const key = e.target.getAttribute('vs-index')
+      e.preventDefault()
+      key = e.target.getAttribute('vs-index')
       if (!key) return
       const enterGap = onDragEnterGap(e, this)
+      this.store.dropPostion = enterGap
       if (dom === e.target && enterGap === 0) return
-
-      console.log(this.store.nodeMap)
-      console.log(this.store.nodeMap.get(Number(key)))
 
       e.target.classList.add('vs-drag-enter')
 
@@ -551,6 +556,16 @@ export default class Node {
       e.target.classList.remove('vs-drag-enter')
       e.target.classList.remove('vs-drag-over-gap-bottom')
       e.target.classList.remove('vs-drag-over-gap-top')
+    })
+
+    dom.addEventListener('drop', (e) => {
+      const current = this.store.nodeMap.get(Number(key))
+
+      if (current) {
+        this.store.dropNode = current
+        console.log(current, this.store.dropPostion)
+      }
+      console.log(e, 'drop')
     })
   }
 
