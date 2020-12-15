@@ -28,6 +28,8 @@ export default (VsTree) => {
         checkedKeys: Array,
         expandKeys: Array,
         keyword: String,
+        expandClass: String,
+        theme: String,
         expandLevel: {
           type: Number,
           default: 1

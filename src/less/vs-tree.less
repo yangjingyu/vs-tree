@@ -24,7 +24,7 @@
 .vs-indent-unit {
   position: relative;
   display: inline-block;
-  width: 20px;
+  width: 14px;
   height: 14px;
   vertical-align: middle;
 
@@ -41,70 +41,42 @@
 
 .expand,
 .expand-empty {
-  width: 20px;
+  width: 14px;
   height: 14px;
   line-height: 10px;
   display: inline-block;
-  margin-right: 8px;
+  margin-right: 5px;
   color: #bbb;
   text-align: center;
   box-sizing: border-box;
+  vertical-align: middle;
 }
 
 .expand {
   position: relative;
   cursor: pointer;
 
-  &::after {
-    content: "+";
-    border: 1px solid #bbb;
-    width: 14px;
-    height: 14px;
-    display: inline-block;
-    box-sizing: border-box;
-  }
-}
-
-.vs-indent-unit ~ .expand {
-  &::before {
-    content: "";
-    position: absolute;
-    top: -10px;
-    left: 50%;
-    width: 0;
-    height: 8px;
-    border-left: 1px dashed #ddd;
-  }
-}
-
-.vs-indent-unit ~ .expand-empty {
-  position: relative;
-
-  &::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 50%;
-    margin-top: 2px;
-    border-bottom: 1px dashed #ddd;
-  }
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: -3px;
-    left: 50%;
-    height: 160%;
-    border-left: 1px dashed #ddd;
+  &.vs-expand-icon {
+    &::after {
+      content: "";
+      width: 14px;
+      height: 14px;
+      display: inline-block;
+      background-image: url(./expand.svg);
+      background-size: 10px 10px;
+      background-repeat: no-repeat;
+      background-position: center center;
+      transform: rotate(-90deg);
+      transition: transform .3s;
+    }
   }
 }
 
 .expanded {
   color: #bbb;
-  
-  &::after {
-    content: "-";
+
+  &.vs-expand-icon::after {
+    transform: rotate(0);
   }
 }
 
@@ -118,6 +90,50 @@
   }
 }
 
+.vs-indent-unit ~ .expand {
+  &::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: 50%;
+    width: 0;
+    height: 50%;
+    margin-top: -25%;
+    border-left: 1px dashed #ddd;
+  }
+}
+
+.vs-tree-node:not([vs-child]) + .vs-tree-node{
+  .vs-indent-unit ~ .expand {
+    &::before {
+      display: none;
+    }
+  }
+}
+
+.vs-indent-unit ~ .expand-empty {
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50%;
+    margin-top: -1px;
+    border-bottom: 1px dashed #ddd;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: 50%;
+    height: 200%;
+    border-left: 1px dashed #ddd;
+  }
+}
+
 .selected {
   background-color: #eee;
 }
@@ -126,13 +142,13 @@
   position: relative;
   color: #606266;
   font-weight: 500;
-  font-size: 14px;
   cursor: pointer;
   display: inline-block;
   white-space: nowrap;
   user-select: none;
   margin-right: 8px;
   vertical-align: middle;
+  font-size: 0;
 }
 
 .vs-checkbox__input, .vs-radio__input {
@@ -309,5 +325,20 @@
     .expand-empty {
       display: none;
     }
+  }
+}
+
+.vs-theme-element {
+  .is-indeterminate .vs-checkbox__inner {
+    background-color: #1989fa;
+    border-color: #1989fa;
+  }
+  .is-indeterminate .vs-checkbox__inner::before {
+    background-color: #fff;
+    height: 1px;
+    width: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1);
   }
 }

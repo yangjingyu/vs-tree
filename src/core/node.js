@@ -72,6 +72,8 @@ export default class Node {
     dom.className = 'vs-tree-node'
     dom.setAttribute('vs-index', this.id)
 
+    !this.isLeaf && this.childNodes.length && dom.setAttribute('vs-child', true)
+
     dom.appendChild(this.createInner())
 
     if (this.store.renderContent) {
@@ -182,14 +184,14 @@ export default class Node {
   // 叶子节点-无需展开
   createExpandEmpty () {
     const dom = document.createElement('span')
-    dom.className = 'expand-empty'
+    dom.className = 'expand-empty ' + this.store.expandClass
     return dom
   }
 
   // 有子元素-需要展开
   createExpand () {
     const dom = document.createElement('span')
-    dom.className = 'expand'
+    dom.className = 'expand ' + this.store.expandClass
 
     if (this.level < this.store.expandLevel || this.store.expandLevel === -1 || this.expanded) {
       dom.classList.add('expanded')
@@ -359,6 +361,7 @@ export default class Node {
   }
 
   updateChecked (check) {
+    if (this.disabled) return
     this.checked = check
     this.sortId = Date.now()
     this.checkboxNode && (this.checkboxNode.checked = check)

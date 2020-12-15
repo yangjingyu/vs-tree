@@ -4,47 +4,49 @@
 
 ### Options
 
-| Input            | Desc                                                 | Type                  | Default |
-| ---------------- | ---------------------------------------------------- | --------------------- | ------- |
-| el               | 选择器, 或 HTMLElement                               | string 或 HTMLElement |         |
-| data             | 展示数据                                             | Object、 Array        |         |
-| hideRoot         | 是否展示根节点                                       | Boolean               | false    |
-| showLine         | 是否展示连接线                                       | Boolean               | false   |
-| showIcon         | 是否显示图标                                         | Boolean               | false   |
-| onlyShowLeafIcon | 是否仅显示叶子节点图标                               | Boolean               | false   |
-| showCheckbox     | 是否显示复选框                                       | Boolean               | false   |
-| showRadio        | 是否显示单选框，会覆盖复选框                         | Boolean               | false   |
-| radioParentoOnly | 每个父节点下唯一                                     | Boolean               | false   |
-| highlightCurrent | 是否高亮选中当前项                                   | Boolean               | false   |
-| accordion        | 手风琴模式                                           | Boolean               | false   |
-| animation        | 开启动画                                           | Boolean               | false   |
-| draggable        | 开启拖拽                                           | Boolean               | false   |
-| nocheckParent    | 禁止父节点选中                                       | Boolean               | false   |
-| sort             | 对选中列表排序                                       | Boolean               | false   |
-| checkOnClickNode | 是否在点击节点的时候选中节点                         | Boolean               | false   |
-| lazy             | 异步加载节点                                         | Boolean               | false   |
-| max              | 最大可选数量                                         | Number                | 0       |
-| checkFilterLeaf  | 选中结果过滤掉叶子节点， 异步加载时需手需提供 isLeaf | Boolean               | false   |
-| rootName         | 根节点名称，仅 data 为数组时有效，此时不会默认       | String                | null    |
-| disabledKeys     | 禁止操作                                             | Array                 | null    |
-| checkedKeys      | 默认选中                                             | Array                 | null    |
-| expandKeys       | 默认展开                                             | Array                 | null    |
-| expandLevel      | 默认展开级数, 0 不展开 -1 全部展开                   | Number                | 1       |
-| indent           | 缩进                                                 | Number                | 10      |
-| showCount        | 试图内显示节点数量                                   | Number                | 20      |
-| itemHeight       | 单个节点高度                                         | Number                | 26      |
+| Input            | Desc                                                 | Type                  | Default        |
+| ---------------- | ---------------------------------------------------- | --------------------- | -------------- |
+| el               | 选择器, 或 HTMLElement                               | string 或 HTMLElement |                |
+| data             | 展示数据                                             | Object、 Array        |                |
+| hideRoot         | 是否展示根节点                                       | Boolean               | false          |
+| showLine         | 是否展示连接线                                       | Boolean               | false          |
+| showIcon         | 是否显示图标                                         | Boolean               | false          |
+| onlyShowLeafIcon | 是否仅显示叶子节点图标                               | Boolean               | false          |
+| showCheckbox     | 是否显示复选框                                       | Boolean               | false          |
+| showRadio        | 是否显示单选框，会覆盖复选框                         | Boolean               | false          |
+| radioParentoOnly | 每个父节点下唯一                                     | Boolean               | false          |
+| highlightCurrent | 是否高亮选中当前项                                   | Boolean               | false          |
+| accordion        | 手风琴模式                                           | Boolean               | false          |
+| animation        | 开启动画                                             | Boolean               | false          |
+| draggable        | 开启拖拽                                             | Boolean               | false          |
+| nocheckParent    | 禁止父节点选中                                       | Boolean               | false          |
+| sort             | 对选中列表排序                                       | Boolean               | false          |
+| checkOnClickNode | 是否在点击节点的时候选中节点                         | Boolean               | false          |
+| lazy             | 异步加载节点                                         | Boolean               | false          |
+| max              | 最大可选数量                                         | Number                | 0              |
+| checkFilterLeaf  | 选中结果过滤掉叶子节点， 异步加载时需手需提供 isLeaf | Boolean               | false          |
+| rootName         | 根节点名称，仅 data 为数组时有效，此时不会默认       | String                | null           |
+| expandClass      | 展开收起图标class                                    | String                | vs-expand-icon |
+| theme            | 皮肤风格,仅支持 'element'                               | String                | null           |
+| disabledKeys     | 禁止操作                                             | Array                 | null           |
+| checkedKeys      | 默认选中                                             | Array                 | null           |
+| expandKeys       | 默认展开                                             | Array                 | null           |
+| expandLevel      | 默认展开级数, 0 不展开 -1 全部展开                   | Number                | 1              |
+| indent           | 缩进                                                 | Number                | 10             |
+| showCount        | 试图内显示节点数量                                   | Number                | 20             |
+| itemHeight       | 单个节点高度                                         | Number                | 26             |
 
 ### 方法
 
 `Tree` 内部使用了 Node 类型的对象来包装用户传入的数据，用来保存目前节点的状态。
 `Tree` 拥有如下方法：
 
-| Methods         | 说明                   | 参数 |
-| --------------- | ---------------------- | ---- |
-| getCheckedNodes | 获取选中节点           | -    |
-| getNodeById     | 根据 ID 获取 Node 节点 | id   |
-| filter     | 过滤节点     | keyword, onlySearchLeaf  |
-| setMaxValue     | 设置最大可选     | number    |
+| Methods         | 说明                   | 参数                    |
+| --------------- | ---------------------- | ----------------------- |
+| getCheckedNodes | 获取选中节点           | -                       |
+| getNodeById     | 根据 ID 获取 Node 节点 | id                      |
+| filter          | 过滤节点               | keyword, onlySearchLeaf |
+| setMaxValue     | 设置最大可选           | number                  |
 
 > onlySearchLeaf 只过滤叶子节点
 
@@ -52,17 +54,17 @@
 
 `Node` 拥有如下方法：
 
-| Methods    | 说明         | 参数       |
-| ---------- | ------------ | ---------- |
-| setChecked | 设置是否选中 | true,false |
+| Methods     | 说明         | 参数       |
+| ----------- | ------------ | ---------- |
+| setChecked  | 设置是否选中 | true,false |
 | setDisabled | 设置禁止操作 | true,false |
-| remove     | 删除当前节点 | -          |
-| append     | 追加节点     | data       |
+| remove      | 删除当前节点 | -          |
+| append      | 追加节点     | data       |
 
 ### Events
 
 | 事件名称 | 说明 | 回调参数 | 返回值 |
-| ------------- | ------------------- | ------------- | --｜
+| -------- | ---- | -------- | ------ |｜
 | click | 节点点击事件 | event, node | void ｜
 | beforeCheck | 节点选择前触发 | node | true,false ｜
 | check | 复选框被点击时触发 | event, node | void ｜

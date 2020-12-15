@@ -33,6 +33,7 @@
         data: root[0],
         showCheckbox: true,
         max: 0,
+        theme: 'element',
         searchFilter: function(keyword, node, data) {
           return node.isLeaf && data.extra && data.extra.keyword && data.extra.keyword.includes(keyword)
         },

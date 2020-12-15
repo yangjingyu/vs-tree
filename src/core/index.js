@@ -24,7 +24,11 @@ export default class Tree {
     if (!(this.$el instanceof HTMLElement)) {
       throw Error('请为组件提供根节点')
     }
-    this.$el.classList.add = 'vs-tree'
+    this.$el.classList.add('vs-tree')
+
+    if (ops.theme) {
+      this.$el.classList.add('vs-theme-' + ops.theme)
+    }
 
     if (Array.isArray(ops.data)) {
       this._data = {
@@ -93,6 +97,7 @@ export default class Tree {
       format: ops.format || null,
       searchRender: ops.searchRender || null,
       searchDisabledChecked: ops.searchDisabledChecked || false,
+      expandClass: ops.expandClass || 'vs-expand-icon',
       update: () => {
         this.render()
       },

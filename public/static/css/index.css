@@ -55,3 +55,20 @@ p {
 .tree-demo .vs-tree-node {
   justify-content: start;
 }
+
+.custom-expand {
+  margin-right: 8px;
+}
+
+.custom-expand.expand::after {
+  content: "+";
+  border: 1px solid #bbb;
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  box-sizing: border-box;
+}
+
+.custom-expand.expanded::after {
+  content: "-";
+}
