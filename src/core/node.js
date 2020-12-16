@@ -27,11 +27,11 @@ export default class Node {
         throw new Error('format must return object! \nformat: function(data) {\n  return {id, name, children, isLeaf}\n}')
       }
       const props = ['id', 'name', 'children', 'isLeaf', 'icon', 'extra']
-      props.forEach(key => {
-        if (Object.prototype.hasOwnProperty.call(_data, key)) {
-          this.data[key] = _data[key]
+      for (let i = 0, len = props.length; i < len; i++) {
+        if (Object.prototype.hasOwnProperty.call(_data, props[i])) {
+          this.data[props[i]] = _data[props[i]]
         }
-      })
+      }
     }
 
     if (this.store.expandKeys.includes(this.data.id)) {
@@ -542,7 +542,6 @@ export default class Node {
   createDragable (dom) {
     dom.draggable = true
 
-    let key
     dom.addEventListener('dragstart', (e) => {
       e.stopPropagation()
       this.store.dragNode = this

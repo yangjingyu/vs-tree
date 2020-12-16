@@ -1,6 +1,6 @@
 let list = []
-let umap = {}
-let infomap = {}
+const umap = {}
+const infomap = {}
 const depts = []
 const root = []
 var xhr = new XMLHttpRequest()
@@ -8,7 +8,8 @@ xhr.open('GET', typeof window === 'object' ? './static/data.txt' : '../data.txt'
 xhr.send()
 xhr.onload = function (e) {
   list = xhr.response.split('\r\n').map(v => v && JSON.parse(v))
-  list.forEach(v => {
+  for (let i = 0, len = list.length; i < len; i++) {
+    const v = list[i]
     if (v.obj === 'department_user') {
       if (umap[v.data.did]) {
         umap[v.data.did].push(v.data)
@@ -17,15 +18,15 @@ xhr.onload = function (e) {
       }
     } else if (v.obj === 'user') {
       infomap[v.data.uid] = v.data
-    } else if (v.obj === 'department'){
+    } else if (v.obj === 'department') {
       if (v.data.pdid === '-1') {
         root.push(v)
       } else {
         depts.push(v)
       }
     }
-  })
-  console.log(infomap['100002955460']);
+  }
+  console.log(infomap['100002955460'])
   postMessage && postMessage({
     id: 1,
     list: list,
@@ -33,6 +34,6 @@ xhr.onload = function (e) {
     root: root,
     umap: umap,
     infomap: infomap
-  });
+  })
   typeof window !== 'object' && close()
 }

@@ -150,8 +150,6 @@ var setepId = 0;
 
 var Node = /*#__PURE__*/function () {
   function Node(ops) {
-    var _this = this;
-
     _classCallCheck(this, Node);
 
     this.id = setepId++;
@@ -176,11 +174,12 @@ var Node = /*#__PURE__*/function () {
       }
 
       var props = ['id', 'name', 'children', 'isLeaf', 'icon', 'extra'];
-      props.forEach(function (key) {
-        if (Object.prototype.hasOwnProperty.call(_data, key)) {
-          _this.data[key] = _data[key];
+
+      for (var i = 0, len = props.length; i < len; i++) {
+        if (Object.prototype.hasOwnProperty.call(_data, props[i])) {
+          this.data[props[i]] = _data[props[i]];
         }
-      });
+      }
     }
 
     if (this.store.expandKeys.includes(this.data.id)) {
@@ -217,7 +216,7 @@ var Node = /*#__PURE__*/function () {
   }, {
     key: "createNode",
     value: function createNode() {
-      var _this2 = this;
+      var _this = this;
 
       if (this.dom) {
         this.checkboxNode && (this.checkboxNode.checked = this.checked);
@@ -238,34 +237,34 @@ var Node = /*#__PURE__*/function () {
       dom.addEventListener('click', function (e) {
         e.stopPropagation();
 
-        if (_this2.store.highlightCurrent) {
-          if (_this2.store.selectedCurrent) {
-            _this2.store.selectedCurrent.dom.classList.remove('selected');
+        if (_this.store.highlightCurrent) {
+          if (_this.store.selectedCurrent) {
+            _this.store.selectedCurrent.dom.classList.remove('selected');
           }
 
           dom.classList.add('selected');
         }
 
-        if (_this2.store.checkOnClickNode && !_this2.disabled) {
-          _this2.handleCheckChange({
+        if (_this.store.checkOnClickNode && !_this.disabled) {
+          _this.handleCheckChange({
             target: {
-              checked: !_this2.checked
+              checked: !_this.checked
             }
           });
         }
 
-        _this2.store.selectedCurrent = _this2;
+        _this.store.selectedCurrent = _this;
 
-        _this2.store.click(e, _this2);
+        _this.store.click(e, _this);
       }, {
         passive: false
       });
       dom.addEventListener('contextmenu', function (e) {
-        if (_this2.store.contextmenu && typeof _this2.store.contextmenu === 'function') {
+        if (_this.store.contextmenu && typeof _this.store.contextmenu === 'function') {
           e.stopPropagation();
           e.preventDefault();
 
-          _this2.store.contextmenu(e, _this2);
+          _this.store.contextmenu(e, _this);
         }
       });
 
@@ -325,7 +324,7 @@ var Node = /*#__PURE__*/function () {
   }, {
     key: "cusmtomNode",
     value: function cusmtomNode(name, info) {
-      var _this3 = this;
+      var _this2 = this;
 
       var box = document.createElement(name);
       info.text && (box.innerText = info.text);
@@ -340,7 +339,7 @@ var Node = /*#__PURE__*/function () {
       if (typeof info.click === 'function') {
         box.addEventListener('click', function (e) {
           e.stopPropagation();
-          info.click(e, _this3);
+          info.click(e, _this2);
         }, {
           passive: false
         });
@@ -377,7 +376,7 @@ var Node = /*#__PURE__*/function () {
   }, {
     key: "createExpand",
     value: function createExpand() {
-      var _this4 = this;
+      var _this3 = this;
 
       var dom = document.createElement('span');
       dom.className = 'expand ' + this.store.expandClass;
@@ -389,10 +388,10 @@ var Node = /*#__PURE__*/function () {
 
       dom.addEventListener('click', function (e) {
         e.stopPropagation();
-        if (_this4.loading) return;
+        if (_this3.loading) return;
         var expand = !dom.classList.contains('expanded'); // dom.classList.toggle('expanded')
 
-        _this4.setExpand(expand);
+        _this3.setExpand(expand);
       }, {
         passive: false
       });
@@ -402,7 +401,7 @@ var Node = /*#__PURE__*/function () {
   }, {
     key: "createCheckbox",
     value: function createCheckbox() {
-      var _this5 = this;
+      var _this4 = this;
 
       var label = 'checkbox';
 
@@ -439,14 +438,14 @@ var Node = /*#__PURE__*/function () {
       }); // 点击回调
 
       checkbox.addEventListener('click', function (e) {
-        _this5.store.check(e, _this5);
+        _this4.store.check(e, _this4);
       }, {
         passive: false
       });
       checkbox.addEventListener('change', function (e) {
         e.stopPropagation();
 
-        _this5.handleCheckChange(e);
+        _this4.handleCheckChange(e);
       });
       this.checkboxEl = checkbox;
       return dom;
@@ -582,11 +581,11 @@ var Node = /*#__PURE__*/function () {
   }, {
     key: "updateExpand",
     value: function updateExpand(expand) {
-      var _this6 = this;
+      var _this5 = this;
 
       if (this.childNodes.length) {
         this.childNodes.forEach(function (v) {
-          if (expand && _this6.expanded) {
+          if (expand && _this5.expanded) {
             v.visbile = true;
           } else {
             v.visbile = false;
@@ -691,7 +690,7 @@ var Node = /*#__PURE__*/function () {
   }, {
     key: "setExpand",
     value: function setExpand(expand, noUpdate) {
-      var _this7 = this;
+      var _this6 = this;
 
       this.expanded = expand;
       this.updateExpand(this.expanded);
@@ -708,7 +707,7 @@ var Node = /*#__PURE__*/function () {
       if (this.store.lazy && !this.loaded) {
         this.loadData(function (data) {
           if (data) {
-            !noUpdate && _this7.storeUpdate();
+            !noUpdate && _this6.storeUpdate();
           }
         });
       } else {
@@ -728,7 +727,7 @@ var Node = /*#__PURE__*/function () {
   }, {
     key: "createAnimation",
     value: function createAnimation() {
-      var _this8 = this;
+      var _this7 = this;
 
       this.transitionNode && this.transitionNode.parentNode && this.transitionNode.parentNode.removeChild(this.transitionNode);
       var tg = document.createElement('div');
@@ -764,7 +763,7 @@ var Node = /*#__PURE__*/function () {
         tg.parentNode && tg.parentNode.removeChild(tg);
         tg.removeEventListener('transitionend', transend);
 
-        _this8.store.update();
+        _this7.store.update();
       };
 
       tg.addEventListener('transitionend', transend);
@@ -774,14 +773,14 @@ var Node = /*#__PURE__*/function () {
   }, {
     key: "createDragable",
     value: function createDragable(dom) {
-      var _this9 = this;
+      var _this8 = this;
 
       dom.draggable = true;
       dom.addEventListener('dragstart', function (e) {
         e.stopPropagation();
-        _this9.store.dragNode = _this9;
+        _this8.store.dragNode = _this8;
 
-        _this9.store.onDragstart(e, _this9); // wrap in try catch to address IE's error when first param is 'text/plain'
+        _this8.store.onDragstart(e, _this8); // wrap in try catch to address IE's error when first param is 'text/plain'
 
 
         try {
@@ -797,19 +796,19 @@ var Node = /*#__PURE__*/function () {
       dom.addEventListener('dragenter', function (e) {
         e.stopPropagation();
         e.preventDefault();
-        removeClass(_this9.store.dropNode);
-        var dropNode = _this9.dom;
+        removeClass(_this8.store.dropNode);
+        var dropNode = _this8.dom;
         if (!dropNode) return;
         var enterGap = onDragEnterGap(e, dropNode);
-        if (_this9.store.dragNode.dom === dropNode && enterGap === 0) return;
-        _this9.store.dropPostion = enterGap;
-        _this9.store.dropNode = dropNode;
+        if (_this8.store.dragNode.dom === dropNode && enterGap === 0) return;
+        _this8.store.dropPostion = enterGap;
+        _this8.store.dropNode = dropNode;
 
-        _this9.store.onDragenter(e, _this9, dropNode, enterGap);
+        _this8.store.onDragenter(e, _this8, dropNode, enterGap);
 
-        if (_this9.store.dropable) {
-          if (!_this9.expanded && !_this9.isLeaf) {
-            _this9.setExpand(true);
+        if (_this8.store.dropable) {
+          if (!_this8.expanded && !_this8.isLeaf) {
+            _this8.setExpand(true);
           }
 
           if (enterGap === -1) {
@@ -822,7 +821,7 @@ var Node = /*#__PURE__*/function () {
             return;
           }
 
-          if (!_this9.isLeaf) {
+          if (!_this8.isLeaf) {
             dropNode.classList.add('vs-drag-enter');
           }
         }
@@ -836,42 +835,42 @@ var Node = /*#__PURE__*/function () {
       }
 
       dom.addEventListener('dragleave', function (e) {
-        if (_this9.store.dropable) {
+        if (_this8.store.dropable) {
           removeClass(e.target);
         }
       });
       dom.addEventListener('drop', function (e) {
         e.stopPropagation();
 
-        _this9.store.onDrop(e, _this9, _this9.store.dropPostion);
+        _this8.store.onDrop(e, _this8, _this8.store.dropPostion);
 
-        if (_this9.store.dropable) {
-          removeClass(_this9.store.dropNode);
-          var dragNode = _this9.store.dragNode;
+        if (_this8.store.dropable) {
+          removeClass(_this8.store.dropNode);
+          var dragNode = _this8.store.dragNode;
 
-          if (dragNode && _this9.parent) {
+          if (dragNode && _this8.parent) {
             var data = Object.assign({}, dragNode.data);
             dragNode.remove();
             if (!data) return;
 
-            if (_this9.store.dropPostion === -1) {
-              _this9.parent.insertBefore({
+            if (_this8.store.dropPostion === -1) {
+              _this8.parent.insertBefore({
                 data: data
-              }, _this9);
+              }, _this8);
 
-              _this9.updateCheckedParent();
+              _this8.updateCheckedParent();
 
-              _this9.store.updateNodes();
-            } else if (_this9.store.dropPostion === 1) {
-              _this9.parent.insertAfter({
+              _this8.store.updateNodes();
+            } else if (_this8.store.dropPostion === 1) {
+              _this8.parent.insertAfter({
                 data: data
-              }, _this9);
+              }, _this8);
 
-              _this9.updateCheckedParent();
+              _this8.updateCheckedParent();
 
-              _this9.store.updateNodes();
-            } else if (!_this9.isLeaf) {
-              _this9.append(data);
+              _this8.store.updateNodes();
+            } else if (!_this8.isLeaf) {
+              _this8.append(data);
             }
           }
         }
@@ -896,7 +895,7 @@ var Node = /*#__PURE__*/function () {
   }, {
     key: "loadData",
     value: function loadData(callback) {
-      var _this10 = this;
+      var _this9 = this;
 
       if (this.loading) return;
       this.loading = true;
@@ -907,28 +906,28 @@ var Node = /*#__PURE__*/function () {
 
       var resolve = function resolve() {
         var children = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-        _this10.loaded = true;
-        _this10.loading = false;
+        _this9.loaded = true;
+        _this9.loading = false;
 
-        if (_this10.expandEl) {
-          _this10.expandEl.classList.remove('is-loading');
+        if (_this9.expandEl) {
+          _this9.expandEl.classList.remove('is-loading');
         }
 
         if (children.length) {
           children.forEach(function (data) {
-            _this10.insertChild({
+            _this9.insertChild({
               data: data,
-              store: _this10.store
+              store: _this9.store
             });
           });
 
-          _this10.childNodes[0].updateCheckedParent();
+          _this9.childNodes[0].updateCheckedParent();
 
-          _this10.store.updateNodes();
+          _this9.store.updateNodes();
         }
 
         if (callback) {
-          callback.call(_this10, children);
+          callback.call(_this9, children);
         }
       };
 
@@ -938,13 +937,13 @@ var Node = /*#__PURE__*/function () {
   }, {
     key: "remove",
     value: function remove() {
-      var _this11 = this;
+      var _this10 = this;
 
       var parent = this.parent;
       if (!parent) return;
       var children = parent.childNodes || [];
       var index = children.findIndex(function (d) {
-        return d.id === _this11.id;
+        return d.id === _this10.id;
       });
 
       if (index > -1) {
@@ -1030,9 +1029,9 @@ var TreeStore = /*#__PURE__*/function () {
         nodes.push(val);
 
         if (val.childNodes && val.childNodes.length) {
-          val.childNodes.forEach(function (element) {
-            dig(element);
-          });
+          for (var i = 0, len = val.childNodes.length; i < len; i++) {
+            dig(val.childNodes[i]);
+          }
         }
       };
 
@@ -1879,12 +1878,16 @@ var Tree = /*#__PURE__*/function () {
       }
 
       this.render(false);
-      this.data.forEach(function (v) {
+
+      for (var i = 0, len = this.data.length; i < len; i++) {
+        var v = this.data[i];
+
         if (v.requireExpand) {
           v.requireExpand = false;
           v.setExpand(true, true);
         }
-      });
+      }
+
       this.render();
       return this.data;
     } // 根据ID获取节点

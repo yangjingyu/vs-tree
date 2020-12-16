@@ -196,12 +196,13 @@ export default class Tree {
     }
 
     this.render(false)
-    this.data.forEach(v => {
+    for (let i = 0, len = this.data.length; i < len; i++) {
+      const v = this.data[i]
       if (v.requireExpand) {
         v.requireExpand = false
         v.setExpand(true, true)
       }
-    })
+    }
     this.render()
     return this.data
   }

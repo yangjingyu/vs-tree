@@ -41,9 +41,9 @@ export default class TreeStore {
     const dig = (val) => {
       nodes.push(val)
       if (val.childNodes && val.childNodes.length) {
-        val.childNodes.forEach(element => {
-          dig(element)
-        })
+        for (let i = 0, len = val.childNodes.length; i < len; i++) {
+          dig(val.childNodes[i])
+        }
       }
     }
     dig(this.root)

@@ -109,9 +109,10 @@
         if (node.data.obj !== 'department') return
         count += (umap[node.data.data.did] && umap[node.data.data.did].length) || 0
         if (node.childNodes) {
-          node.childNodes.forEach(v => {
+          for (let i = 0, len = node.childNodes.length; i < len; i++) {
+            const v = node.childNodes[i];
             calc(v)
-          })
+          }
         }
       }
       calc(node)
