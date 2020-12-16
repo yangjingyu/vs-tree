@@ -220,4 +220,9 @@ export default class Tree {
   setMaxValue (value = 0) {
     this.store.max = value
   }
+
+  // 滚动到索引位置
+  scrollToIndex (index = 0) {
+    this.vlist.scrollToIndex(index)
+  }
 }

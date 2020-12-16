@@ -48,8 +48,9 @@
 | --------------- | ---------------------- | ----------------------- |
 | getCheckedNodes | 获取选中节点           | -                       |
 | getNodeById     | 根据 ID 获取 Node 节点 | id                      |
-| filter          | 过滤节点               | keyword, onlySearchLeaf |
 | setMaxValue     | 设置最大可选           | number                  |
+| scrollToIndex     | 滚动到索引位置           | number                  |
+| filter          | 过滤节点               | keyword, onlySearchLeaf |
 
 > onlySearchLeaf 只过滤叶子节点
 

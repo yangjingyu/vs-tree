@@ -1514,6 +1514,26 @@ var Vlist = /*#__PURE__*/function () {
     value: function getScrollSize() {
       var root = this.$el;
       return root ? Math.ceil(root.scrollHeight) : 0;
+    } // set current scroll position to a expectant index
+
+  }, {
+    key: "scrollToIndex",
+    value: function scrollToIndex(index) {
+      // scroll to bottom
+      if (index >= this.dataSources.length - 1) {
+        this.scrollToBottom();
+      } else {
+        var offset = this.virtual.getOffset(index);
+        this.scrollToOffset(offset);
+      }
+    } // reset all state back to initial
+
+  }, {
+    key: "reset",
+    value: function reset() {
+      this.virtual.destroy();
+      this.scrollToOffset(0);
+      this.installVirtual();
     } // ----------- public method end -----------
 
   }, {
@@ -1886,6 +1906,13 @@ var Tree = /*#__PURE__*/function () {
     value: function setMaxValue() {
       var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
       this.store.max = value;
+    } // 滚动到索引位置
+
+  }, {
+    key: "scrollToIndex",
+    value: function scrollToIndex() {
+      var index = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+      this.vlist.scrollToIndex(index);
     }
   }]);
 

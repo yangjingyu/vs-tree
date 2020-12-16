@@ -50,6 +50,24 @@ export default class Vlist {
     return root ? Math.ceil(root.scrollHeight) : 0
   }
 
+  // set current scroll position to a expectant index
+  scrollToIndex (index) {
+    // scroll to bottom
+    if (index >= this.dataSources.length - 1) {
+      this.scrollToBottom()
+    } else {
+      const offset = this.virtual.getOffset(index)
+      this.scrollToOffset(offset)
+    }
+  }
+
+  // reset all state back to initial
+  reset () {
+    this.virtual.destroy()
+    this.scrollToOffset(0)
+    this.installVirtual()
+  }
+
   // ----------- public method end -----------
 
   installVirtual () {
