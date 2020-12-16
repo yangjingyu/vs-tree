@@ -261,6 +261,12 @@
 
           _this.store.selectedCurrent = _this;
 
+          if (_this.store.breadcrumb) {
+            _this.store.breadcrumbs.push(_this);
+
+            _this.setExpand(true);
+          }
+
           _this.store.click(e, _this);
         }, {
           passive: false
@@ -287,29 +293,35 @@
         var dom = document.createElement('div');
         dom.className = 'vs-tree-inner'; // 当隐藏根节点时减少一级缩进
 
-        var level = this.store.hideRoot ? -1 : 0;
+        var level = this.level + (this.store.hideRoot ? -1 : 0);
+
+        if (this.store.breadcrumb) {
+          level = 0;
+        }
 
         if (this.store.showLine) {
-          for (var i = 0; i < this.level + level; i++) {
+          for (var i = 0; i < level; i++) {
             var indent = document.createElement('span');
             indent.className = 'vs-indent-unit';
             dom.appendChild(indent);
           }
         } else {
-          dom.style.paddingLeft = (this.level + level) * this.store.indent + 'px';
+          dom.style.paddingLeft = level * this.store.indent + 'px';
         }
 
         var expandDom;
 
-        if (this.store.strictLeaf) {
-          expandDom = !this.isLeaf ? this.createExpand() : this.createExpandEmpty();
-        } else {
-          var _this$childNodes;
+        if (!this.store.breadcrumb) {
+          if (this.store.strictLeaf) {
+            expandDom = !this.isLeaf ? this.createExpand() : this.createExpandEmpty();
+          } else {
+            var _this$childNodes;
 
-          expandDom = ((_this$childNodes = this.childNodes) !== null && _this$childNodes !== void 0 && _this$childNodes.length || this.store.lazy) && !this.isLeaf ? this.createExpand() : this.createExpandEmpty();
+            expandDom = ((_this$childNodes = this.childNodes) !== null && _this$childNodes !== void 0 && _this$childNodes.length || this.store.lazy) && !this.isLeaf ? this.createExpand() : this.createExpandEmpty();
+          }
+
+          dom.appendChild(expandDom);
         }
-
-        dom.appendChild(expandDom);
 
         if (this.store.showCheckbox || this.store.showRadio) {
           if (!this.store.nocheckParent || !this.childNodes.length) {
@@ -1009,7 +1021,9 @@
       this.root = new Node({
         data: this.data,
         store: this
-      });
+      }); // 面包屑
+
+      this.breadcrumbs = [this.root];
     }
 
     _createClass(TreeStore, [{
@@ -1725,6 +1739,7 @@
         _this.store = new TreeStore({
           data: _this._data,
           max: ops.max,
+          breadcrumb: ops.breadcrumb || false,
           strictLeaf: ops.strictLeaf || false,
           showCount: _this.showCount,
           itemHeight: _this.itemHeight,
@@ -1825,10 +1840,19 @@
         var _this2 = this;
 
         var update = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
-        this.data = this.nodes.filter(function (v) {
-          // 过滤隐藏节点 ｜ 隐藏root节点
-          return _this2.hasKeyword(v) && v.visbile && !(_this2.store.hideRoot && v.level === 0);
-        });
+
+        if (this.store.breadcrumb) {
+          var bread = this.store.breadcrumbs[this.store.breadcrumbs.length - 1];
+          this.data = this.nodes.filter(function (v) {
+            return v.parent && v.parent.data.id === bread.data.id;
+          });
+        } else {
+          this.data = this.nodes.filter(function (v) {
+            // 过滤隐藏节点 ｜ 隐藏root节点
+            return _this2.hasKeyword(v) && v.visbile && !(_this2.store.hideRoot && v.level === 0);
+          });
+        }
+
         update && this.vlist.update(this.data);
       } // TODO:
 

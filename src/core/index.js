@@ -67,6 +67,7 @@ export default class Tree {
       this.store = new TreeStore({
         data: this._data,
         max: ops.max,
+        breadcrumb: ops.breadcrumb || false,
         strictLeaf: ops.strictLeaf || false,
         showCount: this.showCount,
         itemHeight: this.itemHeight,
@@ -152,10 +153,15 @@ export default class Tree {
   }
 
   render (update = true) {
-    this.data = this.nodes.filter(v => {
-      // 过滤隐藏节点 ｜ 隐藏root节点
-      return this.hasKeyword(v) && v.visbile && !(this.store.hideRoot && v.level === 0)
-    })
+    if (this.store.breadcrumb) {
+      const bread = this.store.breadcrumbs[this.store.breadcrumbs.length - 1]
+      this.data = this.nodes.filter(v => v.parent && v.parent.data.id === bread.data.id)
+    } else {
+      this.data = this.nodes.filter(v => {
+        // 过滤隐藏节点 ｜ 隐藏root节点
+        return this.hasKeyword(v) && v.visbile && !(this.store.hideRoot && v.level === 0)
+      })
+    }
     update && this.vlist.update(this.data)
   }
 

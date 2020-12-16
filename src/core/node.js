@@ -96,6 +96,12 @@ export default class Node {
       }
 
       this.store.selectedCurrent = this
+
+      if (this.store.breadcrumb) {
+        this.store.breadcrumbs.push(this)
+        this.setExpand(true)
+      }
+
       this.store.click(e, this)
     }, {
       passive: false
@@ -120,26 +126,32 @@ export default class Node {
     const dom = document.createElement('div')
     dom.className = 'vs-tree-inner'
     // 当隐藏根节点时减少一级缩进
-    const level = this.store.hideRoot ? -1 : 0
+    let level = this.level + (this.store.hideRoot ? -1 : 0)
+
+    if (this.store.breadcrumb) {
+      level = 0
+    }
 
     if (this.store.showLine) {
-      for (let i = 0; i < this.level + level; i++) {
+      for (let i = 0; i < level; i++) {
         const indent = document.createElement('span')
         indent.className = 'vs-indent-unit'
         dom.appendChild(indent)
       }
     } else {
-      dom.style.paddingLeft = (this.level + level) * this.store.indent + 'px'
+      dom.style.paddingLeft = level * this.store.indent + 'px'
     }
 
     let expandDom
-    if (this.store.strictLeaf) {
-      expandDom = !this.isLeaf ? this.createExpand() : this.createExpandEmpty()
-    } else {
-      expandDom = (this.childNodes?.length || this.store.lazy) && !this.isLeaf ? this.createExpand() : this.createExpandEmpty()
+    if (!this.store.breadcrumb) {
+      if (this.store.strictLeaf) {
+        expandDom = !this.isLeaf ? this.createExpand() : this.createExpandEmpty()
+      } else {
+        expandDom = (this.childNodes?.length || this.store.lazy) && !this.isLeaf ? this.createExpand() : this.createExpandEmpty()
+      }
+      dom.appendChild(expandDom)
     }
 
-    dom.appendChild(expandDom)
     if (this.store.showCheckbox || this.store.showRadio) {
       if (!this.store.nocheckParent || !this.childNodes.length) {
         dom.appendChild(this.createCheckbox())

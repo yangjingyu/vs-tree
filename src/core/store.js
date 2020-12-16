@@ -22,6 +22,9 @@ export default class TreeStore {
       data: this.data,
       store: this
     })
+
+    // 面包屑
+    this.breadcrumbs = [this.root]
   }
 
   setData (val) {
