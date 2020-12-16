@@ -23,11 +23,14 @@ export default class TreeStore {
       store: this
     })
 
+    this.updateNodes()
+
     // 面包屑
     this.breadcrumbs = [this.root]
   }
 
   setData (val) {
+    this.root.childNodes = []
     this.root.setData(val)
     this.updateNodes()
   }

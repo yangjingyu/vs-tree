@@ -1,5 +1,6 @@
 import TreeStore from './store'
 import Vlist from '../virtual-list'
+import json from 'rollup-plugin-json'
 const noop = () => { }
 export default class Tree {
   constructor (selector, ops) {
@@ -118,7 +119,7 @@ export default class Tree {
         }
       })
 
-      this.store.setData(this._data)
+      // this.store.setData(this._data)
 
       if (this.store.hideRoot) {
         // 跟节点创建dom

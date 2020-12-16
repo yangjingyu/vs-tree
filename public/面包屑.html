@@ -42,7 +42,18 @@
     console.time('render:tree');
     const tree = new vsTree.default('#tree', {
       data: data,
-      breadcrumb: '1'
+      showCheckbox: true,
+      breadcrumb: '1',
+      format: function (data, node) {
+        if (!node.isLeaf && data.children) {
+          console.log(data);
+          const name =  new String(data.name + '（'+ data.children.length +'）')
+          return {
+            name
+          }
+        }
+        return {}
+      },
     });
     console.timeEnd('render:tree');
   </script>

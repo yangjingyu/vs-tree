@@ -562,7 +562,7 @@ export default class Node {
       try {
         // setData is required for draggable to work in FireFox
         // the content has to be '' so dragging a node out of the tree won't open a new tab in FireFox
-        event.dataTransfer.setData('text/plain', '')
+        e.dataTransfer.setData('text/plain', '')
       } catch (e) { }
     })
 

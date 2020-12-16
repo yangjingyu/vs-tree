@@ -1,6 +1,6 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-  typeof define === 'function' && define.amd ? define(['exports'], factory) :
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('rollup-plugin-json')) :
+  typeof define === 'function' && define.amd ? define(['exports', 'rollup-plugin-json'], factory) :
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.vsTree = {}));
 }(this, (function (exports) { 'use strict';
 
@@ -804,7 +804,7 @@
           try {
             // setData is required for draggable to work in FireFox
             // the content has to be '' so dragging a node out of the tree won't open a new tab in FireFox
-            event.dataTransfer.setData('text/plain', '');
+            e.dataTransfer.setData('text/plain', '');
           } catch (e) {}
         }); // Chorme下，拖拽必须禁止默认事件否则drop事件不会触发
 
@@ -1021,7 +1021,8 @@
       this.root = new Node({
         data: this.data,
         store: this
-      }); // 面包屑
+      });
+      this.updateNodes(); // 面包屑
 
       this.breadcrumbs = [this.root];
     }
@@ -1029,6 +1030,7 @@
     _createClass(TreeStore, [{
       key: "setData",
       value: function setData(val) {
+        this.root.childNodes = [];
         this.root.setData(val);
         this.updateNodes();
       } // 更新节点列表
@@ -1797,9 +1799,7 @@
             _this.nodes = nodes;
             _this.vlist && _this.render();
           }
-        });
-
-        _this.store.setData(_this._data);
+        }); // this.store.setData(this._data)
 
         if (_this.store.hideRoot) {
           // 跟节点创建dom

@@ -58,6 +58,7 @@
           alert('超过最大可选')
         },
         format: function (data, node) {
+          // console.log(data, node);
           var child = []
           if (data.obj === 'department') {
             child = depts.filter(v => v.obj === 'department' && v.data.pdid === data.data.did)
