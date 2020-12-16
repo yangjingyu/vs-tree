@@ -7,6 +7,7 @@ export default (VsTree) => {
         async: Boolean,
         animation: Boolean,
         draggable: Boolean,
+        dropable: Boolean,
         hideRoot: Boolean,
         showCheckbox: Boolean,
         showRadio: Boolean,
@@ -53,7 +54,10 @@ export default (VsTree) => {
         renderContent: Function,
         checkFilter: Function,
         searchFilter: Function,
-        searchRender: Function
+        searchRender: Function,
+        onDragstart: Function,
+        onDragenter: Function,
+        onDrop: Function
       },
       data () {
         return {

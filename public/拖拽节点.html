@@ -42,7 +42,12 @@
     console.time('render:tree');
     const tree = new vsTree.default('#tree', {
       data: data,
-      draggable: true
+      showCheckbox: true,
+      draggable: true,
+      dropable: true,
+      onDrop: function(e, node, pos) {
+        console.log(e, node, pos);
+      }
     });
     console.timeEnd('render:tree');
   </script>

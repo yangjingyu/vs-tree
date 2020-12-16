@@ -338,7 +338,7 @@ export default class Node {
     }
   }
 
-  insertChild (child) {
+  insertChild (child, index) {
     if (!(child instanceof Node)) {
       Object.assign(child, {
         parent: this,
@@ -349,8 +349,29 @@ export default class Node {
 
     child.level = this.level + 1
 
-    this.childNodes.push(child)
+    if (typeof index === 'undefined' || index < 0) {
+      this.childNodes.push(child)
+    } else {
+      this.childNodes.splice(index, 0, child)
+    }
     return child
+  }
+
+  insertBefore (child, ref) {
+    let index
+    if (ref) {
+      index = this.childNodes.indexOf(ref)
+    }
+    this.insertChild(child, index)
+  }
+
+  insertAfter (child, ref) {
+    let index
+    if (ref) {
+      index = this.childNodes.indexOf(ref)
+      if (index !== -1) index += 1
+    }
+    this.insertChild(child, index)
   }
 
   updateExpand (expand) {
@@ -521,8 +542,17 @@ export default class Node {
   createDragable (dom) {
     dom.draggable = true
 
+    let key
     dom.addEventListener('dragstart', (e) => {
       e.stopPropagation()
+      this.store.dragNode = this
+      this.store.onDragstart(e, this)
+      // wrap in try catch to address IE's error when first param is 'text/plain'
+      try {
+        // setData is required for draggable to work in FireFox
+        // the content has to be '' so dragging a node out of the tree won't open a new tab in FireFox
+        event.dataTransfer.setData('text/plain', '')
+      } catch (e) { }
     })
 
     // Chorme下，拖拽必须禁止默认事件否则drop事件不会触发
@@ -530,42 +560,79 @@ export default class Node {
       e.preventDefault()
     })
 
-    let key
     dom.addEventListener('dragenter', (e) => {
       e.stopPropagation()
       e.preventDefault()
-      key = e.target.getAttribute('vs-index')
-      if (!key) return
-      const enterGap = onDragEnterGap(e, this)
+
+      removeClass(this.store.dropNode)
+
+      const dropNode = this.dom
+      if (!dropNode) return
+
+      const enterGap = onDragEnterGap(e, dropNode)
+      if (this.store.dragNode.dom === dropNode && enterGap === 0) return
+
       this.store.dropPostion = enterGap
-      if (dom === e.target && enterGap === 0) return
 
-      e.target.classList.add('vs-drag-enter')
+      this.store.dropNode = dropNode
 
-      if (enterGap === -1) {
-        e.target.classList.remove('vs-drag-over-gap-bottom')
-        e.target.classList.add('vs-drag-over-gap-top')
-      }
-      if (enterGap === 1) {
-        e.target.classList.remove('vs-drag-over-gap-top')
-        e.target.classList.add('vs-drag-over-gap-bottom')
+      this.store.onDragenter(e, this, dropNode, enterGap)
+
+      if (this.store.dropable) {
+        if (!this.expanded && !this.isLeaf) {
+          this.setExpand(true)
+        }
+        if (enterGap === -1) {
+          dropNode.classList.add('vs-drag-over-gap-top')
+          return
+        }
+
+        if (enterGap === 1) {
+          dropNode.classList.add('vs-drag-over-gap-bottom')
+          return
+        }
+        if (!this.isLeaf) {
+          dropNode.classList.add('vs-drag-enter')
+        }
       }
     })
 
+    function removeClass (dom) {
+      if (!dom) return
+      dom.classList.remove('vs-drag-enter')
+      dom.classList.remove('vs-drag-over-gap-bottom')
+      dom.classList.remove('vs-drag-over-gap-top')
+    }
+
     dom.addEventListener('dragleave', (e) => {
-      e.target.classList.remove('vs-drag-enter')
-      e.target.classList.remove('vs-drag-over-gap-bottom')
-      e.target.classList.remove('vs-drag-over-gap-top')
+      if (this.store.dropable) {
+        removeClass(e.target)
+      }
     })
 
     dom.addEventListener('drop', (e) => {
-      const current = this.store.nodeMap.get(Number(key))
-
-      if (current) {
-        this.store.dropNode = current
-        console.log(current, this.store.dropPostion)
+      e.stopPropagation()
+      this.store.onDrop(e, this, this.store.dropPostion)
+      if (this.store.dropable) {
+        removeClass(this.store.dropNode)
+        const dragNode = this.store.dragNode
+        if (dragNode && this.parent) {
+          const data = Object.assign({}, dragNode.data)
+          dragNode.remove()
+          if (!data) return
+          if (this.store.dropPostion === -1) {
+            this.parent.insertBefore({ data }, this)
+            this.updateCheckedParent()
+            this.store.updateNodes()
+          } else if (this.store.dropPostion === 1) {
+            this.parent.insertAfter({ data }, this)
+            this.updateCheckedParent()
+            this.store.updateNodes()
+          } else if (!this.isLeaf) {
+            this.append(data)
+          }
+        }
       }
-      console.log(e, 'drop')
     })
   }
 
@@ -638,6 +705,8 @@ export default class Node {
       data: data,
       store: this.store
     })
+    this.data.children ? this.data.children.push(data) : this.data.children = [data]
+    this.isLeaf = false
     if (olddom) {
       delete this.dom
       olddom.parentNode.replaceChild(this.createNode(), olddom)

@@ -7,25 +7,13 @@ export function insterAfter (newElement, targetElement) {
   }
 }
 
-function getOffset (ele) {
-  var el = ele
-  var _x = 0
-  var _y = 0
-  while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
-    _x += el.offsetLeft - el.scrollLeft
-    _y += el.offsetTop - el.scrollTop
-    el = el.offsetParent
-  }
-  return { top: _y, left: _x }
-}
-
 export function onDragEnterGap (e, treeNode) {
-  var offsetTop = (0, getOffset)(treeNode.dom).top
-  var offsetHeight = treeNode.dom.offsetHeight
+  var offsetTop = treeNode.getBoundingClientRect().top
+  var offsetHeight = treeNode.offsetHeight
   var pageY = e.pageY
 
   var gapHeight = 2
-  if (pageY > offsetTop + offsetHeight - 5) {
+  if (pageY > offsetTop + offsetHeight - offsetHeight) {
     return 1 // bottom
   }
 
@@ -33,4 +21,15 @@ export function onDragEnterGap (e, treeNode) {
     return -1 // top
   }
   return 0
+}
+
+export const findNearestNode = (element, name) => {
+  let target = element
+  while (target && target.tagName !== 'BODY') {
+    if (target.className && target.className.includes(name)) {
+      return target
+    }
+    target = target.parentNode
+  }
+  return null
 }

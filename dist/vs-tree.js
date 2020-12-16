@@ -135,31 +135,13 @@
       parent.insertBefore(newElement, targetElement.nextSibling);
     }
   }
-
-  function getOffset(ele) {
-    var el = ele;
-    var _x = 0;
-    var _y = 0;
-
-    while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
-      _x += el.offsetLeft - el.scrollLeft;
-      _y += el.offsetTop - el.scrollTop;
-      el = el.offsetParent;
-    }
-
-    return {
-      top: _y,
-      left: _x
-    };
-  }
-
   function onDragEnterGap(e, treeNode) {
-    var offsetTop = (getOffset)(treeNode.dom).top;
-    var offsetHeight = treeNode.dom.offsetHeight;
+    var offsetTop = treeNode.getBoundingClientRect().top;
+    var offsetHeight = treeNode.offsetHeight;
     var pageY = e.pageY;
     var gapHeight = 2;
 
-    if (pageY > offsetTop + offsetHeight - 5) {
+    if (pageY > offsetTop + offsetHeight - offsetHeight) {
       return 1; // bottom
     }
 
@@ -561,7 +543,7 @@
       }
     }, {
       key: "insertChild",
-      value: function insertChild(child) {
+      value: function insertChild(child, index) {
         if (!(child instanceof Node)) {
           Object.assign(child, {
             parent: this,
@@ -571,8 +553,37 @@
         }
 
         child.level = this.level + 1;
-        this.childNodes.push(child);
+
+        if (typeof index === 'undefined' || index < 0) {
+          this.childNodes.push(child);
+        } else {
+          this.childNodes.splice(index, 0, child);
+        }
+
         return child;
+      }
+    }, {
+      key: "insertBefore",
+      value: function insertBefore(child, ref) {
+        var index;
+
+        if (ref) {
+          index = this.childNodes.indexOf(ref);
+        }
+
+        this.insertChild(child, index);
+      }
+    }, {
+      key: "insertAfter",
+      value: function insertAfter(child, ref) {
+        var index;
+
+        if (ref) {
+          index = this.childNodes.indexOf(ref);
+          if (index !== -1) index += 1;
+        }
+
+        this.insertChild(child, index);
       }
     }, {
       key: "updateExpand",
@@ -774,46 +785,102 @@
         dom.draggable = true;
         dom.addEventListener('dragstart', function (e) {
           e.stopPropagation();
+          _this9.store.dragNode = _this9;
+
+          _this9.store.onDragstart(e, _this9); // wrap in try catch to address IE's error when first param is 'text/plain'
+
+
+          try {
+            // setData is required for draggable to work in FireFox
+            // the content has to be '' so dragging a node out of the tree won't open a new tab in FireFox
+            event.dataTransfer.setData('text/plain', '');
+          } catch (e) {}
         }); // Chorme下，拖拽必须禁止默认事件否则drop事件不会触发
 
         dom.addEventListener('dragover', function (e) {
           e.preventDefault();
         });
-        var key;
         dom.addEventListener('dragenter', function (e) {
           e.stopPropagation();
           e.preventDefault();
-          key = e.target.getAttribute('vs-index');
-          if (!key) return;
-          var enterGap = onDragEnterGap(e, _this9);
+          removeClass(_this9.store.dropNode);
+          var dropNode = _this9.dom;
+          if (!dropNode) return;
+          var enterGap = onDragEnterGap(e, dropNode);
+          if (_this9.store.dragNode.dom === dropNode && enterGap === 0) return;
           _this9.store.dropPostion = enterGap;
-          if (dom === e.target && enterGap === 0) return;
-          e.target.classList.add('vs-drag-enter');
+          _this9.store.dropNode = dropNode;
 
-          if (enterGap === -1) {
-            e.target.classList.remove('vs-drag-over-gap-bottom');
-            e.target.classList.add('vs-drag-over-gap-top');
-          }
+          _this9.store.onDragenter(e, _this9, dropNode, enterGap);
 
-          if (enterGap === 1) {
-            e.target.classList.remove('vs-drag-over-gap-top');
-            e.target.classList.add('vs-drag-over-gap-bottom');
+          if (_this9.store.dropable) {
+            if (!_this9.expanded && !_this9.isLeaf) {
+              _this9.setExpand(true);
+            }
+
+            if (enterGap === -1) {
+              dropNode.classList.add('vs-drag-over-gap-top');
+              return;
+            }
+
+            if (enterGap === 1) {
+              dropNode.classList.add('vs-drag-over-gap-bottom');
+              return;
+            }
+
+            if (!_this9.isLeaf) {
+              dropNode.classList.add('vs-drag-enter');
+            }
           }
         });
+
+        function removeClass(dom) {
+          if (!dom) return;
+          dom.classList.remove('vs-drag-enter');
+          dom.classList.remove('vs-drag-over-gap-bottom');
+          dom.classList.remove('vs-drag-over-gap-top');
+        }
+
         dom.addEventListener('dragleave', function (e) {
-          e.target.classList.remove('vs-drag-enter');
-          e.target.classList.remove('vs-drag-over-gap-bottom');
-          e.target.classList.remove('vs-drag-over-gap-top');
+          if (_this9.store.dropable) {
+            removeClass(e.target);
+          }
         });
         dom.addEventListener('drop', function (e) {
-          var current = _this9.store.nodeMap.get(Number(key));
+          e.stopPropagation();
 
-          if (current) {
-            _this9.store.dropNode = current;
-            console.log(current, _this9.store.dropPostion);
+          _this9.store.onDrop(e, _this9, _this9.store.dropPostion);
+
+          if (_this9.store.dropable) {
+            removeClass(_this9.store.dropNode);
+            var dragNode = _this9.store.dragNode;
+
+            if (dragNode && _this9.parent) {
+              var data = Object.assign({}, dragNode.data);
+              dragNode.remove();
+              if (!data) return;
+
+              if (_this9.store.dropPostion === -1) {
+                _this9.parent.insertBefore({
+                  data: data
+                }, _this9);
+
+                _this9.updateCheckedParent();
+
+                _this9.store.updateNodes();
+              } else if (_this9.store.dropPostion === 1) {
+                _this9.parent.insertAfter({
+                  data: data
+                }, _this9);
+
+                _this9.updateCheckedParent();
+
+                _this9.store.updateNodes();
+              } else if (!_this9.isLeaf) {
+                _this9.append(data);
+              }
+            }
           }
-
-          console.log(e, 'drop');
         });
       } // 更新手风琴状态
 
@@ -907,6 +974,8 @@
           data: data,
           store: this.store
         });
+        this.data.children ? this.data.children.push(data) : this.data.children = [data];
+        this.isLeaf = false;
 
         if (olddom) {
           delete this.dom;
@@ -1614,8 +1683,10 @@
         this._data = ops.data;
       } else {
         throw Error('参数data仅支持对象或数组！');
-      } // 每一项的高度
+      } //
 
+
+      this.nodes = []; // 每一项的高度
 
       this.itemHeight = ops.itemHeight || 26; // 当前可见数量
 
@@ -1658,6 +1729,7 @@
           accordion: ops.accordion || false,
           // 手风琴模式
           draggable: ops.draggable || false,
+          dropable: ops.dropable || false,
           lazy: ops.lazy || false,
           sort: ops.sort || false,
           indent: ops.indent || 10,
@@ -1681,6 +1753,9 @@
           searchRender: ops.searchRender || null,
           searchDisabledChecked: ops.searchDisabledChecked || false,
           expandClass: ops.expandClass || 'vs-expand-icon',
+          onDragstart: ops.onDragstart || noop,
+          onDragenter: ops.onDragenter || noop,
+          onDrop: ops.onDrop || noop,
           update: function update() {
             _this.render();
           },
@@ -1833,6 +1908,7 @@
           async: Boolean,
           animation: Boolean,
           draggable: Boolean,
+          dropable: Boolean,
           hideRoot: Boolean,
           showCheckbox: Boolean,
           showRadio: Boolean,
@@ -1878,7 +1954,10 @@
           renderContent: Function,
           checkFilter: Function,
           searchFilter: Function,
-          searchRender: Function
+          searchRender: Function,
+          onDragstart: Function,
+          onDragenter: Function,
+          onDrop: Function
         },
         data: function data() {
           return {

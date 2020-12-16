@@ -20,6 +20,7 @@
 | accordion        | 手风琴模式                                           | Boolean               | false          |
 | animation        | 开启动画                                             | Boolean               | false          |
 | draggable        | 开启拖拽                                             | Boolean               | false          |
+| dropable        | 允许放置                                             | Boolean               | false          |
 | nocheckParent    | 禁止父节点选中                                       | Boolean               | false          |
 | sort             | 对选中列表排序                                       | Boolean               | false          |
 | checkOnClickNode | 是否在点击节点的时候选中节点                         | Boolean               | false          |
@@ -79,6 +80,9 @@
 | contextmenu | 鼠标右键事件 | event, node | void ｜
 | searchFilter | 搜索过滤 | keyword, node, data | node[] ｜
 | searchRender | 搜索渲染 | node, cloneNode | Element ｜
+| onDragstart | 开始拖拽 | e, node | void ｜
+| onDragenter | 进入放置目标 | e, node, dragPos | void ｜
+| onDrop | 放置目标 | e, node, dragPos | void ｜
 
 > searchRender 返回的 Element 不会影响原有dom
 

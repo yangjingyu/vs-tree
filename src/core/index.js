@@ -46,6 +46,8 @@ export default class Tree {
       throw Error('参数data仅支持对象或数组！')
     }
 
+    //
+    this.nodes = []
     // 每一项的高度
     this.itemHeight = ops.itemHeight || 26
     // 当前可见数量
@@ -82,6 +84,7 @@ export default class Tree {
         checkFilter: ops.checkFilter || null, // 过滤选中节点
         accordion: ops.accordion || false, // 手风琴模式
         draggable: ops.draggable || false,
+        dropable: ops.dropable || false,
         lazy: ops.lazy || false,
         sort: ops.sort || false,
         indent: ops.indent || 10,
@@ -102,6 +105,9 @@ export default class Tree {
         searchRender: ops.searchRender || null,
         searchDisabledChecked: ops.searchDisabledChecked || false,
         expandClass: ops.expandClass || 'vs-expand-icon',
+        onDragstart: ops.onDragstart || noop,
+        onDragenter: ops.onDragenter || noop,
+        onDrop: ops.onDrop || noop,
         update: () => {
           this.render()
         },

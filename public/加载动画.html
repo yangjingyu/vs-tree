@@ -10,7 +10,7 @@
 </head>
 
 <body>
-  <div>100万+用时：<span id="usetime"></span></div>
+  <div>20万+用时：<span id="usetime"></span></div>
   <div id="tree"></div>
   <script src="../dist/vs-tree.js"></script>
   <script>
@@ -18,7 +18,7 @@
     var id = 1000
     function add(parentId, name) {
       const list = []
-      for (var i = 0; i < 10000; i++) {
+      for (var i = 0; i < 100000; i++) {
         list.push({ id: '100' + id++, name: name + i, parentId: parentId })
       }
       return list
@@ -44,6 +44,7 @@
     var time = Date.now()
     const tree = new vsTree.default('#tree', {
       data: data,
+      showCheckbox: true,
       loading: true,
       ready: function () {
         console.timeEnd('render:tree');
