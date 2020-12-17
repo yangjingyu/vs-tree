@@ -1,5 +1,3 @@
-import 'rollup-plugin-json';
-
 var version = "2.0.0";
 
 function _typeof(obj) {

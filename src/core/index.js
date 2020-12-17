@@ -1,6 +1,6 @@
 import TreeStore from './store'
 import Vlist from '../virtual-list'
-import json from 'rollup-plugin-json'
+
 const noop = () => { }
 export default class Tree {
   constructor (selector, ops) {
