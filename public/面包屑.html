@@ -53,7 +53,12 @@
       showCheckbox: true,
       breadcrumb: {
         el: '#breadcrumb',
-        icon: '|',
+        icon: function (node, data) {
+          if (data.id === '1') {
+            return '@'
+          }
+          return false
+        },
         link: function (node, data) {
           return data.name
         },

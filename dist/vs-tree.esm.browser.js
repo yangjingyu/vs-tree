@@ -1692,7 +1692,8 @@ var Breadcrumb = /*#__PURE__*/function () {
       var dom = document.createElement('span');
 
       if (this.renderIcon) {
-        dom.appendChild(this.createIcon());
+        var icon = this.createIcon();
+        icon && dom.appendChild(icon);
       }
 
       dom.appendChild(this.createLink(breads, index, last));
@@ -1706,12 +1707,19 @@ var Breadcrumb = /*#__PURE__*/function () {
   }, {
     key: "createIcon",
     value: function createIcon() {
+      var _iconInner;
+
+      if (typeof this.renderIcon === 'function') {
+        _iconInner = this.renderIcon(this.node, this.data);
+      } else {
+        _iconInner = this.renderIcon;
+      }
+
+      if (!_iconInner) return false;
       var icon = document.createElement('span');
       icon.className = 'vs-breadcrumb-icon';
 
       if (typeof this.renderIcon === 'function') {
-        var _iconInner = this.renderIcon(this.node, this.data);
-
         if (_iconInner instanceof HTMLElement) {
           icon.appendChild(_iconInner);
         } else {

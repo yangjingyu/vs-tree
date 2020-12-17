@@ -16,7 +16,8 @@ export default class Breadcrumb {
     const dom = document.createElement('span')
 
     if (this.renderIcon) {
-      dom.appendChild(this.createIcon())
+      const icon = this.createIcon()
+      icon && dom.appendChild(icon)
     }
 
     dom.appendChild(this.createLink(breads, index, last))
@@ -29,10 +30,17 @@ export default class Breadcrumb {
   }
 
   createIcon () {
+    let _iconInner
+    if (typeof this.renderIcon === 'function') {
+      _iconInner = this.renderIcon(this.node, this.data)
+    } else {
+      _iconInner = this.renderIcon
+    }
+    if (!_iconInner) return false
+
     const icon = document.createElement('span')
     icon.className = 'vs-breadcrumb-icon'
     if (typeof this.renderIcon === 'function') {
-      const _iconInner = this.renderIcon(this.node, this.data)
       if (_iconInner instanceof HTMLElement) {
         icon.appendChild(_iconInner)
       } else {
