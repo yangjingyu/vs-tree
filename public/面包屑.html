@@ -7,12 +7,20 @@
   <title>vs-tree2.0_面包屑</title>
   <link rel="stylesheet" href="../dist/vs-tree.css">
   <link rel="stylesheet" href="./static/css/index.css">
+  <style>
+    #breadcrumb {
+      display: flex;
+      line-height: 28px;
+    }
+  </style>
 </head>
 
 <body>
+  <div id="breadcrumb" class="vs-breadcrumb"></div>
   <div id="tree"></div>
   <script src="../dist/vs-tree.js"></script>
   <script>
+    const breadcrumbEl = document.getElementById('breadcrumb')
     console.time('create:data')
     var id = 1000
     function add(parentId, name) {
@@ -54,6 +62,14 @@
         }
         return {}
       },
+      onBreadChange(bb, breads) {
+        console.log(bb, breads);
+        breadcrumbEl.innerHTML = ''
+        let html = ''
+        bb.forEach(node => {
+          breadcrumbEl.appendChild(node)
+        });
+      }
     });
     console.timeEnd('render:tree');
   </script>

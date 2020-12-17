@@ -1,5 +1,6 @@
 import TreeStore from './store'
 import Vlist from '../virtual-list'
+import Breadcrumb from '../breadcrumb'
 
 const noop = () => { }
 export default class Tree {
@@ -69,6 +70,7 @@ export default class Tree {
         data: this._data,
         max: ops.max,
         breadcrumb: ops.breadcrumb || false,
+        onBreadChange: ops.onBreadChange || noop,
         strictLeaf: ops.strictLeaf || false,
         showCount: this.showCount,
         itemHeight: this.itemHeight,
@@ -164,6 +166,12 @@ export default class Tree {
       })
     }
     update && this.vlist.update(this.data)
+
+    const bs = this.store.breadcrumbs.map((node) => {
+      return new Breadcrumb(node).createDom()
+    })
+
+    this.store.onBreadChange(bs, this.store.breadcrumbs)
   }
 
   // TODO:

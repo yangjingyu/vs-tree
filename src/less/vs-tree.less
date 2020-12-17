@@ -355,3 +355,29 @@
     transform: translate(-50%, -50%) scale(1);
   }
 }
+
+// 面包屑
+.vs-breadcrumb {
+  font-size: 14px;
+  color: rgba(0,0,0,.45);
+
+  & > span {
+    
+    &:not(:last-child) {
+      cursor: pointer;
+      color: #1989fa;
+      &:hover {
+        color: rgba(#1989fa, .8);
+      }
+    }
+
+    &:last-child {
+      color: rgba(0,0,0,.85);
+    }
+  }
+
+  &-separator {
+    margin: 0 8px;
+    color: rgba(0,0,0,.45);
+  }
+}

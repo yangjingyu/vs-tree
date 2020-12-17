@@ -1668,6 +1668,92 @@
     return Vlist;
   }();
 
+  var Breadcrumb = /*#__PURE__*/function () {
+    function Breadcrumb(node) {
+      _classCallCheck(this, Breadcrumb);
+
+      this.node = node;
+      this.data = node.data;
+      this.store = node.store;
+    }
+
+    _createClass(Breadcrumb, [{
+      key: "createDom",
+      value: function createDom() {
+        var _this = this;
+
+        var breads = this.store.breadcrumbs;
+        var index = breads.findIndex(function (v) {
+          return v === _this.node;
+        });
+        var last = index === breads.length - 1;
+        var dom = document.createElement('span');
+
+        if (typeof this.store.breadcrumbRenderIcon === 'function') {
+          dom.appendChild(this.createIcon());
+        }
+
+        dom.appendChild(this.createLink(breads, index, last));
+
+        if (!last) {
+          dom.appendChild(this.createSeparator());
+        }
+
+        return dom;
+      }
+    }, {
+      key: "createIcon",
+      value: function createIcon() {
+        var icon = document.createElement('span');
+        icon.className = 'vs-breadcrumb-icon';
+        icon.innerHTML = this.store.breadcrumbRenderIcon(this.node, this.data);
+        return icon;
+      }
+    }, {
+      key: "createLink",
+      value: function createLink(breads, index, last) {
+        var _this2 = this;
+
+        var link = document.createElement('span');
+        link.className = 'vs-breadcrumb-link';
+
+        if (typeof this.store.breadcrumbRender === 'function') {
+          link.innerHTML = this.store.breadcrumbRenderLink(this.node, this.data);
+        } else {
+          link.innerHTML = this.data.name;
+        }
+
+        link.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (last) return;
+          breads.splice(index + 1);
+
+          _this2.store.update();
+        });
+        return link;
+      }
+    }, {
+      key: "createSeparator",
+      value: function createSeparator() {
+        var separator = document.createElement('span');
+        separator.className = 'vs-breadcrumb-separator';
+
+        if (typeof this.store.breadcrumbRenderSeparator === 'function') {
+          separator.innerHTML = this.store.breadcrumbRenderSeparator(this.node, this.data);
+        } else if (typeof this.store.breadcrumbRenderSeparator === 'string') {
+          separator.innerHTML = this.store.breadcrumbRenderSeparator;
+        } else {
+          separator.innerHTML = '/';
+        }
+
+        return separator;
+      }
+    }]);
+
+    return Breadcrumb;
+  }();
+
   var noop = function noop() {};
 
   var Tree = /*#__PURE__*/function () {
@@ -1742,6 +1828,7 @@
           data: _this._data,
           max: ops.max,
           breadcrumb: ops.breadcrumb || false,
+          onBreadChange: ops.onBreadChange || noop,
           strictLeaf: ops.strictLeaf || false,
           showCount: _this.showCount,
           itemHeight: _this.itemHeight,
@@ -1854,6 +1941,10 @@
         }
 
         update && this.vlist.update(this.data);
+        var bs = this.store.breadcrumbs.map(function (node) {
+          return new Breadcrumb(node).createDom();
+        });
+        this.store.onBreadChange(bs, this.store.breadcrumbs);
       } // TODO:
 
     }, {
