@@ -164,7 +164,8 @@ var Node = /*#__PURE__*/function () {
     this.childNodes = [];
     this.store = ops.store;
     this.parent = ops.parent;
-    this.data = ops.data;
+    this.originData = ops.data;
+    this.data = Object.assign({}, ops.data);
 
     if (typeof this.store.format === 'function' && !ops.data._vsroot) {
       var _data = this.store.format(Object.assign({}, ops.data), this);

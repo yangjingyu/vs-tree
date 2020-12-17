@@ -20,7 +20,9 @@ export default class Node {
 
     this.parent = ops.parent
 
-    this.data = ops.data
+    this.originData = ops.data
+
+    this.data = Object.assign({}, ops.data)
     if (typeof this.store.format === 'function' && !ops.data._vsroot) {
       const _data = this.store.format(Object.assign({}, ops.data), this)
       if (typeof _data !== 'object') {
