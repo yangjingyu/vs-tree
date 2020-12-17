@@ -261,7 +261,7 @@
 
           _this.store.selectedCurrent = _this;
 
-          if (_this.store.breadcrumb) {
+          if (_this.store.breadcrumb && !_this.isLeaf) {
             _this.store.breadcrumbs.push(_this);
 
             _this.setExpand(true);
@@ -1959,11 +1959,12 @@
 
         var update = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
 
-        if (_typeof(this.store.breadcrumb) === 'object') {
+        if (Object.prototype.toString.call(this.store.breadcrumb) === '[object Object]') {
           var bread = this.store.breadcrumbs[this.store.breadcrumbs.length - 1];
           this.data = this.nodes.filter(function (v) {
             return v.parent && v.parent.data.id === bread.data.id;
           });
+          this.renderBreadcrumb(bread);
         } else {
           this.data = this.nodes.filter(function (v) {
             // 过滤隐藏节点 ｜ 隐藏root节点
@@ -1972,11 +1973,10 @@
         }
 
         update && this.vlist.update(this.data);
-        this.renderBreadcrumb();
       }
     }, {
       key: "renderBreadcrumb",
-      value: function renderBreadcrumb() {
+      value: function renderBreadcrumb(bread) {
         var _this$store$breadcrum = this.store.breadcrumb,
             el = _this$store$breadcrum.el,
             _this$store$breadcrum2 = _this$store$breadcrum.change,
@@ -2003,7 +2003,7 @@
         bs.forEach(function (html) {
           _el.appendChild(html);
         });
-        change(_el, this.store.breadcrumbs);
+        change(_el, this.store.breadcrumbs, bread);
       } // TODO:
 
     }, {

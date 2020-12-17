@@ -155,9 +155,10 @@ export default class Tree {
   }
 
   render (update = true) {
-    if (typeof this.store.breadcrumb === 'object') {
+    if (Object.prototype.toString.call(this.store.breadcrumb) === '[object Object]') {
       const bread = this.store.breadcrumbs[this.store.breadcrumbs.length - 1]
       this.data = this.nodes.filter(v => v.parent && v.parent.data.id === bread.data.id)
+      this.renderBreadcrumb(bread)
     } else {
       this.data = this.nodes.filter(v => {
         // 过滤隐藏节点 ｜ 隐藏root节点
@@ -165,11 +166,9 @@ export default class Tree {
       })
     }
     update && this.vlist.update(this.data)
-
-    this.renderBreadcrumb()
   }
 
-  renderBreadcrumb () {
+  renderBreadcrumb (bread) {
     const { el, change = noop } = this.store.breadcrumb
     let _el
     if (el instanceof HTMLElement) {
@@ -190,7 +189,7 @@ export default class Tree {
     bs.forEach(html => {
       _el.appendChild(html)
     })
-    change(_el, this.store.breadcrumbs)
+    change(_el, this.store.breadcrumbs, bread)
   }
 
   // TODO:

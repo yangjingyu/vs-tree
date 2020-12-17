@@ -8,7 +8,7 @@
 | ---------------- | ---------------------------------------------------- | --------------------- | -------------- |
 | el               | 选择器, 或 HTMLElement                               | string 或 HTMLElement |                |
 | data             | 展示数据                                             | Object、 Array        |                |
-| async         | 延时渲染                                       | Boolean               | false          |
+| async            | 延时渲染                                             | Boolean               | false          |
 | hideRoot         | 是否展示根节点                                       | Boolean               | false          |
 | showLine         | 是否展示连接线                                       | Boolean               | false          |
 | showIcon         | 是否显示图标                                         | Boolean               | false          |
@@ -20,18 +20,18 @@
 | accordion        | 手风琴模式                                           | Boolean               | false          |
 | animation        | 开启动画                                             | Boolean               | false          |
 | draggable        | 开启拖拽                                             | Boolean               | false          |
-| dropable        | 允许放置                                             | Boolean               | false          |
+| dropable         | 允许放置                                             | Boolean               | false          |
 | nocheckParent    | 禁止父节点选中                                       | Boolean               | false          |
 | sort             | 对选中列表排序                                       | Boolean               | false          |
 | checkOnClickNode | 是否在点击节点的时候选中节点                         | Boolean               | false          |
 | lazy             | 异步加载节点                                         | Boolean               | false          |
-| strictLeaf       | 严格依赖isLeaf，不提供时如无子节点则不渲染展开图标  | Boolean               | false          |
+| strictLeaf       | 严格依赖isLeaf，不提供时如无子节点则不渲染展开图标   | Boolean               | false          |
 | max              | 最大可选数量                                         | Number                | 0              |
 | checkFilterLeaf  | 选中结果过滤掉叶子节点， 异步加载时需手需提供 isLeaf | Boolean               | false          |
 | rootName         | 根节点名称，仅 data 为数组时有效，此时不会默认       | String                | null           |
 | expandClass      | 展开收起图标class                                    | String                | vs-expand-icon |
 | theme            | 皮肤风格,仅支持 'element'                            | String                | null           |
-| breadcrumb       | 面包屑功能，只展示一层节点                            | Object                | null           |
+| breadcrumb       | 面包屑功能，只展示一层节点                           | Object                | null           |
 | disabledKeys     | 禁止操作                                             | Array                 | null           |
 | checkedKeys      | 默认选中                                             | Array                 | null           |
 | expandKeys       | 默认展开                                             | Array                 | null           |
@@ -44,13 +44,13 @@
 ### breadcrumb
 
 
-| options         | Desc                   | 默认                    |
-| --------------- | ---------------------- | ----------------------- |
-| el | Selector, HtmlElement           | 内部创建根节点                       |
-| icon     | string, ELement, Function          | null                  |
-| link     | string, ELement, Function          | null                  |
-| separator     | string, ELement, Function          | null                  |
-
+| options   | Desc                      | 默认                    |
+| --------- | ------------------------- | ----------------------- |
+| el        | Selector, HtmlElement     | 内部创建根节点          |
+| icon      | string, ELement, Function | null                    |
+| link      | string, ELement, Function | null                    |
+| separator | string, ELement, Function | null                    |
+| change    | Event                     | dom,breadcrumbs,current |
 
 ### 方法
 
@@ -62,7 +62,7 @@
 | getCheckedNodes | 获取选中节点           | -                       |
 | getNodeById     | 根据 ID 获取 Node 节点 | id                      |
 | setMaxValue     | 设置最大可选           | number                  |
-| scrollToIndex     | 滚动到索引位置           | number                  |
+| scrollToIndex   | 滚动到索引位置         | number                  |
 | filter          | 过滤节点               | keyword, onlySearchLeaf |
 
 > onlySearchLeaf 只过滤叶子节点
