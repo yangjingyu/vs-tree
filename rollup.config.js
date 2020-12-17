@@ -5,7 +5,7 @@ import babel from '@rollup/plugin-babel'
 import postcss from 'rollup-plugin-postcss'
 import autoprefixer from 'autoprefixer'
 import cssnano from 'cssnano'
-import { eslint } from "rollup-plugin-eslint"
+import { eslint } from 'rollup-plugin-eslint'
 
 const isDev = process.env.NODE_ENV !== 'production'
 
@@ -22,7 +22,7 @@ export default {
   output: [
     {
       file: 'dist/vs-tree.esm.browser.js',
-      format: "es"
+      format: 'es'
     },
     {
       file: 'dist/vs-tree.js',
@@ -42,8 +42,8 @@ export default {
     babel({ babelHelpers: 'bundled' }),
     postcss({
       plugins: postcssPlugin,
-      extract: 'vs-tree.css',
+      extract: 'vs-tree.css'
     }),
     !isDev && terser()
   ]
-};
+}

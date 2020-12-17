@@ -5,18 +5,6 @@ import Breadcrumb from '../breadcrumb'
 const noop = () => { }
 export default class Tree {
   constructor (selector, ops) {
-    var obj = new Proxy(ops, {
-      get: function (target, propKey, receiver) {
-        console.log(`getting ${propKey}!`)
-        return Reflect.get(target, propKey, receiver)
-      },
-      set: function (target, propKey, value, receiver) {
-        console.log(`setting ${propKey}!`)
-        return Reflect.set(target, propKey, value, receiver)
-      }
-    })
-    this.$options = obj
-
     if (typeof selector === 'string') {
       this.$el = document.querySelector(selector)
     } else {
@@ -48,7 +36,6 @@ export default class Tree {
       throw Error('参数data仅支持对象或数组！')
     }
 
-    //
     this.nodes = []
     // 每一项的高度
     this.itemHeight = ops.itemHeight || 26

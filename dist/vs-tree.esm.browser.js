@@ -1789,18 +1789,6 @@ var Tree = /*#__PURE__*/function () {
 
     _classCallCheck(this, Tree);
 
-    var obj = new Proxy(ops, {
-      get: function get(target, propKey, receiver) {
-        console.log("getting ".concat(propKey, "!"));
-        return Reflect.get(target, propKey, receiver);
-      },
-      set: function set(target, propKey, value, receiver) {
-        console.log("setting ".concat(propKey, "!"));
-        return Reflect.set(target, propKey, value, receiver);
-      }
-    });
-    this.$options = obj;
-
     if (typeof selector === 'string') {
       this.$el = document.querySelector(selector);
     } else {
@@ -1831,8 +1819,7 @@ var Tree = /*#__PURE__*/function () {
       this._data = ops.data;
     } else {
       throw Error('参数data仅支持对象或数组！');
-    } //
-
+    }
 
     this.nodes = []; // 每一项的高度
 
