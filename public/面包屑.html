@@ -54,8 +54,8 @@
       breadcrumb: {
         el: '#breadcrumb',
         icon: '|',
-        link: function () {
-          return '---'
+        link: function (node, data) {
+          return data.name
         },
         change: function (dom, breads) {
           console.log(dom);
