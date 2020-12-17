@@ -442,6 +442,7 @@ export default class Node {
 
   // 更新单选节点选中
   updateRadioChecked (checked) {
+    if (this.store.nocheckParent && (this.childNodes.length || !this.isLeaf)) return
     // 父节点下唯一
     if (this.store.radioParentoOnly) {
       if (this.store.radioMap[this.parent.id]) {

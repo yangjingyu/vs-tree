@@ -662,7 +662,8 @@ var Node = /*#__PURE__*/function () {
   }, {
     key: "updateRadioChecked",
     value: function updateRadioChecked(checked) {
-      // 父节点下唯一
+      if (this.store.nocheckParent && (this.childNodes.length || !this.isLeaf)) return; // 父节点下唯一
+
       if (this.store.radioParentoOnly) {
         if (this.store.radioMap[this.parent.id]) {
           this.store.radioMap[this.parent.id].checked = false;
