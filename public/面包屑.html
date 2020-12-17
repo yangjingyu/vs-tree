@@ -7,12 +7,6 @@
   <title>vs-tree2.0_面包屑</title>
   <link rel="stylesheet" href="../dist/vs-tree.css">
   <link rel="stylesheet" href="./static/css/index.css">
-  <style>
-    #breadcrumb {
-      display: flex;
-      line-height: 28px;
-    }
-  </style>
 </head>
 
 <body>
@@ -23,10 +17,16 @@
     const breadcrumbEl = document.getElementById('breadcrumb')
     console.time('create:data')
     var id = 1000
-    function add(parentId, name) {
+    function add(parentId, name, deep = 1) {
       const list = []
       for (var i = 0; i < 10; i++) {
-        list.push({ id: '100' + id++, name: name + i, parentId: parentId })
+        const key = '100' + id++
+        const word = name + i
+        const item = { id: key, name: word, parentId: parentId }
+        if (deep > 0) {
+          item.children = [ ...add(key, word, --deep) ]
+        }
+        list.push(item)
       }
       return list
     }
@@ -34,7 +34,9 @@
       id: '1', name: 'zhangsan', parentId: '-1', children: [
         { id: '100', name: 'wangwu', parentId: '1', children: add('100', 'wangwu') },
         { id: '101', name: 'zhaoliu', parentId: '1', children: add('101', 'zhaoliu') },
-        { id: '102', name: 'huahua', parentId: '1' },
+        { id: '102', name: 'huahua', parentId: '1', children: [
+          ...add('102', 'huahua', 5)
+        ]},
         { id: '103', name: 'oo-1', parentId: '1' },
         { id: '104', name: 'oo-2', parentId: '1' },
         { id: '105', name: 'oo-3', parentId: '1' },
