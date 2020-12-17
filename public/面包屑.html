@@ -16,7 +16,7 @@
 </head>
 
 <body>
-  <div id="breadcrumb" class="vs-breadcrumb"></div>
+  <div id="breadcrumb"></div>
   <div id="tree"></div>
   <script src="../dist/vs-tree.js"></script>
   <script>
@@ -51,7 +51,16 @@
     const tree = new vsTree.default('#tree', {
       data: data,
       showCheckbox: true,
-      breadcrumb: '1',
+      breadcrumb: {
+        el: '#breadcrumb',
+        icon: '|',
+        link: function () {
+          return '---'
+        },
+        change: function (dom, breads) {
+          console.log(dom);
+        }
+      },
       format: function (data, node) {
         if (!node.isLeaf && data.children) {
           console.log(data);
@@ -61,14 +70,6 @@
           }
         }
         return {}
-      },
-      onBreadChange(bb, breads) {
-        console.log(bb, breads);
-        breadcrumbEl.innerHTML = ''
-        let html = ''
-        bb.forEach(node => {
-          breadcrumbEl.appendChild(node)
-        });
       }
     });
     console.timeEnd('render:tree');

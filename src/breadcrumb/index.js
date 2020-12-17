@@ -3,6 +3,10 @@ export default class Breadcrumb {
     this.node = node
     this.data = node.data
     this.store = node.store
+    const { icon, link, separator = '/' } = this.store.breadcrumb
+    this.renderIcon = icon
+    this.renderLink = link
+    this.renderSeparator = separator
   }
 
   createDom () {
@@ -11,7 +15,7 @@ export default class Breadcrumb {
     const last = index === breads.length - 1
     const dom = document.createElement('span')
 
-    if (typeof this.store.breadcrumbRenderIcon === 'function') {
+    if (this.renderIcon) {
       dom.appendChild(this.createIcon())
     }
 
@@ -27,7 +31,16 @@ export default class Breadcrumb {
   createIcon () {
     const icon = document.createElement('span')
     icon.className = 'vs-breadcrumb-icon'
-    icon.innerHTML = this.store.breadcrumbRenderIcon(this.node, this.data)
+    if (typeof this.renderIcon === 'function') {
+      const _iconInner = this.renderIcon(this.node, this.data)
+      if (_iconInner instanceof HTMLElement) {
+        icon.appendChild(_iconInner)
+      } else {
+        icon.innerHTML = _iconInner
+      }
+    } else {
+      icon.innerHTML = this.renderIcon
+    }
     return icon
   }
 
@@ -35,8 +48,13 @@ export default class Breadcrumb {
     const link = document.createElement('span')
     link.className = 'vs-breadcrumb-link'
 
-    if (typeof this.store.breadcrumbRender === 'function') {
-      link.innerHTML = this.store.breadcrumbRenderLink(this.node, this.data)
+    if (typeof this.renderLink === 'function') {
+      const _linkR = this.renderLink(this.node, this.data)
+      if (_linkR instanceof HTMLElement) {
+        link.appendChild(_linkR)
+      } else {
+        link.innerHTML = _linkR
+      }
     } else {
       link.innerHTML = this.data.name
     }
@@ -54,12 +72,10 @@ export default class Breadcrumb {
   createSeparator () {
     const separator = document.createElement('span')
     separator.className = 'vs-breadcrumb-separator'
-    if (typeof this.store.breadcrumbRenderSeparator === 'function') {
-      separator.innerHTML = this.store.breadcrumbRenderSeparator(this.node, this.data)
-    } else if (typeof this.store.breadcrumbRenderSeparator === 'string') {
-      separator.innerHTML = this.store.breadcrumbRenderSeparator
+    if (typeof this.renderSeparator === 'function') {
+      separator.innerHTML = this.renderSeparator(this.node, this.data)
     } else {
-      separator.innerHTML = '/'
+      separator.innerHTML = this.renderSeparator
     }
     return separator
   }

@@ -69,8 +69,7 @@ export default class Tree {
       this.store = new TreeStore({
         data: this._data,
         max: ops.max,
-        breadcrumb: ops.breadcrumb || false,
-        onBreadChange: ops.onBreadChange || noop,
+        breadcrumb: ops.breadcrumb || null,
         strictLeaf: ops.strictLeaf || false,
         showCount: this.showCount,
         itemHeight: this.itemHeight,
@@ -156,7 +155,7 @@ export default class Tree {
   }
 
   render (update = true) {
-    if (this.store.breadcrumb) {
+    if (typeof this.store.breadcrumb === 'object') {
       const bread = this.store.breadcrumbs[this.store.breadcrumbs.length - 1]
       this.data = this.nodes.filter(v => v.parent && v.parent.data.id === bread.data.id)
     } else {
@@ -167,11 +166,31 @@ export default class Tree {
     }
     update && this.vlist.update(this.data)
 
+    this.renderBreadcrumb()
+  }
+
+  renderBreadcrumb () {
+    const { el, change = noop } = this.store.breadcrumb
+    let _el
+    if (el instanceof HTMLElement) {
+      _el = el
+    } else if (el && typeof el === 'string') {
+      _el = document.querySelector(el)
+    }
+    if (!_el) {
+      _el = document.createElement('section')
+    }
+    _el.classList.add('vs-breadcrumb')
+
     const bs = this.store.breadcrumbs.map((node) => {
       return new Breadcrumb(node).createDom()
     })
 
-    this.store.onBreadChange(bs, this.store.breadcrumbs)
+    _el.innerHTML = ''
+    bs.forEach(html => {
+      _el.appendChild(html)
+    })
+    change(_el, this.store.breadcrumbs)
   }
 
   // TODO:

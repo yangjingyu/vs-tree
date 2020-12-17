@@ -31,6 +31,7 @@
 | rootName         | 根节点名称，仅 data 为数组时有效，此时不会默认       | String                | null           |
 | expandClass      | 展开收起图标class                                    | String                | vs-expand-icon |
 | theme            | 皮肤风格,仅支持 'element'                            | String                | null           |
+| breadcrumb       | 面包屑功能，只展示一层节点                            | Object                | null           |
 | disabledKeys     | 禁止操作                                             | Array                 | null           |
 | checkedKeys      | 默认选中                                             | Array                 | null           |
 | expandKeys       | 默认展开                                             | Array                 | null           |
@@ -38,6 +39,18 @@
 | indent           | 缩进                                                 | Number                | 10             |
 | showCount        | 试图内显示节点数量                                   | Number                | 20             |
 | itemHeight       | 单个节点高度                                         | Number                | 26             |
+
+
+### breadcrumb
+
+
+| options         | Desc                   | 默认                    |
+| --------------- | ---------------------- | ----------------------- |
+| el | Selector, HtmlElement           | 内部创建根节点                       |
+| icon     | string, ELement, Function          | null                  |
+| link     | string, ELement, Function          | null                  |
+| separator     | string, ELement, Function          | null                  |
+
 
 ### 方法
 

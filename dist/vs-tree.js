@@ -1675,6 +1675,14 @@
       this.node = node;
       this.data = node.data;
       this.store = node.store;
+      var _this$store$breadcrum = this.store.breadcrumb,
+          icon = _this$store$breadcrum.icon,
+          link = _this$store$breadcrum.link,
+          _this$store$breadcrum2 = _this$store$breadcrum.separator,
+          separator = _this$store$breadcrum2 === void 0 ? '/' : _this$store$breadcrum2;
+      this.renderIcon = icon;
+      this.renderLink = link;
+      this.renderSeparator = separator;
     }
 
     _createClass(Breadcrumb, [{
@@ -1689,7 +1697,7 @@
         var last = index === breads.length - 1;
         var dom = document.createElement('span');
 
-        if (typeof this.store.breadcrumbRenderIcon === 'function') {
+        if (this.renderIcon) {
           dom.appendChild(this.createIcon());
         }
 
@@ -1706,7 +1714,19 @@
       value: function createIcon() {
         var icon = document.createElement('span');
         icon.className = 'vs-breadcrumb-icon';
-        icon.innerHTML = this.store.breadcrumbRenderIcon(this.node, this.data);
+
+        if (typeof this.renderIcon === 'function') {
+          var _iconInner = this.renderIcon(this.node, this.data);
+
+          if (_iconInner instanceof HTMLElement) {
+            icon.appendChild(_iconInner);
+          } else {
+            icon.innerHTML = _iconInner;
+          }
+        } else {
+          icon.innerHTML = this.renderIcon;
+        }
+
         return icon;
       }
     }, {
@@ -1717,8 +1737,14 @@
         var link = document.createElement('span');
         link.className = 'vs-breadcrumb-link';
 
-        if (typeof this.store.breadcrumbRender === 'function') {
-          link.innerHTML = this.store.breadcrumbRenderLink(this.node, this.data);
+        if (typeof this.renderLink === 'function') {
+          var _linkR = this.renderLink(this.node, this.data);
+
+          if (_linkR instanceof HTMLElement) {
+            link.appendChild(_linkR);
+          } else {
+            link.innerHTML = _linkR;
+          }
         } else {
           link.innerHTML = this.data.name;
         }
@@ -1739,12 +1765,10 @@
         var separator = document.createElement('span');
         separator.className = 'vs-breadcrumb-separator';
 
-        if (typeof this.store.breadcrumbRenderSeparator === 'function') {
-          separator.innerHTML = this.store.breadcrumbRenderSeparator(this.node, this.data);
-        } else if (typeof this.store.breadcrumbRenderSeparator === 'string') {
-          separator.innerHTML = this.store.breadcrumbRenderSeparator;
+        if (typeof this.renderSeparator === 'function') {
+          separator.innerHTML = this.renderSeparator(this.node, this.data);
         } else {
-          separator.innerHTML = '/';
+          separator.innerHTML = this.renderSeparator;
         }
 
         return separator;
@@ -1827,8 +1851,7 @@
         _this.store = new TreeStore({
           data: _this._data,
           max: ops.max,
-          breadcrumb: ops.breadcrumb || false,
-          onBreadChange: ops.onBreadChange || noop,
+          breadcrumb: ops.breadcrumb || null,
           strictLeaf: ops.strictLeaf || false,
           showCount: _this.showCount,
           itemHeight: _this.itemHeight,
@@ -1928,7 +1951,7 @@
 
         var update = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
 
-        if (this.store.breadcrumb) {
+        if (_typeof(this.store.breadcrumb) === 'object') {
           var bread = this.store.breadcrumbs[this.store.breadcrumbs.length - 1];
           this.data = this.nodes.filter(function (v) {
             return v.parent && v.parent.data.id === bread.data.id;
@@ -1941,10 +1964,38 @@
         }
 
         update && this.vlist.update(this.data);
+        this.renderBreadcrumb();
+      }
+    }, {
+      key: "renderBreadcrumb",
+      value: function renderBreadcrumb() {
+        var _this$store$breadcrum = this.store.breadcrumb,
+            el = _this$store$breadcrum.el,
+            _this$store$breadcrum2 = _this$store$breadcrum.change,
+            change = _this$store$breadcrum2 === void 0 ? noop : _this$store$breadcrum2;
+
+        var _el;
+
+        if (el instanceof HTMLElement) {
+          _el = el;
+        } else if (el && typeof el === 'string') {
+          _el = document.querySelector(el);
+        }
+
+        if (!_el) {
+          _el = document.createElement('section');
+        }
+
+        _el.classList.add('vs-breadcrumb');
+
         var bs = this.store.breadcrumbs.map(function (node) {
           return new Breadcrumb(node).createDom();
         });
-        this.store.onBreadChange(bs, this.store.breadcrumbs);
+        _el.innerHTML = '';
+        bs.forEach(function (html) {
+          _el.appendChild(html);
+        });
+        change(_el, this.store.breadcrumbs);
       } // TODO:
 
     }, {
