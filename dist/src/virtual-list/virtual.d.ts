@@ -1,0 +1,37 @@
+export default class Virtual {
+    constructor(param: any, callUpdate: any);
+    init(param: any, callUpdate: any): void;
+    param: any;
+    callUpdate: any;
+    sizes: Map<any, any> | undefined;
+    firstRangeTotalSize: any;
+    firstRangeAverageSize: number | undefined;
+    lastCalcIndex: any;
+    fixedSizeValue: any;
+    calcType: string | undefined;
+    offset: any;
+    direction: string | undefined;
+    range: any;
+    destroy(): void;
+    getRange(): any;
+    isBehind(): boolean;
+    isFront(): boolean;
+    getOffset(start: any): any;
+    updateParam(key: any, value: any): void;
+    saveSize(id: any, size: any): void;
+    handleDataSourcesChange(): void;
+    handleSlotSizeChange(): void;
+    handleScroll(offset: any): void;
+    handleFront(): void;
+    handleBehind(): void;
+    getScrollOvers(): number;
+    getIndexOffset(givenIndex: any): number;
+    isFixedType(): boolean;
+    getLastIndex(): number;
+    checkRange(start: any, end: any): void;
+    updateRange(start: any, end: any): void;
+    getEndByStart(start: any): number;
+    getPadFront(): number;
+    getPadBehind(): number;
+    getEstimateSize(): any;
+}

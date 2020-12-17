@@ -1,5 +1,6 @@
 
-import { insterAfter, onDragEnterGap } from './utils'
+import { insterAfter, onDragEnterGap } from './utils.ts'
+
 let setepId = 0
 
 export default class Node {

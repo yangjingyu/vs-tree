@@ -1,6 +1,6 @@
 import TreeStore from './store'
 import Vlist from '../virtual-list'
-import Breadcrumb from '../breadcrumb'
+import Breadcrumb from '../breadcrumb/index.js'
 
 const noop = () => { }
 export default class Tree {

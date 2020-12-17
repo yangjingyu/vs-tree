@@ -5,12 +5,15 @@
   "license": "MIT",
   "scripts": {
     "dev": "rollup -c --watch",
-    "build": "NODE_ENV=production rollup -c"
+    "build": "NODE_ENV=production rollup -c",
+    "lint": "eslint ./ --fix"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
     "@babel/preset-env": "^7.12.7",
+    "@babel/preset-typescript": "^7.12.7",
     "@rollup/plugin-babel": "^5.2.2",
+    "@rollup/plugin-node-resolve": "^11.0.1",
     "autoprefixer": "8.0.0",
     "cssnano": "^4.1.10",
     "eslint-config-standard": "14.1.1",
@@ -22,7 +25,9 @@
     "rollup-plugin-json": "^4.0.0",
     "rollup-plugin-postcss": "^4.0.0",
     "rollup-plugin-terser": "^7.0.2",
-    "standard": "^16.0.3"
+    "rollup-plugin-typescript2": "^0.29.0",
+    "standard": "^16.0.3",
+    "typescript": "^4.1.3"
   },
   "browserslist": [
     "last 2 version",

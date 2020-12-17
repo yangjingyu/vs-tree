@@ -129,6 +129,10 @@
   function insterAfter(newElement, targetElement) {
     var parent = targetElement.parentNode;
 
+    if (!parent) {
+      return;
+    }
+
     if (parent.lastChild === targetElement) {
       parent.appendChild(newElement);
     } else {
