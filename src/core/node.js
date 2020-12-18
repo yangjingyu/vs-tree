@@ -37,6 +37,14 @@ export default class Node {
       }
     }
 
+    if (this.store.checkInherit && this.parent) {
+      this.checked = this.parent.checked
+    }
+
+    if (this.store.disabledInherit && this.parent) {
+      this.disabled = this.parent.disabled
+    }
+
     if (this.store.expandKeys.includes(this.data.id)) {
       this.expanded = true
     }
@@ -389,6 +397,7 @@ export default class Node {
     this.insertChild(child, index)
   }
 
+  // 设置展开状态
   updateExpand (expand) {
     if (this.childNodes.length) {
       this.childNodes.forEach(v => {
@@ -402,13 +411,25 @@ export default class Node {
     }
   }
 
-  updateChecked (check) {
-    if (this.disabled) return
+  // 更新本身及子节点状态
+  updateChecked (check, isInitDefault) {
+    if ((!isInitDefault && this.disabled)) return
+    if (!this.store.showCheckbox) return
+    // if (this.disabled) return
     this.checked = check
     this.sortId = Date.now()
     this.checkboxNode && (this.checkboxNode.checked = check)
-    this.parent && (this.parent.indeterminate = false)
     this.dom && this.dom.classList.remove('is-indeterminate')
+
+    // 验证关联关系
+    if (this.store.allowEmit(check, 'p')) {
+      this.parent && (this.parent.indeterminate = false)
+    }
+
+    if (!this.store.allowEmit(check, 's')) {
+      return
+    }
+
     if (this.childNodes.length) {
       this.childNodes.forEach(v => {
         v.updateChecked(check)
@@ -416,7 +437,14 @@ export default class Node {
     }
   }
 
-  updateCheckedParent () {
+  // 更新父节点状态
+  updateCheckedParent (_checked, isInitDefault) {
+    if ((!isInitDefault && this.disabled)) return
+    if (!this.store.showCheckbox) return
+    if (!this.store.allowEmit(_checked, 'p')) {
+      return
+    }
+
     if (!this.parent || this.store.nocheckParent) return
     const allChecked = this.parent.childNodes.every(v => v.checked)
     const someChecked = this.parent.childNodes.some(v => v.checked || v.indeterminate)
@@ -441,7 +469,9 @@ export default class Node {
   }
 
   // 更新单选节点选中
-  updateRadioChecked (checked) {
+  updateRadioChecked (checked, isInitDefault) {
+    if ((!isInitDefault && this.disabled)) return
+
     if (this.store.nocheckParent && (this.childNodes.length || !this.isLeaf)) return
     // 父节点下唯一
     if (this.store.radioParentoOnly) {
@@ -462,14 +492,14 @@ export default class Node {
 
   // 设置是否选中
   setChecked (checked, isInitDefault) {
-    if ((!isInitDefault && this.disabled)) return
     if (this.store.showRadio) {
-      this.updateRadioChecked(checked)
+      this.updateRadioChecked(checked, isInitDefault)
       return
     }
     if (!this.store.showCheckbox) return
-    this.updateChecked(checked)
-    this.updateCheckedParent(checked)
+
+    this.updateChecked(checked, isInitDefault)
+    this.updateCheckedParent(checked, isInitDefault)
   }
 
   // 设置禁止选中

@@ -1,11 +1,11 @@
 export default class Node {
     constructor(ops: any);
     id: number;
-    checked: boolean;
+    checked: any;
     expanded: boolean;
     indeterminate: boolean;
     visbile: boolean;
-    disabled: boolean;
+    disabled: any;
     loaded: boolean;
     isLeaf: boolean;
     level: any;
@@ -35,10 +35,10 @@ export default class Node {
     insertBefore(child: any, ref: any): void;
     insertAfter(child: any, ref: any): void;
     updateExpand(expand: any): void;
-    updateChecked(check: any): void;
+    updateChecked(check: any, isInitDefault: any): void;
     sortId: number | undefined;
-    updateCheckedParent(): void;
-    updateRadioChecked(checked: any): void;
+    updateCheckedParent(_checked: any, isInitDefault: any): void;
+    updateRadioChecked(checked: any, isInitDefault: any): void;
     setChecked(checked: any, isInitDefault: any): void;
     setDisabled(disabled?: boolean): void;
     setExpand(expand: any, noUpdate: any): void;

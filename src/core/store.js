@@ -111,6 +111,21 @@ export default class TreeStore {
     return count
   }
 
+  // 关联判断
+  allowEmit (check, type) {
+    const { Y, N } = this.checkboxType
+    if (check) {
+      if (!Y.includes(type)) {
+        return false
+      }
+    } else {
+      if (!N.includes(type)) {
+        return false
+      }
+    }
+    return true
+  }
+
   _checkVerify (node) {
     if (typeof this.checkFilter === 'function') {
       return this.checkFilter(node)

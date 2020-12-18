@@ -59,12 +59,11 @@
       highlightCurrent: false,
       checkOnClickNode: true,
       indent: 12, // 缩进
-      showCount: 30,
-      itemHeight: 26,
-      disabledKeys: ["104", "105"],
+      disabledKeys: ["104", '102', "105"],
       checkedKeys: ["100", "102", "104"],
       expandKeys: ["101"],
-      nocheckParent: true, // 禁止选中父节点
+      disabledInherit: true,
+      // nocheckParent: true, // 禁止选中父节点
       sort: true, // 按选中先后顺序排序
       click: function (event, node, type) {
         console.log(node, 'click', type);

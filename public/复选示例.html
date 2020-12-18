@@ -4,12 +4,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>vs-tree2.0_异步加载</title>
+  <title>vs-tree2.0_复选示例</title>
   <link rel="stylesheet" href="../dist/vs-tree.css">
   <link rel="stylesheet" href="./static/css/index.css">
 </head>
 
 <body>
+  <pre>
+    checkboxType: {
+      Y: '', // p 选中操作只影响父节点
+      N: 'p' // s 取消操作只影响子节点
+    }
+  </pre>
   <div id="tree"></div>
   <script src="../dist/vs-tree.js"></script>
   <script>
@@ -17,7 +23,7 @@
     var id = 1000
     function add(parentId, name) {
       const list = []
-      for (var i = 0; i < 100; i++) {
+      for (var i = 0; i < 20; i++) {
         list.push({ id: '100' + id++, name: name + i, parentId: parentId })
       }
       return list
@@ -43,18 +49,9 @@
     const tree = new vsTree.default('#tree', {
       data: data,
       showCheckbox: true,
-      max: 0,
-      highlightCurrent: false,
-      indent: 12, // 缩进
-      lazy: true,
-      load: function (node, resolve) {
-        setTimeout(() => {
-          resolve([{
-            id: id++,
-            name: '新叶子节点' + id,
-            isLeaf: true
-          }])
-        }, 1000)
+      checkboxType: {
+        Y: '', // p 选中操作只影响父节点
+        N: 'p' // s 取消操作只影响子节点
       }
     });
     console.timeEnd('render:tree');

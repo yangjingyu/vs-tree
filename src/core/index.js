@@ -37,15 +37,14 @@ export default class Tree {
     }
 
     this.nodes = []
+    const { showCount = 20, itemHeight = 26, maxHeight = '400px' } = ops.virtual || {}
     // 每一项的高度
-    this.itemHeight = ops.itemHeight || 26
+    this.itemHeight = itemHeight
     // 当前可见数量
-    this.showCount = ops.showCount || 20
+    this.showCount = showCount
     // 最大高度
-    this.maxHeight = ops.maxHeight || '400px'
-    // 唯一ID
-    this.dataKey = ops.dataKey || 'id'
-    // 当前可见项
+    this.maxHeight = maxHeight
+    // 当前可见列表
     this.data = []
     // 关键字过滤
     this.keyword = ''
@@ -72,6 +71,9 @@ export default class Tree {
         showIcon: ops.showIcon || false,
         onlyShowLeafIcon: ops.onlyShowLeafIcon || false,
         showCheckbox: ops.showCheckbox || false,
+        checkboxType: ops.checkboxType || { Y: 'ps', N: 'ps' },
+        checkInherit: ops.checkInherit || false, // 新加入节点时自动继承父节点选中状态
+        disabledInherit: ops.disabledInherit || false, // 新加入节点时自动继承父节点禁用状态
         showRadio: ops.showRadio || false,
         highlightCurrent: ops.highlightCurrent || false,
         checkFilterLeaf: ops.checkFilterLeaf || false, // 过滤非叶子节点
@@ -91,7 +93,7 @@ export default class Tree {
         change: ops.change || noop,
         load: ops.load || noop,
         contextmenu: ops.contextmenu || null,
-        radioParentoOnly: ops.radioParentoOnly || false, // 每个父节点下唯一，仅raido模式有效
+        radioParentoOnly: ops.radioType === 'level' ? 'level' : 'all', // 每个父节点下唯一，仅raido模式有效
         renderContent: ops.renderContent || null,
         nocheckParent: ops.nocheckParent || false, // 只允许叶子节点选中
         checkOnClickNode: ops.checkOnClickNode || false,

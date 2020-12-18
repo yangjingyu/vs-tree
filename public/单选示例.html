@@ -46,16 +46,18 @@
     const tree = new vsTree.default('#tree', {
       data: data,
       showRadio: true,
-      radioParentoOnly: true,
+      radioType: 'level',
       checkOnClickNode: true,
       max: 0,
       highlightCurrent: false,
       indent: 12, // 缩进
-      showCount: 30,
-      itemHeight: 26,
       sort: true,
       nocheckParent: true,
       checkedKeys: ["103", "1001000", "1001001"],
+      virtual: {
+        showCount: 30,
+        itemHeight: 26
+      },
       change: function() {
         console.log(tree.getCheckedNodes());
         document.getElementById('list').innerHTML = ''

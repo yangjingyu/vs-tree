@@ -6,7 +6,6 @@ export default class Tree {
     itemHeight: any;
     showCount: any;
     maxHeight: any;
-    dataKey: any;
     data: any[];
     keyword: string;
     searchFilter: any;

@@ -4,9 +4,9 @@
 
 ## 浏览器支持
 
-![Edge](https://raw.github.com/alrra/browser-logos/master/src/edge/edge_48x48.png) | ![Chrome](https://raw.github.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png) | ![Firefox](https://raw.github.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png) | ![Opera](https://raw.github.com/alrra/browser-logos/master/src/opera/opera_48x48.png) | ![Safari](https://raw.github.com/alrra/browser-logos/master/src/safari/safari_48x48.png)
---- | --- | --- | --- | --- |
-Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ |
+| ![Edge](https://raw.github.com/alrra/browser-logos/master/src/edge/edge_48x48.png) | ![Chrome](https://raw.github.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png) | ![Firefox](https://raw.github.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png) | ![Opera](https://raw.github.com/alrra/browser-logos/master/src/opera/opera_48x48.png) | ![Safari](https://raw.github.com/alrra/browser-logos/master/src/safari/safari_48x48.png) |
+| ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| Latest ✔                                                                           | Latest ✔                                                                                 | Latest ✔                                                                                    | Latest ✔                                                                              | Latest ✔                                                                                 |
 
 ## 功能点
 
@@ -44,52 +44,76 @@ yarn add vs-tree
 
 ### Options
 
-| Input            | Desc                                                 | Type                  | Default        |
-| ---------------- | ---------------------------------------------------- | --------------------- | -------------- |
-| el               | 选择器, 或 HTMLElement                               | string 或 HTMLElement |                |
-| data             | 展示数据                                             | Object、 Array        |                |
-| async            | 延时渲染                                             | Boolean               | false          |
-| hideRoot         | 是否展示根节点                                       | Boolean               | false          |
-| showLine         | 是否展示连接线                                       | Boolean               | false          |
-| showIcon         | 是否显示图标                                         | Boolean               | false          |
-| onlyShowLeafIcon | 是否仅显示叶子节点图标                               | Boolean               | false          |
-| showCheckbox     | 是否显示复选框                                       | Boolean               | false          |
-| showRadio        | 是否显示单选框，会覆盖复选框                         | Boolean               | false          |
-| radioParentoOnly | 每个父节点下唯一                                     | Boolean               | false          |
-| highlightCurrent | 是否高亮选中当前项                                   | Boolean               | false          |
-| accordion        | 手风琴模式                                           | Boolean               | false          |
-| animation        | 开启动画                                             | Boolean               | false          |
-| draggable        | 开启拖拽                                             | Boolean               | false          |
-| dropable         | 允许放置                                             | Boolean               | false          |
-| nocheckParent    | 禁止父节点选中                                       | Boolean               | false          |
-| sort             | 对选中列表排序                                       | Boolean               | false          |
-| checkOnClickNode | 是否在点击节点的时候选中节点                         | Boolean               | false          |
-| lazy             | 异步加载节点                                         | Boolean               | false          |
-| strictLeaf       | 严格依赖isLeaf，不提供时如无子节点则不渲染展开图标   | Boolean               | false          |
-| max              | 最大可选数量                                         | Number                | 0              |
-| checkFilterLeaf  | 选中结果过滤掉叶子节点， 异步加载时需手需提供 isLeaf | Boolean               | false          |
-| rootName         | 根节点名称，仅 data 为数组时有效，此时不会默认       | String                | null           |
-| expandClass      | 展开收起图标class                                    | String                | vs-expand-icon |
-| theme            | 皮肤风格,仅支持 'element'                            | String                | null           |
-| breadcrumb       | 面包屑功能，只展示一层节点                           | Object                | null           |
-| disabledKeys     | 禁止操作                                             | Array                 | null           |
-| checkedKeys      | 默认选中                                             | Array                 | null           |
-| expandKeys       | 默认展开                                             | Array                 | null           |
-| expandLevel      | 默认展开级数, 0 不展开 -1 全部展开                   | Number                | 1              |
-| indent           | 缩进                                                 | Number                | 10             |
-| showCount        | 试图内显示节点数量                                   | Number                | 20             |
-| itemHeight       | 单个节点高度                                         | Number                | 26             |
+| Input            | Desc                                                 | Type                  | Default             |
+| ---------------- | ---------------------------------------------------- | --------------------- | ------------------- |
+| el               | 选择器, 或 HTMLElement                               | string 或 HTMLElement |                     |
+| data             | 展示数据                                             | Object、 Array        |                     |
+| async            | 延时渲染                                             | Boolean               | false               |
+| hideRoot         | 是否展示根节点                                       | Boolean               | false               |
+| showLine         | 是否展示连接线                                       | Boolean               | false               |
+| showIcon         | 是否显示图标                                         | Boolean               | false               |
+| onlyShowLeafIcon | 是否仅显示叶子节点图标                               | Boolean               | false               |
+| showCheckbox     | 是否显示复选框                                       | Boolean               | false               |
+| checkboxType     | 父子节点关联关系                                     | Object                | checkboxTypeOptions |
+| checkInherit     | 新加入节点时自动继承父节点选中状态                   | Boolean               | false               |
+| showRadio        | 是否显示单选框，会覆盖复选框                         | Boolean               | false               |
+| radioType        | 分组范围                                             | String                | 'all'               |
+| disabledInherit | 新加入节点时自动继承父节点禁用状态                                   | Boolean               | false               |
+| highlightCurrent | 是否高亮选中当前项                                   | Boolean               | false               |
+| accordion        | 手风琴模式                                           | Boolean               | false               |
+| animation        | 开启动画                                             | Boolean               | false               |
+| draggable        | 开启拖拽                                             | Boolean               | false               |
+| dropable         | 允许放置                                             | Boolean               | false               |
+| nocheckParent    | 禁止父节点选中                                       | Boolean               | false               |
+| sort             | 对选中列表排序                                       | Boolean               | false               |
+| checkOnClickNode | 是否在点击节点的时候选中节点                         | Boolean               | false               |
+| lazy             | 异步加载节点                                         | Boolean               | false               |
+| strictLeaf       | 严格依赖isLeaf，不提供时如无子节点则不渲染展开图标   | Boolean               | false               |
+| max              | 最大可选数量                                         | Number                | 0                   |
+| checkFilterLeaf  | 选中结果过滤掉叶子节点， 异步加载时需手需提供 isLeaf | Boolean               | false               |
+| rootName         | 根节点名称，仅 data 为数组时有效，此时不会默认       | String                | null                |
+| expandClass      | 展开收起图标class                                    | String                | vs-expand-icon      |
+| theme            | 皮肤风格,仅支持 'element'                            | String                | null                |
+| breadcrumb       | 面包屑功能，只展示一层节点                           | Object                | null                |
+| disabledKeys     | 禁止操作                                             | Array                 | null                |
+| checkedKeys      | 默认选中                                             | Array                 | null                |
+| expandKeys       | 默认展开                                             | Array                 | null                |
+| expandLevel      | 默认展开级数, 0 不展开 -1 全部展开                   | Number                | 1                   |
+| indent           | 缩进                                                 | Number                | 10                  |
+| virtual          | 虚拟列表配置信息                                     | Object                | virtualOptions      |
 
+
+### checkboxTypeOptions
+
+| options | Desc         | 默认 |
+| ------- | ------------ | ---- |
+| Y       | 勾选后情况   | 'ps' |
+| N       | 取消勾选情况 | 'ps' |
+
+> p 表示操作影响父节点
+> s 表示操作影响子节点
+
+### radioType
+
+> all 表示全局范围内分组
+> level 表示每级节点内分组
+
+### virtualOptions
+
+| options    | Desc                 | 默认 |
+| ---------- | -------------------- | ---- |
+| showCount  | 试图内展示多少条数据 | 30   |
+| itemHeight | 每条的高度           | 26   |
 
 ### breadcrumb
 
 
-| options   | Desc                      | 默认                    |
-| --------- | ------------------------- | ----------------------- |
-| el        | Selector, HtmlElement     | 内部创建根节点          |
-| icon      | string, ELement, Function | null                    |
-| link      | string, ELement, Function | null                    |
-| separator | string, ELement, Function | null                    |
+| options   | Desc                      | 默认                 |
+| --------- | ------------------------- | -------------------- |
+| el        | Selector, HtmlElement     | 内部创建根节点       |
+| icon      | string, ELement, Function | null                 |
+| link      | string, ELement, Function | null                 |
+| separator | string, ELement, Function | null                 |
 | change    | Event                     | dom, node[], current |
 
 ### 方法
@@ -120,23 +144,23 @@ yarn add vs-tree
 
 ### Events
 
-| 事件名称      | 说明                   | 回调参数            | 返回值                         |
-| ------------- | ---------------------- | ------------------- | ------------------------------ |
-| click         | 节点点击事件           | event, node         | void                           |
-| beforeCheck   | 节点选择前触发         | node                | true,false                     |
-| check         | 复选框被点击时触发     | event, node         | void                           |
-| change        | 复选框改变时触发       | node                | void                           |
-| limitAlert    | 超过 max 配置时触发    | -                   | void                           |
-| renderContent | 自定义节点内容         | h,node              | h()                            |
-| load          | lazy=true 时有效       | node, resolve       | void                           |
-| checkFilter   | 过滤掉的节点不计入统计 | node                | true, false                    |
-| format        | 格式化数据             | data                | {name,children,isLeaf,icon}  |
-| contextmenu   | 鼠标右键事件           | event, node         | void                           |
-| searchFilter  | 搜索过滤               | keyword, node, data | node[]                         |
-| searchRender  | 搜索渲染               | node, cloneNode     | Element                        |
-| onDragstart   | 开始拖拽               | e, node             | void                           |
-| onDragenter   | 进入放置目标           | e, node, dragPos    | void                           |
-| onDrop        | 放置目标               | e, node, dragPos    | void                           |
+| 事件名称      | 说明                   | 回调参数            | 返回值                      |
+| ------------- | ---------------------- | ------------------- | --------------------------- |
+| click         | 节点点击事件           | event, node         | void                        |
+| beforeCheck   | 节点选择前触发         | node                | true,false                  |
+| check         | 复选框被点击时触发     | event, node         | void                        |
+| change        | 复选框改变时触发       | node                | void                        |
+| limitAlert    | 超过 max 配置时触发    | -                   | void                        |
+| renderContent | 自定义节点内容         | h,node              | h()                         |
+| load          | lazy=true 时有效       | node, resolve       | void                        |
+| checkFilter   | 过滤掉的节点不计入统计 | node                | true, false                 |
+| format        | 格式化数据             | data                | {name,children,isLeaf,icon} |
+| contextmenu   | 鼠标右键事件           | event, node         | void                        |
+| searchFilter  | 搜索过滤               | keyword, node, data | node[]                      |
+| searchRender  | 搜索渲染               | node, cloneNode     | Element                     |
+| onDragstart   | 开始拖拽               | e, node             | void                        |
+| onDragenter   | 进入放置目标           | e, node, dragPos    | void                        |
+| onDrop        | 放置目标               | e, node, dragPos    | void                        |
 
 > searchRender 返回的 Element 不会影响原有dom
 

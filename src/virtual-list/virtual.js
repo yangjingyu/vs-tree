@@ -87,34 +87,6 @@ export default class Virtual {
     }
   }
 
-  // save each size map by id
-  saveSize (id, size) {
-    this.sizes.set(id, size)
-
-    // we assume size type is fixed at the beginning and remember first size value
-    // if there is no size value different from this at next comming saving
-    // we think it's a fixed size list, otherwise is dynamic size list
-    if (this.calcType === CALC_TYPE.INIT) {
-      this.fixedSizeValue = size
-      this.calcType = CALC_TYPE.FIXED
-    } else if (this.calcType === CALC_TYPE.FIXED && this.fixedSizeValue !== size) {
-      this.calcType = CALC_TYPE.DYNAMIC
-      // it's no use at all
-      delete this.fixedSizeValue
-    }
-
-    // calculate the average size only in the first range
-    if (this.calcType !== CALC_TYPE.FIXED && typeof this.firstRangeTotalSize !== 'undefined') {
-      if (this.sizes.size < Math.min(this.param.keeps, this.param.uniqueIds.length)) {
-        this.firstRangeTotalSize = [...this.sizes.values()].reduce((acc, val) => acc + val, 0)
-        this.firstRangeAverageSize = Math.round(this.firstRangeTotalSize / this.sizes.size)
-      } else {
-        // it's done using
-        delete this.firstRangeTotalSize
-      }
-    }
-  }
-
   // in some special situation (e.g. length change) we need to update in a row
   // try goiong to render next range by a leading buffer according to current direction
   handleDataSourcesChange () {

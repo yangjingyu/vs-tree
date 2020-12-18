@@ -4,10 +4,10 @@ export default class Virtual {
     param: any;
     callUpdate: any;
     sizes: Map<any, any> | undefined;
-    firstRangeTotalSize: any;
+    firstRangeTotalSize: number | undefined;
     firstRangeAverageSize: number | undefined;
     lastCalcIndex: any;
-    fixedSizeValue: any;
+    fixedSizeValue: number | undefined;
     calcType: string | undefined;
     offset: any;
     direction: string | undefined;
@@ -18,7 +18,6 @@ export default class Virtual {
     isFront(): boolean;
     getOffset(start: any): any;
     updateParam(key: any, value: any): void;
-    saveSize(id: any, size: any): void;
     handleDataSourcesChange(): void;
     handleSlotSizeChange(): void;
     handleScroll(offset: any): void;
