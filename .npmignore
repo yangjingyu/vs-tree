@@ -1,0 +1,20 @@
+node_modules
+src
+public
+# yarn.lock should be ignored -> https://github.com/yarnpkg/yarn/issues/5406
+yarn.lock
+yarn-error.log
+.editorconfig
+.babelrc
+.eslintrc.json
+.eslintignore
+.gitignore
+CHANGELOG.md
+
+# GitHub pages
+CNAME
+_config.yml
+
+# build
+rollup.config.js
+tsconfig.json
