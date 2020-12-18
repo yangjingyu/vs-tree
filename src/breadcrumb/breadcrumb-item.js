@@ -1,16 +1,18 @@
-export default class Breadcrumb {
-  constructor (node) {
+export default class BreadcrumbItem {
+  constructor (node, parent) {
     this.node = node
     this.data = node.data
     this.store = node.store
-    const { icon, link, separator = '/' } = this.store.breadcrumb
+    this.parent = parent
+
+    const { icon, link, separator = '/' } = this.parent.options
     this.renderIcon = icon
     this.renderLink = link
     this.renderSeparator = separator
   }
 
   createDom () {
-    const breads = this.store.breadcrumbs
+    const breads = this.parent.list
     const index = breads.findIndex(v => v === this.node)
     const last = index === breads.length - 1
     const dom = document.createElement('span')

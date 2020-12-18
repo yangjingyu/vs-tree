@@ -101,7 +101,7 @@ export default class Node {
       this.store.selectedCurrent = this
 
       if (this.store.breadcrumb && !this.isLeaf) {
-        this.store.breadcrumbs.push(this)
+        this.store.breadcrumb.list.push(this)
         this.setExpand(true)
       }
 

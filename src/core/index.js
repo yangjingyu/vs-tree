@@ -1,6 +1,6 @@
 import TreeStore from './store'
 import Vlist from '../virtual-list'
-import Breadcrumb from '../breadcrumb/index.js'
+import Breadcrumb from '../breadcrumb'
 
 const noop = () => { }
 export default class Tree {
@@ -52,11 +52,15 @@ export default class Tree {
     this.searchFilter = ops.searchFilter
     this.ready = ops.ready || noop
 
+    if (Object.prototype.toString.call(ops.breadcrumb) === '[object Object]') {
+      this.$$breadcrumb = new Breadcrumb(ops.breadcrumb)
+    }
+
     const start = () => {
       this.store = new TreeStore({
         data: this._data,
         max: ops.max,
-        breadcrumb: ops.breadcrumb || null,
+        breadcrumb: this.$$breadcrumb || null,
         strictLeaf: ops.strictLeaf || false,
         showCount: this.showCount,
         itemHeight: this.itemHeight,
@@ -99,22 +103,20 @@ export default class Tree {
         onDragenter: ops.onDragenter || noop,
         onDrop: ops.onDrop || noop,
         update: () => {
-          this.render()
+          this._render()
         },
         nodesChange: (nodes) => {
           this.nodes = nodes
-          this.vlist && this.render()
+          this.vlist && this._render()
         }
       })
 
-      // this.store.setData(this._data)
-
       if (this.store.hideRoot) {
-        // 跟节点创建dom
+        // 根节点创建dom
         this.store.root.createNode()
       }
 
-      this.init()
+      this._init()
 
       // 设置默认选中
       this.store.setDefaultChecked()
@@ -129,7 +131,7 @@ export default class Tree {
     }
   }
 
-  init () {
+  _init () {
     this.vlist = new Vlist({
       root: this.$el,
       data: [],
@@ -137,56 +139,31 @@ export default class Tree {
       estimateSize: this.itemHeight,
       keeps: this.showCount
     })
-    this.render()
+    this._render()
     this.ready && this.ready(this)
   }
 
-  render (update = true) {
-    if (Object.prototype.toString.call(this.store.breadcrumb) === '[object Object]') {
-      const bread = this.store.breadcrumbs[this.store.breadcrumbs.length - 1]
-      this.data = this.nodes.filter(v => v.parent && v.parent.data.id === bread.data.id)
-      this.renderBreadcrumb(bread)
+  _render (update = true) {
+    if (this.$$breadcrumb) {
+      const { current } = this.$$breadcrumb // this.store.breadcrumbs[this.store.breadcrumbs.length - 1]
+      this.data = this.nodes.filter(v => v.parent && v.parent.data.id === current.data.id)
+      this.$$breadcrumb.renderBreadcrumb()
     } else {
       this.data = this.nodes.filter(v => {
         // 过滤隐藏节点 ｜ 隐藏root节点
-        return this.hasKeyword(v) && v.visbile && !(this.store.hideRoot && v.level === 0)
+        return this._hasKeyword(v) && v.visbile && !(this.store.hideRoot && v.level === 0)
       })
     }
     update && this.vlist.update(this.data)
   }
 
-  renderBreadcrumb (bread) {
-    const { el, change = noop } = this.store.breadcrumb
-    let _el
-    if (el instanceof HTMLElement) {
-      _el = el
-    } else if (el && typeof el === 'string') {
-      _el = document.querySelector(el)
-    }
-    if (!_el) {
-      _el = document.createElement('section')
-    }
-    _el.classList.add('vs-breadcrumb')
-
-    const bs = this.store.breadcrumbs.map((node) => {
-      return new Breadcrumb(node).createDom()
-    })
-
-    _el.innerHTML = ''
-    bs.forEach(html => {
-      _el.appendChild(html)
-    })
-    change(_el, this.store.breadcrumbs, bread)
-  }
-
-  // TODO:
-  hasKeyword (v) {
+  _hasKeyword (v) {
     if (!this.keyword) return true
-    let boo = this.checkFilter(v)
+    let boo = this._checkFilter(v)
     if (!boo) {
       v.childNodes.forEach(node => {
         if (!boo) {
-          boo = this.hasKeyword(node)
+          boo = this._hasKeyword(node)
         }
       })
     } else {
@@ -195,7 +172,7 @@ export default class Tree {
     return boo
   }
 
-  checkFilter (v) {
+  _checkFilter (v) {
     if (!this.keyword) return
     if (typeof this.searchFilter === 'function') {
       return this.searchFilter(this.keyword, v, v.data)
@@ -210,12 +187,12 @@ export default class Tree {
     this.store.onlySearchLeaf = onlySearchLeaf && !!keyword
     this.store.isSearch = !!keyword
     if (this.store.onlySearchLeaf) {
-      const data = this.nodes.filter(v => !v.childNodes.length && this.checkFilter(v) && !(this.store.hideRoot && v.level === 0))
+      const data = this.nodes.filter(v => !v.childNodes.length && this._checkFilter(v) && !(this.store.hideRoot && v.level === 0))
       this.vlist.update(data)
       return data
     }
 
-    this.render(false)
+    this._render(false)
     for (let i = 0, len = this.data.length; i < len; i++) {
       const v = this.data[i]
       if (v.requireExpand) {
@@ -223,7 +200,7 @@ export default class Tree {
         v.setExpand(true, true)
       }
     }
-    this.render()
+    this._render()
     return this.data
   }
 

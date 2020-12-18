@@ -33,6 +33,7 @@ export default (VsTree) => {
         keyword: String,
         expandClass: String,
         theme: String,
+        breadcrumb: Object,
         expandLevel: {
           type: Number,
           default: 1

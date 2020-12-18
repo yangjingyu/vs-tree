@@ -23,6 +23,7 @@ const extensions = [
 
 const tsPlugin = ts({
   tsconfig: './tsconfig.json',
+  useTsconfigDeclarationDir: true,
   extensions
 })
 

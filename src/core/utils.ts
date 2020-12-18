@@ -1,5 +1,5 @@
-export function insterAfter(newElement: any, targetElement: any) {
-  var parent = targetElement.parentNode
+export function insterAfter(newElement: HTMLElement, targetElement: HTMLElement) {
+  const parent = targetElement.parentNode
   if (!parent) { return }
   if (parent.lastChild === targetElement) {
     parent.appendChild(newElement)
@@ -7,7 +7,8 @@ export function insterAfter(newElement: any, targetElement: any) {
     parent.insertBefore(newElement, targetElement.nextSibling)
   }
 }
-export function onDragEnterGap(e: any, treeNode: any) {
+
+export function onDragEnterGap(e: MouseEvent, treeNode: HTMLElement) {
   var offsetTop = treeNode.getBoundingClientRect().top
   var offsetHeight = treeNode.offsetHeight
   var pageY = e.pageY
@@ -20,9 +21,10 @@ export function onDragEnterGap(e: any, treeNode: any) {
   }
   return 0
 }
-export const findNearestNode = (element: any, name: any) => {
-  let target = element
-  while (target && target.tagName !== 'BODY') {
+
+export const findNearestNode = (element: HTMLElement, name: string) => {
+  let target: any = element
+  while (target && target?.tagName !== 'BODY') {
     if (target.className && target.className.includes(name)) {
       return target
     }

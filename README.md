@@ -90,7 +90,7 @@ yarn add vs-tree
 | icon      | string, ELement, Function | null                    |
 | link      | string, ELement, Function | null                    |
 | separator | string, ELement, Function | null                    |
-| change    | Event                     | dom,breadcrumbs,current |
+| change    | Event                     | dom, node[], current |
 
 ### 方法
 

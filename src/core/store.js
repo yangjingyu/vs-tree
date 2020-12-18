@@ -26,7 +26,9 @@ export default class TreeStore {
     this.updateNodes()
 
     // 面包屑
-    this.breadcrumbs = [this.root]
+    if (this.breadcrumb) {
+      this.breadcrumb.list.push(this.root)
+    }
   }
 
   setData (val) {

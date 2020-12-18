@@ -1,8 +1,9 @@
-export default class Breadcrumb {
-    constructor(node: any);
+export default class BreadcrumbItem {
+    constructor(node: any, parent: any);
     node: any;
     data: any;
     store: any;
+    parent: any;
     renderIcon: any;
     renderLink: any;
     renderSeparator: any;

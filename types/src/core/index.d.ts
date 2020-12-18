@@ -11,18 +11,19 @@ export default class Tree {
     keyword: string;
     searchFilter: any;
     ready: any;
+    $$breadcrumb: Breadcrumb | undefined;
     store: TreeStore;
-    init(): void;
+    _init(): void;
     vlist: Vlist | undefined;
-    render(update?: boolean): void;
-    renderBreadcrumb(bread: any): void;
-    hasKeyword(v: any): any;
-    checkFilter(v: any): any;
+    _render(update?: boolean): void;
+    _hasKeyword(v: any): any;
+    _checkFilter(v: any): any;
     filter(keyword: string | undefined, onlySearchLeaf: any): any[];
     getNodeById(id: any): any;
     getCheckedNodes(): any[];
     setMaxValue(value?: number): void;
     scrollToIndex(index?: number): void;
 }
+import Breadcrumb from "../breadcrumb";
 import TreeStore from "./store";
 import Vlist from "../virtual-list";

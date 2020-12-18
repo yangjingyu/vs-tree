@@ -6,7 +6,6 @@ export default class TreeStore {
     radioMap: {};
     expandMap: {};
     root: Node;
-    breadcrumbs: Node[];
     setData(val: any): void;
     updateNodes(): void;
     flattenTreeData(): any[];

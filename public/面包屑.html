@@ -70,7 +70,6 @@
       },
       format: function (data, node) {
         if (!node.isLeaf && data.children) {
-          console.log(data);
           const name =  new String(data.name + '（'+ data.children.length +'）')
           return {
             name

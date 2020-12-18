@@ -1,8 +1,22 @@
 {
-  "name": "vs-tree2.0",
-  "version": "2.0.0",
-  "main": "./dist/vs-tree.js",
+  "name": "vs-tree",
+  "version": "2.0.1",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yangjingyu/vs-tree"
+  },
+  "homepage": "https://yangjingyu.github.io/vs-tree/",
+  "bugs": "https://github.com/yangjingyu/vs-tree/issues",
+  "author": {
+    "name": "Yangjingyu",
+    "url": "https://github.com/yangjingyu"
+  },
+  "main": "./dist/vs-tree.js",
+  "types": "./types/main.d.ts",
+  "module": "./dist/vs-tree.js",
+  "unpkg": "./dist/vs-tree.js",
+  "style": "./dist/vs-tree.css",
   "scripts": {
     "dev": "rollup -c --watch",
     "build": "NODE_ENV=production rollup -c",
