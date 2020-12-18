@@ -26,6 +26,10 @@ Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ |
 * [x] 自定义格式化数据
 * [x] 支持Vue组件
 
+## DEMO
+
+[跳转到DEMO](https://yangjingyu.github.io/vs-tree/public/index.html)
+
 ## 安装
 
 ```shell
