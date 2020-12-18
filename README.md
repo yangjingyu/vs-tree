@@ -1,6 +1,42 @@
-#vs-tree2.0
+# vs-tree2.0
 
-极简树组件【麻雀虽小，五脏俱全】
+极简树组件, 无任何依赖【麻雀虽小，五脏俱全】
+
+## 浏览器支持
+
+![Edge](https://raw.github.com/alrra/browser-logos/master/src/edge/edge_48x48.png) | ![Chrome](https://raw.github.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png) | ![Firefox](https://raw.github.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png) | ![Opera](https://raw.github.com/alrra/browser-logos/master/src/opera/opera_48x48.png) | ![Safari](https://raw.github.com/alrra/browser-logos/master/src/safari/safari_48x48.png)
+--- | --- | --- | --- | --- |
+Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ |
+
+## 功能点
+
+* [x] 基础树组件
+* [x] 层级面包屑
+* [x] 复选框
+* [x] 单选框
+* [x] 异步加载数据
+* [x] 虚拟列表
+* [x] 拖拽节点
+* [x] 手风琴
+* [x] 树内搜索
+* [x] 自定义图标
+* [x] 连接线
+* [x] 最大可选
+* [x] 节点右键事件
+* [x] 自定义格式化数据
+* [x] 支持Vue组件
+
+## 安装
+
+```shell
+npm install vs-tree
+```
+
+或
+
+```shell
+yarn add vs-tree
+```
 
 ### Options
 
@@ -80,23 +116,23 @@
 
 ### Events
 
-| 事件名称 | 说明 | 回调参数 | 返回值 |
-| -------- | ---- | -------- | ------ |｜
-| click | 节点点击事件 | event, node | void ｜
-| beforeCheck | 节点选择前触发 | node | true,false ｜
-| check | 复选框被点击时触发 | event, node | void ｜
-| change | 复选框改变时触发 | node | void ｜
-| limitAlert | 超过 max 配置时触发 | - | void ｜
-| renderContent | 自定义节点内容 | h,node | h() ｜
-| load | lazy=true 时有效 | node, resolve | void ｜
-| checkFilter | 过滤掉的节点不计入统计 | node | true, false ｜
-| format | 格式化数据 | data | {name,children,isLeaf,icon} ｜
-| contextmenu | 鼠标右键事件 | event, node | void ｜
-| searchFilter | 搜索过滤 | keyword, node, data | node[] ｜
-| searchRender | 搜索渲染 | node, cloneNode | Element ｜
-| onDragstart | 开始拖拽 | e, node | void ｜
-| onDragenter | 进入放置目标 | e, node, dragPos | void ｜
-| onDrop | 放置目标 | e, node, dragPos | void ｜
+| 事件名称      | 说明                   | 回调参数            | 返回值                         |
+| ------------- | ---------------------- | ------------------- | ------------------------------ |
+| click         | 节点点击事件           | event, node         | void                           |
+| beforeCheck   | 节点选择前触发         | node                | true,false                     |
+| check         | 复选框被点击时触发     | event, node         | void                           |
+| change        | 复选框改变时触发       | node                | void                           |
+| limitAlert    | 超过 max 配置时触发    | -                   | void                           |
+| renderContent | 自定义节点内容         | h,node              | h()                            |
+| load          | lazy=true 时有效       | node, resolve       | void                           |
+| checkFilter   | 过滤掉的节点不计入统计 | node                | true, false                    |
+| format        | 格式化数据             | data                | {name,children,isLeaf,icon}  |
+| contextmenu   | 鼠标右键事件           | event, node         | void                           |
+| searchFilter  | 搜索过滤               | keyword, node, data | node[]                         |
+| searchRender  | 搜索渲染               | node, cloneNode     | Element                        |
+| onDragstart   | 开始拖拽               | e, node             | void                           |
+| onDragenter   | 进入放置目标           | e, node, dragPos    | void                           |
+| onDrop        | 放置目标               | e, node, dragPos    | void                           |
 
 > searchRender 返回的 Element 不会影响原有dom
 
@@ -172,7 +208,7 @@ import './assets/vs-tree/vs-tree.css'
 Vue.use(install)
 ```
 
-```vue
+```html
 <template>
   <div id="app">
     <vs-tree :data="data"></vs-tree>
