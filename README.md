@@ -42,6 +42,104 @@ npm install vs-tree
 yarn add vs-tree
 ```
 
+## use
+
+```html
+<div id="tree"></div>
+```
+
+```js
+import vsTree from 'vs-tree'
+import 'vs-tree/dist/vs-tree.css'
+
+const tree = new vsTree('#tree', {
+  data: {id: 1, name: 'tree1', children: []} // [{id, name}, {id, name, children}]
+});
+```
+
+---
+
+直接引入js
+
+```html
+<link rel="stylesheet" href="../dist/vs-tree.css">
+<div id="tree"></div>
+<script src="../dist/vs-tree.js"></script>
+```
+
+```js
+const tree = new vsTree.default('#tree', {
+  data: {id: 1, name: 'tree1', children: []} // [{id, name}, {id, name, children}]
+});
+```
+
+---
+
+支持浏览器模块
+
+```html
+<script type="module">
+import vsTree from '../dist/vs-tree.esm.browser.js'
+const tree = new vsTree('#tree', {
+  data: {id: 1, name: 'tree1', children: []} // [{id, name}, {id, name, children}]
+});
+</script>
+```
+
+## Vue use
+
+```js
+// main.js
+import { install } from 'vs-tree'
+import 'vs-tree/dist/vs-tree.css'
+
+Vue.use(install)
+```
+
+```html
+<template>
+  <div id="app">
+    <vs-tree :data="data"></vs-tree>
+  </div>
+</template>
+
+<script>
+var id = 1000
+function add(parentId, name) {
+  const list = []
+  for (var i = 0; i < 10; i++) {
+    list.push({ id: '100' + id++, name: name + i, parentId: parentId })
+  }
+  return list
+}
+const data = {
+  id: '1', name: 'zhangsan', parentId: '-1', children: [
+    { id: '100', name: 'wangwu', parentId: '1', children: add('100', 'wangwu') },
+    { id: '101', name: 'zhaoliu', parentId: '1', children: add('101', 'zhaoliu') },
+    { id: '102', name: 'huahua', parentId: '1' },
+    { id: '103', name: 'oo-1', parentId: '1' },
+    { id: '104', name: 'oo-2', parentId: '1' },
+    { id: '105', name: 'oo-3', parentId: '1' },
+    { id: '106', name: 'oo-4', parentId: '1' },
+    { id: '107', name: 'oo-5', parentId: '1' },
+    { id: '108', name: 'oo-6', parentId: '1' },
+    { id: '109', name: 'oo-7', parentId: '1' },
+    { id: '110', name: 'oo-8', parentId: '1' },
+    { id: '111', name: 'oo-9', parentId: '1' },
+  ]
+}
+export default {
+  name: 'App',
+  data () {
+    return {
+      data: data
+    }
+  },
+
+}
+</script>
+```
+
 ### Options
 
 | Input            | Desc                                                 | Type                  | Default             |
@@ -223,59 +321,4 @@ format: function(data) {
     icon: 'custom-icon' || document.createElement
   }
 }
-```
-
-
-## Vue use
-
-```js
-// main.js
-import { install } from './assets/vs-tree/vs-tree'
-import './assets/vs-tree/vs-tree.css'
-
-Vue.use(install)
-```
-
-```html
-<template>
-  <div id="app">
-    <vs-tree :data="data"></vs-tree>
-  </div>
-</template>
-
-<script>
-var id = 1000
-function add(parentId, name) {
-  const list = []
-  for (var i = 0; i < 10; i++) {
-    list.push({ id: '100' + id++, name: name + i, parentId: parentId })
-  }
-  return list
-}
-const data = {
-  id: '1', name: 'zhangsan', parentId: '-1', children: [
-    { id: '100', name: 'wangwu', parentId: '1', children: add('100', 'wangwu') },
-    { id: '101', name: 'zhaoliu', parentId: '1', children: add('101', 'zhaoliu') },
-    { id: '102', name: 'huahua', parentId: '1' },
-    { id: '103', name: 'oo-1', parentId: '1' },
-    { id: '104', name: 'oo-2', parentId: '1' },
-    { id: '105', name: 'oo-3', parentId: '1' },
-    { id: '106', name: 'oo-4', parentId: '1' },
-    { id: '107', name: 'oo-5', parentId: '1' },
-    { id: '108', name: 'oo-6', parentId: '1' },
-    { id: '109', name: 'oo-7', parentId: '1' },
-    { id: '110', name: 'oo-8', parentId: '1' },
-    { id: '111', name: 'oo-9', parentId: '1' },
-  ]
-}
-export default {
-  name: 'App',
-  data () {
-    return {
-      data: data
-    }
-  },
-
-}
-</script>
 ```
