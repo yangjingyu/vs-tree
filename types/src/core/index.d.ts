@@ -1,6 +1,7 @@
 export default class Tree {
     constructor(selector: any, ops: any);
     $el: HTMLElement;
+    interpolate: RegExp;
     _data: any;
     nodes: any[];
     itemHeight: any;

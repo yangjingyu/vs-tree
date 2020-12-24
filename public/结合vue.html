@@ -27,6 +27,10 @@
       :checked-keys="checkedKeys"
       @click="onClick" 
       @change="onChange">
+      <!-- <span tree-slot="name" tree-slot-scope="node">#[[node.data.name + 1]]-自定义</span> -->
+      <span tree-slot="append" tree-slot-scope="node">
+        <a>#[[ node.data.id]]-#[[1+1]]</a>
+      </span>
     </vs-tree>
   </div>
   <script type="module">
@@ -71,6 +75,11 @@
             max: 3,
             disabledKeys: ["104", "105"],
             expandKeys: ["101"],
+            methods: {
+              treeClick () {
+                console.log('-------')
+              }
+            }
             // maxHeight: '200px'
           },
           checkedKeys: ["100", "102", "104"]

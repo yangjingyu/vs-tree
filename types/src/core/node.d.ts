@@ -13,6 +13,7 @@ export default class Node {
     store: any;
     parent: any;
     originData: any;
+    __buffer: {};
     data: any;
     initData(): void;
     createNode(): HTMLDivElement;
@@ -28,7 +29,7 @@ export default class Node {
     checkboxNode: HTMLInputElement | undefined;
     checkboxEl: HTMLInputElement | undefined;
     handleCheckChange(e: any): void;
-    createText(): HTMLSpanElement;
+    createText(): any;
     createIcon(): HTMLSpanElement;
     setData(data: any): void;
     insertChild(child: any, index: any): any;

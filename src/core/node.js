@@ -1,5 +1,5 @@
 
-import { insterAfter, onDragEnterGap } from './utils.ts'
+import { insterAfter, onDragEnterGap, parseTemplate } from './utils.ts'
 
 let setepId = 0
 
@@ -22,6 +22,8 @@ export default class Node {
     this.parent = ops.parent
 
     this.originData = ops.data
+
+    this.__buffer = {}
 
     this.data = Object.assign({}, ops.data)
     if (typeof this.store.format === 'function' && !ops.data._vsroot) {
@@ -87,7 +89,10 @@ export default class Node {
 
     dom.appendChild(this.createInner())
 
-    if (this.store.renderContent) {
+    const slotAppend = parseTemplate('append', this)
+    if (slotAppend) {
+      dom.appendChild(slotAppend)
+    } else if (this.store.renderContent) {
       dom.appendChild(this.createContent())
     }
 
@@ -313,6 +318,11 @@ export default class Node {
   }
 
   createText () {
+    const slot = parseTemplate('name', this)
+    if (slot) {
+      return slot
+    }
+
     const dom = document.createElement('span')
     dom.innerText = this.data.name
     dom.className = 'vs-tree-text'

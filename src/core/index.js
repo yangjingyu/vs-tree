@@ -17,6 +17,33 @@ export default class Tree {
 
     this.$el.classList.add('vs-tree')
 
+    const delimiters = ['#\\[\\[', '\\]\\]']
+
+    const [open, close] = delimiters
+    var interpolate = open + '([\\s\\S]+?)' + close
+    this.interpolate = new RegExp(interpolate, 'igm')
+    const slotsMap = {}
+    const slots = this.$el.querySelectorAll('[tree-slot]')
+    if (slots && slots.length) {
+      slots.forEach(v => {
+        const name = v.attributes['tree-slot'].value
+        const scope = v.attributes['tree-slot-scope'].value
+
+        slotsMap[name] = {
+          scope,
+          node: v,
+          interpolate: this.interpolate,
+          text: v.innerText,
+          inner: v.outerHTML
+        }
+
+        v.parentNode.removeChild(v)
+      })
+    }
+
+    // 默认清空根节点
+    // this.$el.innerHTML = ''
+
     if (ops.theme) {
       this.$el.classList.add('vs-theme-' + ops.theme)
     }
@@ -59,6 +86,7 @@ export default class Tree {
       this.store = new TreeStore({
         data: this._data,
         max: ops.max,
+        slots: slotsMap,
         breadcrumb: this.$$breadcrumb || null,
         strictLeaf: ops.strictLeaf || false,
         showCount: this.showCount,

@@ -1,3 +1,5 @@
+import Node from "./node"
+
 export function insterAfter(newElement: HTMLElement, targetElement: HTMLElement) {
   const parent = targetElement.parentNode
   if (!parent) { return }
@@ -31,4 +33,35 @@ export const findNearestNode = (element: HTMLElement, name: string) => {
     target = target.parentNode
   }
   return null
+}
+
+
+export const parseTemplate = (name: string, ctx: Node) => {
+  const slotName = ctx.store.slots[name]
+    if (slotName) {
+      const node = slotName.node.cloneNode(true)
+      node.classList.add('vs-tree-text')
+      node.setAttribute('tree-node-id', ctx.id)
+      ctx.__buffer = {}
+
+      var prefix = `
+        var ${slotName.scope} = _;
+      `
+      slotName.text
+        .replace(slotName.interpolate, (a: string, b: string) => {
+          prefix += `_.__buffer['${a}'] = ${b};`
+        })
+
+      // eslint-disable-next-line no-new-func
+      const render = new Function('_', prefix)
+
+      render.call(ctx, ctx)
+
+      node.innerText = node.innerText.replace(slotName.interpolate, (a: any) => {
+        return (ctx as any).__buffer[a]
+      }).replace(/\n/g, '')
+
+      return node
+    }
+    return false
 }

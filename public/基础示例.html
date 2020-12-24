@@ -10,7 +10,14 @@
 </head>
 
 <body>
-  <div id="tree"></div>
+  <div id="tree">
+    <span>哈哈</span>
+    <span tree-slot="name" tree-slot-scope="node">#[[node.data.name + 1]]--++#[[node.data.id]]</span>
+    <span tree-slot="append" tree-slot-scope="node">
+      (000)
+      <a>#[[node.data.name]]000</a>
+    </span>
+  </div>
   <script src="../dist/vs-tree.js"></script>
   <script>
     console.time('create:data')

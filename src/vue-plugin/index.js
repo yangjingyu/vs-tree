@@ -119,7 +119,7 @@ export default (VsTree) => {
       render (h) {
         return h('div', {
           ref: 'tree'
-        })
+        }, this.$slots.default)
       }
     })
   }
