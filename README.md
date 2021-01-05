@@ -322,3 +322,7 @@ format: function(data) {
   }
 }
 ```
+
+## QQ交流群(860150548)
+
+<img src="./public/static/qq-group.jpg" width="200" height= "350" alt="860150548" />
