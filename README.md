@@ -264,7 +264,7 @@ export default {
 
 #### renderContent
 
-h: 生成简单 dom 节点，当前仅支持一下配置
+h: 生成简单 dom 节点，当前仅支持以下配置
 
 ```js
 renderContent: function (h, node) {
