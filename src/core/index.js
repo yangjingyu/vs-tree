@@ -175,8 +175,8 @@ export default class Tree {
 
   _render (update = true) {
     if (this.$$breadcrumb) {
-      const { current } = this.$$breadcrumb // this.store.breadcrumbs[this.store.breadcrumbs.length - 1]
-      this.data = this.nodes.filter(v => v.parent && v.parent.data.id === current.data.id)
+      const { current } = this.$$breadcrumb
+      this.data = this.nodes.filter(v => v.parent && v.parent.id === current.id)
       this.$$breadcrumb.renderBreadcrumb()
     } else {
       this.data = this.nodes.filter(v => {
