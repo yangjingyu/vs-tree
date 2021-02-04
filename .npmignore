@@ -5,6 +5,7 @@ public
 yarn.lock
 yarn-error.log
 .editorconfig
+.DS_Store
 .babelrc
 .eslintrc.json
 .eslintignore
