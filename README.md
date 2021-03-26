@@ -179,7 +179,7 @@ export default {
 | expandLevel      | 默认展开级数, 0 不展开 -1 全部展开                   | Number                | 1                   |
 | indent           | 缩进                                                 | Number                | 10                  |
 | virtual          | 虚拟列表配置信息                                     | Object                | virtualOptions      |
-| maxHeight          | 组件高度                                     | String、Number                | 400px      |
+| maxHeight          | 组件最大高度                                     | String、Number                | 400px      |
 
 ### checkboxTypeOptions
 
