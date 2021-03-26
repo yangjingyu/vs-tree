@@ -169,7 +169,7 @@ export default class Node {
     }
 
     if (this.store.showCheckbox || this.store.showRadio) {
-      if (!this.store.nocheckParent || !this.childNodes.length) {
+      if ((!this.store.nocheckParent) || (this.isLeaf && !this.childNodes.length)) {
         dom.appendChild(this.createCheckbox())
       }
     }
