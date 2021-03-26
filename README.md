@@ -327,6 +327,7 @@ format: function(data) {
 ## Tips
 
 1. maxHeight 高度变大后 `showCount` 也要相应变大，不然滑动到底部后数据展示不全，会出现空白.
+2. 如果发现vs-tree组件不显示数据渲染结果为空，则在vs-tree组件上加v-if="list.length > 0" 判断下等数据加载完毕后进行渲染
 
 ## QQ交流群(860150548)
 
