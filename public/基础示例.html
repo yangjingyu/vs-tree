@@ -11,11 +11,11 @@
 
 <body>
   <div id="tree">
-    <span>哈哈</span>
-    <span tree-slot="name" tree-slot-scope="node">#[[node.data.name + 1]]--++#[[node.data.id]]</span>
+    <!-- <span>哈哈</span> -->
+    <!-- <span tree-slot="name" tree-slot-scope="node">#[[node.data.name + 1]]--++#[[node.data.id]]</span>
     <span tree-slot="append" tree-slot-scope="node">
       (000)
-      <a>#[[node.data.name]]000</a>
+      <a>#[[node.data.name]]000</a> -->
     </span>
   </div>
   <script src="../dist/vs-tree.js"></script>
@@ -24,7 +24,7 @@
     var id = 1000
     function add(parentId, name) {
       const list = []
-      for (var i = 0; i < 10; i++) {
+      for (var i = 0; i < 20; i++) {
         list.push({ id: '100' + id++, name: name + i, parentId: parentId })
       }
       return list
@@ -49,6 +49,10 @@
     console.time('render:tree');
     const tree = new vsTree.default('#tree', {
       data: data,
+      virtual: {
+        showCount: 50
+      },
+      maxHeight: 700
     });
     console.timeEnd('render:tree');
   </script>

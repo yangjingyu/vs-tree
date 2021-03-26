@@ -52,6 +52,8 @@ export default (VsTree) => {
           default: 26
         },
 
+        maxHeight: String,
+
         beforeCheck: Function,
         renderContent: Function,
         checkFilter: Function,

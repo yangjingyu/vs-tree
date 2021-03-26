@@ -70,7 +70,7 @@ export default class Tree {
     // 当前可见数量
     this.showCount = showCount
     // 最大高度
-    this.maxHeight = maxHeight
+    this.maxHeight = ops.maxHeight || maxHeight
     // 当前可见列表
     this.data = []
     // 关键字过滤

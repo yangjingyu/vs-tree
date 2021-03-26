@@ -179,7 +179,7 @@ export default {
 | expandLevel      | 默认展开级数, 0 不展开 -1 全部展开                   | Number                | 1                   |
 | indent           | 缩进                                                 | Number                | 10                  |
 | virtual          | 虚拟列表配置信息                                     | Object                | virtualOptions      |
-
+| maxHeight          | 组件高度                                     | String、Number                | 400px      |
 
 ### checkboxTypeOptions
 
@@ -322,6 +322,11 @@ format: function(data) {
   }
 }
 ```
+
+
+## Tips
+
+1. maxHeight 高度变大后 `showCount` 也要相应变大，不然滑动到底部后数据展示不全，会出现空白.
 
 ## QQ交流群(860150548)
 
