@@ -331,7 +331,7 @@ export default class Node {
 
   createIcon () {
     const icon = document.createElement('span')
-    icon.className = (this.isLeaf || !this.childNodes.length) ? 'vs-icon-leaf' : 'vs-icon-parent'
+    icon.className = (this.isLeaf && !this.childNodes.length) ? 'vs-icon-leaf' : 'vs-icon-parent'
     if (this.data.icon) {
       if (this.data.icon instanceof HTMLElement) {
         icon.style.backgroundImage = 'none'
