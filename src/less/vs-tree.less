@@ -49,6 +49,22 @@
   }
 }
 
+.vs-loading-unit.is-loading {
+  width: 14px;
+  height: 14px;
+  margin-right: 5px;
+  display: inline-block;
+  vertical-align: middle;
+
+  &::after {
+    content: "";
+    width: 14px;
+    height: 14px;
+    display: inline-block;
+    vertical-align: top;
+  }
+}
+
 .expand,
 .expand-empty {
   width: 14px;
@@ -90,7 +106,7 @@
   }
 }
 
-.expand.is-loading {
+.expand.is-loading, .vs-loading-unit.is-loading {
   &::after {
     background-image: url(./oval.svg);
     background-repeat: no-repeat;

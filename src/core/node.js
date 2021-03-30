@@ -166,6 +166,10 @@ export default class Node {
         expandDom = (this.childNodes?.length || this.store.lazy) && !this.isLeaf ? this.createExpand() : this.createExpandEmpty()
       }
       dom.appendChild(expandDom)
+    } else {
+      this.loadingEl = document.createElement('span')
+      this.loadingEl.className = 'vs-loading-unit'
+      dom.appendChild(this.loadingEl)
     }
 
     if (this.store.showCheckbox || this.store.showRadio) {
@@ -709,6 +713,8 @@ export default class Node {
     this.loading = true
     if (this.expandEl) {
       this.expandEl.classList.add('is-loading')
+    } else if (this.loadingEl) {
+      this.loadingEl.classList.add('is-loading')
     }
 
     const resolve = (children = []) => {
@@ -716,6 +722,8 @@ export default class Node {
       this.loading = false
       if (this.expandEl) {
         this.expandEl.classList.remove('is-loading')
+      } else if (this.loadingEl) {
+        this.loadingEl.classList.remove('is-loading')
       }
 
       if (children.length) {

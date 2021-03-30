@@ -10,6 +10,7 @@
 </head>
 
 <body>
+  <div id="breadcrumb"></div>
   <div id="tree"></div>
   <script src="../dist/vs-tree.js"></script>
   <script>
@@ -42,11 +43,16 @@
     console.time('render:tree');
     const tree = new vsTree.default('#tree', {
       data: data,
-      showCheckbox: true,
+      showRadio: true,
       max: 0,
       highlightCurrent: false,
+      checkOnClickNode: true,
+      nocheckParent: true,
       indent: 12, // 缩进
       lazy: true,
+      breadcrumb: {
+        el: '#breadcrumb'
+      },
       load: function (node, resolve) {
         setTimeout(() => {
           resolve([{

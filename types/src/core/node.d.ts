@@ -19,6 +19,7 @@ export default class Node {
     createNode(): HTMLDivElement;
     dom: HTMLDivElement | undefined;
     createInner(): HTMLDivElement;
+    loadingEl: HTMLSpanElement | undefined;
     cusmtomNode(name: any, info: any): any;
     createContent(): any;
     createExpandEmpty(): HTMLSpanElement;
