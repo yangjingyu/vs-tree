@@ -78,12 +78,14 @@ export default class Node {
     if (this.dom) {
       this.checkboxNode && (this.checkboxNode.checked = this.checked)
       this.radioNode && (this.radioNode.checked = this.checked)
+      if (this.indeterminate) this.dom.classList.add('is-indeterminate')
       return this.dom
     }
 
     const dom = document.createElement('div')
     dom.className = 'vs-tree-node'
     dom.setAttribute('vs-index', this.id)
+    if (this.indeterminate) dom.classList.add('is-indeterminate')
 
     !this.isLeaf && this.childNodes.length && dom.setAttribute('vs-child', true)
 
