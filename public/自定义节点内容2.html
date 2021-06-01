@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>vs-tree2.0_自定义节点内容</title>
+  <link rel="stylesheet" href="../dist/vs-tree.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <style>
+    .tree-action a {
+      margin-left: 8px;
+      color: #2a8ae2;
+      font-size: 12px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="tree"></div>
+  <script src="../dist/vs-tree.js"></script>
+  <script>
+    console.time('create:data')
+    var id = 1000
+    function add(parentId, name) {
+      const list = []
+      for (var i = 0; i < 10; i++) {
+        list.push({ id: '100' + id++, name: name + i, parentId: parentId })
+      }
+      return list
+    }
+    const data = {
+      id: '1', name: 'zhangsan', parentId: '-1', children: [
+        { id: '100', name: 'wangwu', parentId: '1', children: add('100', 'wangwu') },
+        { id: '101', name: 'zhaoliu', parentId: '1', children: add('101', 'zhaoliu') },
+        { id: '102', name: 'huahua', parentId: '1' },
+        { id: '103', name: 'oo-1', parentId: '1' },
+        { id: '104', name: 'oo-2', parentId: '1' },
+        { id: '105', name: 'oo-3', parentId: '1' },
+        { id: '106', name: 'oo-4', parentId: '1' },
+        { id: '107', name: 'oo-5', parentId: '1' },
+        { id: '108', name: 'oo-6', parentId: '1' },
+        { id: '109', name: 'oo-7', parentId: '1' },
+        { id: '110', name: 'oo-8', parentId: '1' },
+        { id: '111', name: 'oo-9', parentId: '1' },
+      ]
+    }
+    console.timeEnd('create:data')
+    console.time('render:tree');
+    const tree = new vsTree.default('#tree', {
+      data: data,
+      showCheckbox: true,
+      indent: 12, // 缩进
+      renderContent: function (h, node) {
+        const dom = document.createElement('div')
+        dom.className = 'tree-action'
+
+        const append = document.createElement('a')
+        append.innerText = 'append'
+        dom.appendChild(append)
+        append.onclick = () => {
+          node.append({
+            id: id++,
+            name: 'append'
+          })
+        }
+
+        const remove = document.createElement('a')
+        remove.innerText = 'remove'
+        dom.appendChild(remove)
+        remove.onclick = () => {
+          node.remove()
+        }
+        return dom
+      }
+    });
+    console.timeEnd('render:tree');
+  </script>
+</body>
+
+</html>

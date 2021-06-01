@@ -156,7 +156,7 @@ export default {
 | checkInherit     | 新加入节点时自动继承父节点选中状态                   | Boolean               | false               |
 | showRadio        | 是否显示单选框，会覆盖复选框                         | Boolean               | false               |
 | radioType        | 分组范围                                             | String                | 'all'               |
-| disabledInherit | 新加入节点时自动继承父节点禁用状态                                   | Boolean               | false               |
+| disabledInherit  | 新加入节点时自动继承父节点禁用状态                   | Boolean               | false               |
 | highlightCurrent | 是否高亮选中当前项                                   | Boolean               | false               |
 | accordion        | 手风琴模式                                           | Boolean               | false               |
 | animation        | 开启动画                                             | Boolean               | false               |
@@ -179,7 +179,7 @@ export default {
 | expandLevel      | 默认展开级数, 0 不展开 -1 全部展开                   | Number                | 1                   |
 | indent           | 缩进                                                 | Number                | 10                  |
 | virtual          | 虚拟列表配置信息                                     | Object                | virtualOptions      |
-| maxHeight          | 组件最大高度                                     | String、Number                | 400px      |
+| maxHeight        | 组件最大高度                                         | String、Number        | 400px               |
 
 ### checkboxTypeOptions
 
@@ -249,7 +249,7 @@ export default {
 | check         | 复选框被点击时触发     | event, node         | void                        |
 | change        | 复选框改变时触发       | node                | void                        |
 | limitAlert    | 超过 max 配置时触发    | -                   | void                        |
-| renderContent | 自定义节点内容         | h,node              | h()                         |
+| renderContent | 自定义节点内容         | h,node              | h() 或 Dom                  |
 | load          | lazy=true 时有效       | node, resolve       | void                        |
 | checkFilter   | 过滤掉的节点不计入统计 | node                | true, false                 |
 | format        | 格式化数据             | data                | {name,children,isLeaf,icon} |
@@ -288,6 +288,22 @@ renderContent: function (h, node) {
       })
     ]
   })
+}
+```
+或
+
+```js
+renderContent: function(h, node) {
+  const append = document.createElement('a')
+  append.innerText = 'append'
+  dom.appendChild(append)
+  append.onclick = () => {
+    node.append({
+      id: id++,
+      name: 'append'
+    })
+  }
+  return append
 }
 ```
 
