@@ -347,6 +347,10 @@ format: function(data) {
 3. itemHeight 是用于内部计算，dom元素真是高度需要用css指定
 4. lazy为true时需手动添加isLeaf标识
 
+## License
+
+[MIT License](https://github.com/yangjingyu/vs-tree/blob/master/LICENSE).
+
 ## QQ交流群(860150548)
 
 <img src="./public/static/qq-group.jpg" width="200" height= "350" alt="860150548" />
