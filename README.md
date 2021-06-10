@@ -180,6 +180,7 @@ export default {
 | indent           | 缩进                                                 | Number                | 10                  |
 | virtual          | 虚拟列表配置信息                                     | Object                | virtualOptions      |
 | maxHeight        | 组件最大高度                                         | String、Number        | 400px               |
+| minHeight        | 组件最大高度                                         | String、Number        | 0px               |
 
 ### checkboxTypeOptions
 
@@ -343,9 +344,10 @@ format: function(data) {
 ## Tips
 
 1. maxHeight 高度变大后 `showCount` 也要相应变大，不然滑动到底部后数据展示不全，会出现空白.
-2. 如果发现vs-tree组件不显示数据渲染结果为空，则在vs-tree组件上加v-if="list.length > 0" 判断下等数据加载完毕后进行渲染
-3. itemHeight 是用于内部计算，dom元素真是高度需要用css指定
-4. lazy为true时需手动添加isLeaf标识
+2. minHeight 可以配置最小高度，当 minHeight 和 maxHeight 配置相同的高度时，可以固定高度
+3. 如果发现vs-tree组件不显示数据渲染结果为空，则在vs-tree组件上加v-if="list.length > 0" 判断下等数据加载完毕后进行渲染
+4. itemHeight 是用于内部计算，dom元素真是高度需要用css指定
+5. lazy为true时需手动添加isLeaf标识
 
 ## License
 

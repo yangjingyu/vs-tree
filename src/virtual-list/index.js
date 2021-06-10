@@ -11,6 +11,7 @@ export default class Vlist {
     this.$el = opts.root
 
     this.$el.style.maxHeight = typeof opts.maxHeight === 'number' ? opts.maxHeight + 'px' : opts.maxHeight
+    this.$el.style.minHeight = typeof opts.minHeight === 'number' ? opts.minHeight + 'px' : opts.minHeight
     this.$el.style.overflowY = 'auto'
 
     this.dataSources = opts.data

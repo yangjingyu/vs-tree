@@ -53,6 +53,7 @@ export default (VsTree) => {
         },
 
         maxHeight: String,
+        minHeight: String,
 
         beforeCheck: Function,
         renderContent: Function,

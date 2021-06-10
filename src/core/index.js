@@ -64,13 +64,15 @@ export default class Tree {
     }
 
     this.nodes = []
-    const { showCount = 20, itemHeight = 26, maxHeight = '400px' } = ops.virtual || {}
+    const { showCount = 20, itemHeight = 26, maxHeight = '400px', minHeight = '0px' } = ops.virtual || {}
     // 每一项的高度
     this.itemHeight = itemHeight
     // 当前可见数量
     this.showCount = showCount
     // 最大高度
     this.maxHeight = ops.maxHeight || maxHeight
+    // 最小高度
+    this.minHeight = ops.minHeight || minHeight
     // 当前可见列表
     this.data = []
     // 关键字过滤
@@ -166,6 +168,7 @@ export default class Tree {
       root: this.$el,
       data: [],
       maxHeight: this.maxHeight,
+      minHeight: this.minHeight,
       estimateSize: this.itemHeight,
       keeps: this.showCount
     })
