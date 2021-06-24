@@ -86,7 +86,7 @@ const tree = new vsTree('#tree', {
 </script>
 ```
 
-## Vue use
+## Vue2.x use
 
 ```js
 // main.js
