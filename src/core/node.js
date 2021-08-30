@@ -107,7 +107,7 @@ export default class Node {
         dom.classList.add('selected')
       }
 
-      if (this.store.checkOnClickNode && !this.disabled) {
+      if (this.store.checkOnClickNode && !this.disabled && !(this.store.breadcrumb && !this.isLeaf)) {
         this.handleCheckChange({
           target: { checked: !this.checked }
         })
