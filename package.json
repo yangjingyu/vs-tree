@@ -1,6 +1,6 @@
 {
   "name": "vs-tree",
-  "version": "2.1.8",
+  "version": "2.1.9",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -13,7 +13,7 @@
     "url": "https://github.com/yangjingyu"
   },
   "main": "./dist/vs-tree.js",
-  "types": "./types/main.d.ts",
+  "types": "./types/src/main.d.ts",
   "module": "./dist/vs-tree.js",
   "unpkg": "./dist/vs-tree.js",
   "style": "./dist/vs-tree.css",

@@ -508,6 +508,11 @@ export default class Node {
 
   // 设置是否选中
   setChecked (checked, isInitDefault) {
+    if (checked && this.store.checkMaxNodes(this)) {
+      this.store.limitAlert()
+      return
+    }
+
     if (this.store.showRadio) {
       this.updateRadioChecked(checked, isInitDefault)
       return
