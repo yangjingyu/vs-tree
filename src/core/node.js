@@ -320,7 +320,7 @@ export default class Node {
       this.updateChecked(checked)
       this.updateCheckedParent(checked)
     }
-    this.store.change(this)
+    this.store._change(this)
   }
 
   createText () {
@@ -521,6 +521,8 @@ export default class Node {
 
     this.updateChecked(checked, isInitDefault)
     this.updateCheckedParent(checked, isInitDefault)
+
+    this.store._change(this)
   }
 
   // 设置禁止选中

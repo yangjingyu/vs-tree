@@ -180,7 +180,7 @@ export default {
 | indent           | 缩进                                                 | Number                | 10                  |
 | virtual          | 虚拟列表配置信息                                     | Object                | virtualOptions      |
 | maxHeight        | 组件最大高度                                         | String、Number        | 400px               |
-| minHeight        | 组件最大高度                                         | String、Number        | 0px               |
+| minHeight        | 组件最大高度                                         | String、Number        | 0px                 |
 
 ### checkboxTypeOptions
 
@@ -220,13 +220,14 @@ export default {
 `Tree` 内部使用了 Node 类型的对象来包装用户传入的数据，用来保存目前节点的状态。
 `Tree` 拥有如下方法：
 
-| Methods         | 说明                   | 参数                    |
-| --------------- | ---------------------- | ----------------------- |
-| getCheckedNodes | 获取选中节点           | -                       |
-| getNodeById     | 根据 ID 获取 Node 节点 | id                      |
-| setMaxValue     | 设置最大可选           | number                  |
-| scrollToIndex   | 滚动到索引位置         | number                  |
-| filter          | 过滤节点               | keyword, onlySearchLeaf |
+| Methods           | 说明                   | 参数                    |
+| ----------------- | ---------------------- | ----------------------- |
+| getCheckedNodes   | 获取选中节点           | -                       |
+| getNodeById       | 根据 ID 获取 Node 节点 | id                      |
+| setMaxValue       | 设置最大可选           | number                  |
+| scrollToIndex     | 滚动到索引位置         | number                  |
+| clearCheckedNodes | 清除选中节点           | -                       |
+| filter            | 过滤节点               | keyword, onlySearchLeaf |
 
 > onlySearchLeaf 只过滤叶子节点
 
@@ -248,7 +249,7 @@ export default {
 | click         | 节点点击事件           | event, node         | void                        |
 | beforeCheck   | 节点选择前触发         | node                | true,false                  |
 | check         | 复选框被点击时触发     | event, node         | void                        |
-| change        | 复选框改变时触发       | node                | void                        |
+| change        | 复选框改变时触发       | [ node ]                | void                        |
 | limitAlert    | 超过 max 配置时触发    | -                   | void                        |
 | renderContent | 自定义节点内容         | h,node              | h() 或 Dom                  |
 | load          | lazy=true 时有效       | node, resolve       | void                        |

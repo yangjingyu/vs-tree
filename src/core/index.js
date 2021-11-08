@@ -244,7 +244,7 @@ export default class Tree {
 
   // 获取选中节点
   getCheckedNodes () {
-    return this.store.getCheckedNodes()
+    return this.store.getCheckedNodes(...arguments)
   }
 
   // 设置最大可选
@@ -255,5 +255,13 @@ export default class Tree {
   // 滚动到索引位置
   scrollToIndex (index = 0) {
     this.vlist.scrollToIndex(index)
+  }
+
+  // 清空选中元素
+  clearCheckedNodes() {
+    const nodes = this.getCheckedNodes(true)
+    nodes.forEach(node => {
+      node.setChecked(false)
+    })
   }
 }

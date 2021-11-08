@@ -21,9 +21,10 @@ export default class Tree {
     _checkFilter(v: any): any;
     filter(keyword: string | undefined, onlySearchLeaf: any): any[];
     getNodeById(id: any): any;
-    getCheckedNodes(): any[];
+    getCheckedNodes(...args: any[]): any[];
     setMaxValue(value?: number): void;
     scrollToIndex(index?: number): void;
+    clearCheckedNodes(): void;
 }
 import Breadcrumb from "../breadcrumb";
 import TreeStore from "./store";
