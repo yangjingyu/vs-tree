@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>vs-tree2.0_清空选中节点</title>
+  <link rel="stylesheet" href="../dist/vs-tree.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+</head>
+
+<body>
+  <button id="clear">清空选中节点</button>
+  <div class="box">
+    <div id="tree"></div>
+    <div id="list"></div>
+  </div>
+  <script src="../dist/vs-tree.js"></script>
+  <script>
+    console.time('create:data')
+    var id = 1000
+    function add(parentId, name) {
+      const list = []
+      for (var i = 0; i < 20; i++) {
+        list.push({ id: '100' + id++, name: name + i, parentId: parentId })
+      }
+      return list
+    }
+    const data = {
+      id: '1', name: 'zhangsan', parentId: '-1', children: [
+        { id: '100', name: 'wangwu', parentId: '1', children: add('100', 'wangwu') },
+        { id: '101', name: 'zhaoliu', parentId: '1', children: add('101', 'zhaoliu') },
+        { id: '102', name: '异步节点-1', parentId: '1' },
+        { id: '103', name: '异步节点-2', parentId: '1' },
+        { id: '104', name: '叶子节点-2', parentId: '1', isLeaf: true },
+        { id: '105', name: '叶子节点-3', parentId: '1', isLeaf: true },
+        { id: '106', name: '叶子节点-4', parentId: '1', isLeaf: true },
+        { id: '107', name: '叶子节点-5', parentId: '1', isLeaf: true },
+        { id: '108', name: '叶子节点-6', parentId: '1', isLeaf: true },
+        { id: '109', name: '叶子节点-7', parentId: '1', isLeaf: true },
+        { id: '110', name: '叶子节点-8', parentId: '1', isLeaf: true },
+        { id: '111', name: '叶子节点-9', parentId: '1', isLeaf: true },
+      ]
+    }
+    console.timeEnd('create:data')
+    console.time('render:tree');
+    const tree = new vsTree.default('#tree', {
+      data: data,
+      showCheckbox: true,
+      max: 0,
+      highlightCurrent: false,
+      indent: 12, // 缩进
+      sort: true,
+      change: function(node) {
+        console.log(node);
+        document.getElementById('list').innerHTML = ''
+        const list = [];
+        tree.getCheckedNodes().forEach((v, index) => {
+          list.push('<div>'+ index + ': ' + v.name +'</div>')
+        })
+        document.getElementById('list').innerHTML = list.reverse().join('')
+      }
+    });
+    console.timeEnd('render:tree');
+
+    document.getElementById('clear').onclick = () => {
+      tree.clearCheckedNodes()
+    }
+  </script>
+</body>
+
+</html>

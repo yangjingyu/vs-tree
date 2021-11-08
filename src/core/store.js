@@ -29,6 +29,8 @@ export default class TreeStore {
     if (this.breadcrumb) {
       this.breadcrumb.list.push(this.root)
     }
+
+    this.changeNodes = []
   }
 
   setData (val) {
@@ -64,10 +66,17 @@ export default class TreeStore {
   }
 
   // 获取选中节点
-  getCheckedNodes () {
+  getCheckedNodes (isTreeNode = false) {
     const nodes = this.nodes.filter(v => v.checked && !v.data._vsroot && this._checkVerify(v) && (!this.nocheckParent || !v.childNodes.length))
     if (this.sort) {
-      return nodes.sort((a, b) => a.sortId - b.sortId).map(v => v.data)
+      const sortNodes = nodes.sort((a, b) => a.sortId - b.sortId)
+      if (isTreeNode) {
+        return sortNodes
+      }
+      return sortNodes.map(v => v.data)
+    }
+    if (isTreeNode) {
+      return nodes
     }
     return nodes.map(v => v.data)
   }
@@ -134,5 +143,15 @@ export default class TreeStore {
     } else {
       return true
     }
+  }
+
+  // 节点切换选中时触发
+  _change(node) {
+    this.changeNodes.push(node)
+    if (this._changeTimer) clearTimeout(this._changeTimer)
+    this._changeTimer = setTimeout(() => {
+      this.change(this.changeNodes)
+      this.changeNodes = []
+    }, 0)
   }
 }
