@@ -70,7 +70,7 @@ const parseTemplate = (name, ctx) => {
   return false;
 };
 let setepId = 0;
-class Node {
+class TreeNode {
   constructor(ops) {
     __publicField(this, "id", setepId++);
     __publicField(this, "checked", false);
@@ -384,7 +384,7 @@ class Node {
       this.isLeaf = true;
     }
     let children;
-    if (this.level === 0 && this.data instanceof Node) {
+    if (this.level === 0 && this.data instanceof TreeNode) {
       children = this.data;
     } else {
       children = this.data.children || [];
@@ -397,12 +397,12 @@ class Node {
     }
   }
   insertChild(child, index = -1) {
-    if (!(child instanceof Node)) {
+    if (!(child instanceof TreeNode)) {
       Object.assign(child, {
         parent: this,
         store: this.store
       });
-      child = new Node(child);
+      child = new TreeNode(child);
     }
     child.level = this.level + 1;
     if (typeof index === "undefined" || index < 0) {
@@ -763,7 +763,7 @@ class TreeStore {
     }
     this.dataMap = new Map();
     this.nodeMap = new Map();
-    this.root = new Node({
+    this.root = new TreeNode({
       data: this.data,
       store: this
     });
@@ -1341,6 +1341,9 @@ const noop = () => {
 class Tree {
   constructor(selector, ops) {
     __publicField(this, "$el");
+    __publicField(this, "store");
+    __publicField(this, "vlist");
+    __publicField(this, "data");
     __publicField(this, "interpolate");
     __publicField(this, "_data");
     __publicField(this, "nodes");
@@ -1348,13 +1351,10 @@ class Tree {
     __publicField(this, "showCount");
     __publicField(this, "maxHeight");
     __publicField(this, "minHeight");
-    __publicField(this, "data");
     __publicField(this, "keyword");
     __publicField(this, "searchFilter");
     __publicField(this, "ready");
     __publicField(this, "$$breadcrumb");
-    __publicField(this, "store");
-    __publicField(this, "vlist");
     if (typeof selector === "string") {
       const el = document.querySelector(selector);
       if (el instanceof HTMLElement) {

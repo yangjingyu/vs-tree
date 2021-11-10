@@ -1,5 +1,3 @@
-/// <refrence path="./vue-plugin/index.d.ts" />;
-
 import { version as _v } from '../package.json'
 import  './less/vs-tree.less'
 

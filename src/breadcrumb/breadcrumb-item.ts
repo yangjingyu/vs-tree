@@ -1,10 +1,10 @@
 import Breadcrumb from '.'
-import TreeNode from '../core/node'
-import Store from '../core/store'
+import TreeNode from '../core/tree-node'
+import TreeStore from '../core/tree-store'
 export default class BreadcrumbItem {
   node: TreeNode
   data: { [key: string]: any }
-  store: Store
+  store: TreeStore
   parent: Breadcrumb
   renderIcon: any
   renderLink: any

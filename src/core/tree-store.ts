@@ -1,17 +1,17 @@
-import Node from './node'
+import TreeNode from './tree-node'
 export default class TreeStore {
   [key: string]: any;
   // 根节点
-  root: Node
+  root: TreeNode
   // 节点列表
-  nodes: Node[] = []
+  nodes: TreeNode[] = []
   // 当前选中节点
   radioMap: {
-    [index: number]: Node
+    [index: number]: TreeNode
   } = {}
   // 当前展开节点
   expandMap: {
-    [index: number]: Node
+    [index: number]: TreeNode
   } = {}
   constructor (options: any) {
     for (const option in options) {
@@ -23,7 +23,7 @@ export default class TreeStore {
     this.dataMap = new Map()
     this.nodeMap = new Map()
 
-    this.root = new Node({
+    this.root = new TreeNode({
       data: this.data,
       store: this
     })
@@ -52,8 +52,8 @@ export default class TreeStore {
 
   // 获取节点列表
   flattenTreeData () {
-    const nodes: Node[] = []
-    const dig = (val: Node) => {
+    const nodes: TreeNode[] = []
+    const dig = (val: TreeNode) => {
       nodes.push(val)
       if (val.childNodes && val.childNodes.length) {
         for (let i = 0, len = val.childNodes.length; i < len; i++) {
@@ -99,7 +99,7 @@ export default class TreeStore {
   }
 
   // 验证是否已经选到最大
-  checkMaxNodes (node: Node) {
+  checkMaxNodes (node: TreeNode) {
     if (!this.max) {
       return false
     }
@@ -117,7 +117,7 @@ export default class TreeStore {
     return false
   }
 
-  getUnCheckLeafsCount (node: Node) {
+  getUnCheckLeafsCount (node: TreeNode) {
     let count = this._checkVerify(node) && !node.checked ? 1 : 0
     node.childNodes.forEach(v => {
       count += this.getUnCheckLeafsCount(v)
@@ -140,7 +140,7 @@ export default class TreeStore {
     return true
   }
 
-  _checkVerify (node: Node) {
+  _checkVerify (node: TreeNode) {
     if (typeof this.checkFilter === 'function') {
       return this.checkFilter(node)
     } else if (this.checkFilterLeaf) {
@@ -151,7 +151,7 @@ export default class TreeStore {
   }
 
   // 节点切换选中时触发
-  _change(node: Node) {
+  _change(node: TreeNode) {
     this.changeNodes.push(node)
     if (this._changeTimer) clearTimeout(this._changeTimer)
     this._changeTimer = setTimeout(() => {

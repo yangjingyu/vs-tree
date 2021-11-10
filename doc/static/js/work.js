@@ -3,7 +3,7 @@ const umap = {}
 const infomap = {}
 const depts = []
 const root = []
-var xhr = new XMLHttpRequest()
+const xhr = new XMLHttpRequest()
 xhr.open('GET', typeof window === 'object' ? './static/data.txt' : '../data.txt', true)
 xhr.send()
 xhr.onload = function (e) {

@@ -1,10 +1,10 @@
 
-import Store from './store'
-import { insterAfter, onDragEnterGap, parseTemplate } from './utils'
+import TreeStore from './tree-store'
+import { insterAfter, onDragEnterGap, parseTemplate } from '../utils'
 
 let setepId = 0
 
-export default class Node {
+export default class TreeNode {
   // 唯一ID
   id: number = setepId++
   // 是否选中
@@ -24,11 +24,11 @@ export default class Node {
   // 节点层级
   level = 0
   // 子节点
-  childNodes: Node[] = []
+  childNodes: TreeNode[] = []
   // 公共仓库
-  store: Store
+  store: TreeStore
   // 父节点
-  parent: Node
+  parent: TreeNode
   // 原始数据
   originData: any
   // 缓存
@@ -402,7 +402,7 @@ export default class Node {
     }
 
     let children
-    if (this.level === 0 && this.data instanceof Node) {
+    if (this.level === 0 && this.data instanceof TreeNode) {
       children = this.data
     } else {
       children = this.data.children || []
@@ -418,12 +418,12 @@ export default class Node {
   }
 
   insertChild (child: any, index = -1) {
-    if (!(child instanceof Node)) {
+    if (!(child instanceof TreeNode)) {
       Object.assign(child, {
         parent: this,
         store: this.store
       })
-      child = new Node(child)
+      child = new TreeNode(child)
     }
 
     child.level = this.level + 1
@@ -436,7 +436,7 @@ export default class Node {
     return child
   }
 
-  insertBefore (child: any, ref: Node) {
+  insertBefore (child: any, ref: TreeNode) {
     let index
     if (ref) {
       index = this.childNodes.indexOf(ref)
@@ -444,7 +444,7 @@ export default class Node {
     this.insertChild(child, index)
   }
 
-  insertAfter (child: any, ref: Node) {
+  insertAfter (child: any, ref: TreeNode) {
     let index
     if (ref) {
       index = this.childNodes.indexOf(ref)

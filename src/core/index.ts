@@ -1,27 +1,40 @@
-import TreeStore from './store'
+import TreeStore from './tree-store'
+import TreeNode from './tree-node'
 import Vlist from '../virtual-list'
 import Breadcrumb from '../breadcrumb'
-import Node from './node'
 
 const noop = () => { }
 export default class Tree {
   // 根元素
   $el!: HTMLElement
+  // 共有仓库
+  store!: TreeStore
+  // 虚拟列表
+  vlist!: Vlist
+  // 数据列表
+  data: any[]
   // 边界正则
   interpolate: RegExp
   _data: { _vsroot: boolean; name: any; children: any }
-  nodes: any[]
+  // Node节点
+  nodes: TreeNode[]
+  // 节点高度
   itemHeight: any
+  // 展示条数
   showCount: any
+  // 最大高度
   maxHeight: any
+  // 最小高度
   minHeight: any
-  data: any[]
+  // 关键字
   keyword: string
-  searchFilter: any
-  ready: any
+  // 过滤方法
+  searchFilter: Function
+  // 回调事件
+  ready: Function
+  // 面包屑组件
   $$breadcrumb!: Breadcrumb
-  store!: TreeStore
-  vlist!: Vlist
+  
   constructor (selector: string | HTMLElement, ops: any) {
     if (typeof selector === 'string') {
       const el = document.querySelector(selector)
@@ -158,7 +171,7 @@ export default class Tree {
         update: () => {
           this._render()
         },
-        nodesChange: (nodes: Node[]) => {
+        nodesChange: (nodes: TreeNode[]) => {
           this.nodes = nodes
           this.vlist && this._render()
         }
@@ -215,7 +228,7 @@ export default class Tree {
     if (!this.keyword) return true
     let boo = this._checkFilter(v)
     if (!boo) {
-      v.childNodes.forEach((node: Node) => {
+      v.childNodes.forEach((node: TreeNode) => {
         if (!boo) {
           boo = this._hasKeyword(node)
         }
