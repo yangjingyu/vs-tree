@@ -62,9 +62,8 @@ const tree = new vsTree('#tree', {
 直接引入js
 
 ```html
-<link rel="stylesheet" href="../dist/vs-tree.css">
 <div id="tree"></div>
-<script src="../dist/vs-tree.js"></script>
+<script src="../dist/vs-tree.umd.js"></script>
 ```
 
 ```js
@@ -78,8 +77,9 @@ const tree = new vsTree.default('#tree', {
 支持浏览器模块
 
 ```html
+<link rel="stylesheet" href="../dist/vs-tree.css">
 <script type="module">
-import vsTree from '../dist/vs-tree.esm.browser.js'
+import vsTree from '../dist/vs-tree.es.js'
 const tree = new vsTree('#tree', {
   data: {id: 1, name: 'tree1', children: []} // [{id, name}, {id, name, children}]
 });

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>vs-tree2.0_复杂示例</title>
+  <link rel="stylesheet" href="./static/css/index.css">
+  <style>
+    .tree-action a {
+      margin-left: 8px;
+      color: #2a8ae2;
+      font-size: 12px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="tree"></div>
+  <button id="checked" type="button">获取选中元素</button>
+  <button id="getNodeById" type="button">根据ID获取节点</button>
+  <button id="clearChecked" type="button">清除wangwu选中</button>
+  <script type="module">
+    import vsTree from '../src/vs-tree.ts'
+    console.time('create:data')
+    var id = 1000
+    function add(parentId, name) {
+      const list = []
+      for (var i = 0; i < 10; i++) {
+        list.push({ id: '100' + id++, name: name + i, parentId: parentId })
+      }
+      return list
+    }
+    const data = {
+      id: '1', name: 'zhangsan', parentId: '-1', children: [
+        { id: '100', name: 'wangwu', parentId: '1', children: add('100', 'wangwu') },
+        { id: '101', name: 'zhaoliu', parentId: '1', children: add('101', 'zhaoliu') },
+        { id: '102', name: 'huahua', parentId: '1' },
+        { id: '103', name: 'oo-1', parentId: '1' },
+        { id: '104', name: 'oo-2', parentId: '1' },
+        { id: '105', name: 'oo-3', parentId: '1' },
+        { id: '106', name: 'oo-4', parentId: '1' },
+        { id: '107', name: 'oo-5', parentId: '1' },
+        { id: '108', name: 'oo-6', parentId: '1' },
+        { id: '109', name: 'oo-7', parentId: '1' },
+        { id: '110', name: 'oo-8', parentId: '1' },
+        { id: '111', name: 'oo-9', parentId: '1' },
+      ]
+    }
+    console.timeEnd('create:data')
+    console.time('render:tree');
+    console.log(vsTree);
+    const tree = new vsTree('#tree', {
+      data: data,
+      showRoot: false,
+      showCheckbox: true,
+      max: 0,
+      highlightCurrent: false,
+      checkOnClickNode: true,
+      indent: 12, // 缩进
+      disabledKeys: ["104", '102', "105"],
+      checkedKeys: ["100", "102", "104"],
+      expandKeys: ["101"],
+      disabledInherit: true,
+      // nocheckParent: true, // 禁止选中父节点
+      sort: true, // 按选中先后顺序排序
+      click: function (event, node, type) {
+        console.log(node, 'click', type);
+        if (type === 'remove') {
+          node.remove()
+        }
+        if (type === 'append') {
+          node.append({
+            id: id++,
+            name: 'append'
+          })
+        }
+      },
+      // 复选框被点击时触发
+      check: function (event, node) {
+        console.log(node, 'onCheck');
+      },
+      change: function (node) {
+        console.log(node);
+      },
+      limitAlert: function () {
+        console.log('超过最大');
+      },
+      renderContent: function (h, node) {
+        return h("div", {
+          className: "tree-action",
+          children: [
+            h("a", {
+              text: 'append',
+              click: function (e, node) {
+                node.append({
+                  id: 999999,
+                  name: 'append'
+                })
+              }
+            }),
+            h("a", {
+              text: 'remove',
+              click: function (e, node) {
+                node.remove()
+              }
+            })
+          ]
+        })
+      }
+    });
+    console.timeEnd('render:tree');
+
+    document.getElementById("checked").onclick = function () {
+      console.log(tree);
+      console.log(tree.getCheckedNodes());
+    }
+
+    document.getElementById("getNodeById").onclick = function () {
+      console.log(tree.getNodeById("103"));
+      tree.getNodeById("103") && tree.getNodeById("103").setChecked(true);
+    }
+
+    document.getElementById("clearChecked").onclick = function () {
+      ["100"].forEach(id => {
+        tree.getNodeById(id).setChecked(false);
+      });
+    }
+  </script>
+</body>
+
+</html>

@@ -110,7 +110,7 @@ export default (VsTree) => {
           return this.tree.tree.getNodeById(id)
         },
         getCheckedNodes () {
-          return this.tree.tree.getCheckedNodes()
+          return this.tree.tree.getCheckedNodes(...arguments)
         },
         filter (value) {
           return this.tree.tree.filter(value)
