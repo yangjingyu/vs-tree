@@ -1,9 +1,132 @@
 import TreeStore from './tree-store'
 import TreeNode from './tree-node'
 import Vlist from '../virtual-list'
-import Breadcrumb from '../breadcrumb'
+import Breadcrumb, { BreadcrumbOptions } from '../breadcrumb'
+import { getDom, noop } from '../utils'
 
-const noop = () => { }
+export interface DataItem {
+  name: string;
+  children: DataItem[];
+  [key: string]: any;
+}
+
+export interface VirtualOptions {
+  // 节点高度
+  itemHeight: number
+  // 展示条数
+  showCount: number
+  // 最大高度
+  maxHeight: string
+  // 最小高度
+  minHeight: string
+}
+export interface TreeOptions {
+  // 是否仅显示叶子节点图标
+  onlyShowLeafIcon: boolean
+  // 是否显示复选框
+  showCheckbox: boolean
+  // 父子节点关联关系
+  checkboxType: { Y: string; N: string }
+  // 新加入节点时自动继承父节点选中状态
+  checkInherit: boolean
+  // 新加入节点时自动继承父节点禁用状态
+  disabledInherit: boolean
+  // 是否显示单选框，会覆盖复选框
+  showRadio: boolean
+  // 是否高亮选中当前项
+  highlightCurrent: boolean
+  // 选中结果过滤掉叶子节点， 异步加载时需手需提供 isLeaf
+  checkFilterLeaf: boolean
+  // 过滤掉的节点不计入统计
+  checkFilter: null
+  // 手风琴模式
+  accordion: boolean
+  // 开启拖拽
+  draggable: boolean
+  // 允许放置
+  dropable: boolean
+  // 是否开启懒加载
+  lazy: boolean
+  // 是否开启排序
+  sort: boolean
+  // 缩进数量
+  indent: number
+  // 默认选中
+  checkedKeys: never[]
+  // 默认展开
+  expandKeys: never[]
+  // 禁止操作
+  disabledKeys: never[]
+  // 触发限制回调
+  limitAlert: () => void
+  // 点击回调
+  click: () => void
+  // 复选框被点击时触发
+  check: () => void
+  // 复选框改变时触发
+  change: () => void
+  // lazy=true 时有效 
+  load: () => void
+  // 鼠标右键事件
+  contextmenu: null
+  // 分组范围
+  radioType: string
+  // 自定义节点内容
+  renderContent: null
+  // 禁止父节点选中
+  nocheckParent: boolean
+  // 是否在点击节点的时候选中节点
+  checkOnClickNode: boolean
+  // 格式化数据
+  format: null
+  // 搜索渲染
+  searchRender: null
+  searchDisabledChecked: boolean
+  // 展开收起图标class
+  expandClass: string
+  // 开始拖拽
+  onDragstart: () => void
+  // 进入放置目标
+  onDragenter: () => void
+  // 放置目标
+  onDrop: () => void
+  // 延时渲染
+  async: any
+  // 初始数据
+  data: DataItem | DataItem[];
+  // 最大选择数量
+  max: number;
+  // 根节点展示名称
+  rootName: string;
+  // 皮肤
+  theme: string;
+  // 是否显示根节点
+  hideRoot: boolean
+  // 最大高度
+  maxHeight: string
+  // 最小高度
+  minHeight: string
+  // 是否依赖isLeaf
+  strictLeaf: boolean;
+  // 是否开启动画
+  animation: boolean;
+  // 默认展开层级
+  expandLevel: number;
+  // 是否显示连接线
+  showLine: boolean;
+  // 是否展示icon
+  showIcon: boolean
+  // 面包屑
+  breadcrumb: BreadcrumbOptions;
+  // 虚拟列表参数
+  virtual: VirtualOptions;
+  // 过滤方法
+  searchFilter: Function
+  // 回调事件
+  ready: Function
+  // 节点选择前触发
+  beforeCheck: Function
+}
 export default class Tree {
   // 根元素
   $el!: HTMLElement
@@ -11,21 +134,22 @@ export default class Tree {
   store!: TreeStore
   // 虚拟列表
   vlist!: Vlist
-  // 数据列表
-  data: any[]
+  // 节点列表
+  data: TreeNode[]
   // 边界正则
   interpolate: RegExp
-  _data: { _vsroot: boolean; name: any; children: any }
+  // 根节点数据
+  rootData: DataItem
   // Node节点
   nodes: TreeNode[]
   // 节点高度
-  itemHeight: any
+  itemHeight: number
   // 展示条数
-  showCount: any
+  showCount: number
   // 最大高度
-  maxHeight: any
+  maxHeight: string
   // 最小高度
-  minHeight: any
+  minHeight: string
   // 关键字
   keyword: string
   // 过滤方法
@@ -35,21 +159,14 @@ export default class Tree {
   // 面包屑组件
   $$breadcrumb!: Breadcrumb
   
-  constructor (selector: string | HTMLElement, ops: any) {
-    if (typeof selector === 'string') {
-      const el = document.querySelector(selector)
-      if (el instanceof HTMLElement) {
-        this.$el = el
-      }
+  constructor (selector: string | HTMLElement, ops: TreeOptions) {
+    const dom = getDom(selector)
+    if (dom instanceof HTMLElement) {
+      dom.classList.add('vs-tree')
+      this.$el = dom
     } else {
-      this.$el = selector
-    }
-
-    if (!(this.$el instanceof HTMLElement)) {
       throw Error('请为组件提供根节点')
     }
-
-    this.$el.classList.add('vs-tree')
 
     const delimiters = ['#\\[\\[', '\\]\\]']
 
@@ -75,15 +192,12 @@ export default class Tree {
       })
     }
 
-    // 默认清空根节点
-    // this.$el.innerHTML = ''
-
     if (ops.theme) {
       this.$el.classList.add('vs-theme-' + ops.theme)
     }
 
     if (Array.isArray(ops.data)) {
-      this._data = {
+      this.rootData = {
         _vsroot: true,
         name: ops.rootName || '---',
         children: ops.data
@@ -92,7 +206,7 @@ export default class Tree {
         ops.hideRoot = true
       }
     } else if (typeof ops.data === 'object') {
-      this._data = ops.data
+      this.rootData = ops.data
     } else {
       throw Error('参数data仅支持对象或数组！')
     }
@@ -111,7 +225,9 @@ export default class Tree {
     this.data = []
     // 关键字过滤
     this.keyword = ''
+    // 过滤方法
     this.searchFilter = ops.searchFilter
+    // 初始化回调
     this.ready = ops.ready || noop
 
     if (Object.prototype.toString.call(ops.breadcrumb) === '[object Object]') {
@@ -120,7 +236,7 @@ export default class Tree {
 
     const start = () => {
       this.store = new TreeStore({
-        data: this._data,
+        data: this.rootData,
         max: ops.max,
         slots: slotsMap,
         breadcrumb: this.$$breadcrumb || null,
@@ -197,7 +313,7 @@ export default class Tree {
     }
   }
 
-  _init () {
+  private _init (): void {
     this.vlist = new Vlist({
       root: this.$el,
       data: [],
@@ -210,7 +326,7 @@ export default class Tree {
     this.ready && this.ready(this)
   }
 
-  _render (update = true) {
+  private _render (update = true): void {
     if (this.$$breadcrumb) {
       const { current } = this.$$breadcrumb
       this.data = this.nodes.filter(v => v.parent && v.parent.id === current.id)
@@ -224,7 +340,7 @@ export default class Tree {
     update && this.vlist.update(this.data)
   }
 
-  _hasKeyword (v: any) {
+  private _hasKeyword (v: any): boolean {
     if (!this.keyword) return true
     let boo = this._checkFilter(v)
     if (!boo) {
@@ -239,16 +355,24 @@ export default class Tree {
     return boo
   }
 
-  _checkFilter (v: any) {
-    if (!this.keyword) return
+  private _checkFilter (v: any): boolean {
+    if (!this.keyword) return false
     if (typeof this.searchFilter === 'function') {
       return this.searchFilter(this.keyword, v, v.data)
     }
     return v.data.name && v.data.name.includes(this.keyword)
   }
 
-  // 过滤节点
-  filter (keyword = '', onlySearchLeaf: boolean) {
+  /**
+   * @function filter
+   * @memberof Tree
+   * @desc 过滤节点
+   * @param {?string} keyword 关键字
+   * @param {?boolean} onlySearchLeaf 只搜索子节点
+   * @param {?boolean} autoExpand 搜索结果是否展开
+   * @return {TreeNode[]}
+   */
+  public filter (keyword = '', onlySearchLeaf = false, autoExpand = true): TreeNode[] {
     this.keyword = keyword
 
     this.store.onlySearchLeaf = onlySearchLeaf && !!keyword
@@ -264,35 +388,66 @@ export default class Tree {
       const v = this.data[i]
       if (v.requireExpand) {
         v.requireExpand = false
-        v.setExpand(true, true)
+        if(autoExpand) {
+          v.setExpand(true, true)
+        }
       }
     }
     this._render()
     return this.data
   }
 
-  // 根据ID获取节点
-  getNodeById (id: number) {
+  /**
+   * @function getNodeById
+   * @memberof Tree
+   * @desc 根据ID获取节点
+   * @param {number|string} id 节点ID
+   * @return {TreeNode}
+   */
+  public getNodeById (id: number|string): TreeNode {
     return this.store.getNodeById(id)
   }
 
-  // 获取选中节点
-  getCheckedNodes (...args: any[]) {
-    return this.store.getCheckedNodes(...args)
+  /**
+   * @function getCheckedNodes
+   * @memberof Tree
+   * @desc 获取选中节点
+   * @param {?boolean} isNode true 返回 TreeNode false 返回 DataItem
+   * @return {(TreeNode|DataItem)[]}
+   */
+  public getCheckedNodes (isNode: boolean = false): any[] {
+    return this.store.getCheckedNodes(isNode)
   }
 
-  // 设置最大可选
-  setMaxValue (value = 0) {
+  /**
+   * @function setMaxValue
+   * @memberof Tree
+   * @desc 设置最大可选节点数量
+   * @param {?number} value 可选数量
+   * @return {void}
+   */
+  public setMaxValue (value = 0): void {
     this.store.max = value
   }
 
-  // 滚动到索引位置
-  scrollToIndex (index = 0) {
+  /**
+   * @function scrollToIndex
+   * @memberof Tree
+   * @desc 滚动到索引位置
+   * @param {?number} index 滚动到node节点索引
+   * @return {void}
+   */
+  public scrollToIndex (index = 0): void {
     this.vlist.scrollToIndex(index)
   }
 
-  // 清空选中元素
-  clearCheckedNodes() {
+  /**
+   * @function clearCheckedNodes
+   * @memberof Tree
+   * @desc 清空选中元素
+   * @return {void}
+   */
+  public clearCheckedNodes(): void {
     const nodes = this.getCheckedNodes(true)
     nodes.forEach(node => {
       node.setChecked(false)

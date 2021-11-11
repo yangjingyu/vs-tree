@@ -1,5 +1,15 @@
 import TreeNode from "../core/tree-node"
 
+export const noop = () => { }
+
+/**
+ * @function insterAfter
+ * @memberof utils
+ * @desc 目标节点后插入新节点
+ * @param {HTMLElement} newElement 新的dom
+ * @param {HTMLElement} targetElement 目标的dom
+ * @return {HTMLElement|null}
+ */
 export function insterAfter(newElement: HTMLElement, targetElement: HTMLElement) {
   const parent = targetElement.parentNode
   if (!parent) { return }
@@ -10,6 +20,14 @@ export function insterAfter(newElement: HTMLElement, targetElement: HTMLElement)
   }
 }
 
+/**
+ * @function onDragEnterGap
+ * @memberof utils
+ * @desc 目标节点后插入新节点
+ * @param {MouseEvent} e 鼠标事件
+ * @param {HTMLElement} treeNode 当前node节点
+ * @return {(-1|0|1)} -1 top 0 center 1 bottom
+ */
 export function onDragEnterGap(e: MouseEvent, treeNode: HTMLElement) {
   var offsetTop = treeNode.getBoundingClientRect().top
   var offsetHeight = treeNode.offsetHeight
@@ -34,7 +52,6 @@ export const findNearestNode = (element: HTMLElement, name: string) => {
   }
   return null
 }
-
 
 export const parseTemplate = (name: string, ctx: TreeNode) => {
   const slotName = ctx.store.slots[name]
@@ -64,4 +81,20 @@ export const parseTemplate = (name: string, ctx: TreeNode) => {
       return node
     }
     return false
+}
+
+/**
+ * @function getDom
+ * @memberof utils
+ * @desc 获取节点dom
+ * @param {string|HTMLElement} selector 选择器或dom
+ * @return {HTMLElement|null}
+ */
+export function getDom(selector: string | HTMLElement): HTMLElement | null {
+  if (typeof selector === 'string') {
+    return document.querySelector(selector)
+  } else if (selector instanceof HTMLElement){
+    return selector
+  }
+  return null
 }

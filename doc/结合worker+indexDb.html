@@ -113,6 +113,7 @@
       document.getElementById('usetime').innerHTML = Date.now() - time + 'ms'
     }
 
+    window.init = init
     function getCount(umap, node) {
       if (!umap[node.data.data.did]) return 0
       let count = 0

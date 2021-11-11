@@ -1,4 +1,61 @@
+import { DataItem } from '.'
+import Breadcrumb from '../breadcrumb'
 import TreeNode from './tree-node'
+
+interface TreeStoreOptions {
+  data: DataItem
+  max: number
+  slots: any
+  breadcrumb: Breadcrumb | null
+  strictLeaf: boolean
+  showCount: number
+  itemHeight: number
+  hideRoot: boolean
+  animation: boolean // 动画
+  expandLevel: number // 默认展开1级节点
+  showLine: boolean // 是否显示连接线
+  showIcon: boolean
+  onlyShowLeafIcon: boolean
+  showCheckbox: boolean
+  checkboxType: { Y: string, N: string }
+  checkInherit: boolean // 新加入节点时自动继承父节点选中状态
+  disabledInherit: boolean // 新加入节点时自动继承父节点禁用状态
+  showRadio: boolean
+  highlightCurrent: boolean
+  checkFilterLeaf: boolean // 过滤非叶子节点
+  accordion: boolean // 手风琴模式
+  draggable: boolean
+  dropable: boolean
+  lazy: boolean
+  sort: boolean
+  indent: number
+  checkedKeys: (string|number)[]
+  expandKeys: (string|number)[]
+  disabledKeys: (string|number)[]
+  radioParentoOnly: 'level' | 'all' // 每个父节点下唯一，仅raido模式有效
+  nocheckParent: boolean // 只允许叶子节点选中
+  checkOnClickNode: boolean
+  searchDisabledChecked: boolean
+  expandClass: string
+  beforeCheck: Function
+  checkFilter: Function | null // 过滤选中节点
+  limitAlert: Function
+  click: Function
+  check: Function
+  change: Function
+  load: Function
+  contextmenu: Function | null
+  renderContent: Function | null
+  format: Function | null
+  searchRender: Function | null
+  onDragstart: Function
+  onDragenter: Function
+  onDrop: Function
+  update: Function | null
+  nodesChange: Function | null
+  [key: string]: any
+}
+
 export default class TreeStore {
   [key: string]: any;
   // 根节点
@@ -13,7 +70,8 @@ export default class TreeStore {
   expandMap: {
     [index: number]: TreeNode
   } = {}
-  constructor (options: any) {
+
+  constructor (options: TreeStoreOptions) {
     for (const option in options) {
       if (Object.prototype.hasOwnProperty.call(options, option)) {
         this[option] = options[option]
@@ -25,7 +83,8 @@ export default class TreeStore {
 
     this.root = new TreeNode({
       data: this.data,
-      store: this
+      store: this,
+      parent: null
     })
 
     this.updateNodes()
@@ -66,7 +125,7 @@ export default class TreeStore {
   }
 
   // 根据ID获取节点
-  getNodeById (id: number) {
+  getNodeById (id: number|string) {
     return this.dataMap.get(id)
   }
 

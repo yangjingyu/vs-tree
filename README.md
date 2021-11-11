@@ -227,9 +227,10 @@ export default {
 | setMaxValue       | 设置最大可选           | number                  |
 | scrollToIndex     | 滚动到索引位置         | number                  |
 | clearCheckedNodes | 清除选中节点           | -                       |
-| filter            | 过滤节点               | keyword, onlySearchLeaf |
+| filter            | 过滤节点               | keyword, onlySearchLeaf, autoExpand |
 
 > onlySearchLeaf 只过滤叶子节点
+> autoExpand 搜索结果是否展开，默认展开
 
 ### Node 方法
 

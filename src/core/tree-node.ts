@@ -4,6 +4,12 @@ import { insterAfter, onDragEnterGap, parseTemplate } from '../utils'
 
 let setepId = 0
 
+interface TreeNodeOptions {
+  store: TreeStore;
+  parent: TreeNode | any;
+  data: any
+}
+
 export default class TreeNode {
   // 唯一ID
   id: number = setepId++
@@ -21,8 +27,6 @@ export default class TreeNode {
   loaded = false
   // 是否为叶子节点
   isLeaf = false
-  // 节点层级
-  level = 0
   // 子节点
   childNodes: TreeNode[] = []
   // 公共仓库
@@ -59,44 +63,48 @@ export default class TreeNode {
   checkboxEl?: HTMLInputElement
   // 过渡动画节点
   transitionNode: any
-  constructor (ops: any) {
-    this.store = ops.store
-    this.parent = ops.parent
-    this.originData = ops.data
-    this.__buffer = {}
+  // 是否需要展开节点
+  requireExpand?: boolean
 
-    this.data = Object.assign({}, ops.data)
-    if (typeof this.store.format === 'function' && !ops.data._vsroot) {
-      const _data = this.store.format(Object.assign({}, ops.data), this)
+  constructor (options: TreeNodeOptions) {
+    const { store, parent, data } = options
+    this.store = store
+    this.parent = parent
+    this.originData = data
+    this.__buffer = Object.create({})
+
+    this.data = Object.assign({}, data)
+    if (typeof this.store.format === 'function' && !data._vsroot) {
+      const _data = this.store.format(Object.assign({}, data), this)
       if (typeof _data !== 'object') {
-        throw new Error('format must return object! \nformat: function(data) {\n  return {id, name, children, isLeaf}\n}')
+        throw new TypeError('format must return object! \nformat: function(data) {\n  return {id, name, children, isLeaf, icon, extra}\n}')
       }
-      const props = ['id', 'name', 'children', 'isLeaf', 'icon', 'extra']
-      for (let i = 0, len = props.length; i < len; i++) {
-        if (Object.prototype.hasOwnProperty.call(_data, props[i])) {
-          this.data[props[i]] = _data[props[i]]
+
+      ['id', 'name', 'children', 'isLeaf', 'icon', 'extra'].map(key => {
+        if (Object.prototype.hasOwnProperty.call(_data, key)) {
+          this.data[key] = _data[key]
         }
-      }
+      })
     }
 
+    // 是否继承父节点选中状态
     if (this.store.checkInherit && this.parent) {
       this.checked = this.parent.checked
     }
 
+    // 是否继承父节点禁用状态
     if (this.store.disabledInherit && this.parent) {
       this.disabled = this.parent.disabled
     }
 
+    // 是否为默认展开节点
     if (this.store.expandKeys.includes(this.data.id)) {
       this.expanded = true
     }
 
+    // 是否为默认禁用节点
     if (this.store.disabledKeys.includes(this.data.id)) {
       this.disabled = true
-    }
-
-    if (this.parent) {
-      this.level = this.parent.level + 1
     }
 
     if (this.data) {
@@ -106,15 +114,20 @@ export default class TreeNode {
     this.initData()
   }
 
-  initData () {
-    if (this.level > this.store.expandLevel && this.store.expandLevel !== -1 && !(this.parent?.expanded)) {
-      this.visbile = false
-      return
-    }
-    this.visbile = true
+  // 节点层级
+  get level(): number {
+    return this.parent ? this.parent.level + 1 : 0
   }
 
-  createNode () {
+  initData (): void {
+    if (this.level > this.store.expandLevel && this.store.expandLevel !== -1 && !(this.parent?.expanded)) {
+      this.visbile = false
+    } else {
+      this.visbile = true
+    }
+  }
+
+  createNode (): HTMLElement {
     if (this.dom) {
       this.checkboxNode && (this.checkboxNode.checked = this.checked)
       this.radioNode && (this.radioNode.checked = this.checked)
@@ -180,7 +193,7 @@ export default class TreeNode {
     return dom
   }
 
-  createInner () {
+  createInner (): HTMLElement {
     const dom = document.createElement('div')
     dom.className = 'vs-tree-inner'
     // 当隐藏根节点时减少一级缩进
@@ -231,7 +244,7 @@ export default class TreeNode {
   }
 
   // 自定义Dom 节点
-  cusmtomNode (name: string, info: any) {
+  cusmtomNode (name: string, info: any): HTMLElement {
     const box = document.createElement(name)
     info.text && (box.innerText = info.text)
     info.className && (box.className = info.className)
@@ -291,7 +304,7 @@ export default class TreeNode {
     return dom
   }
 
-  createCheckbox () {
+  createCheckbox (): HTMLElement {
     let label = 'checkbox'
     if (this.store.showRadio) {
       label = 'radio'
@@ -338,7 +351,7 @@ export default class TreeNode {
     return dom
   }
 
-  handleCheckChange (e: any) {
+  handleCheckChange (e: any): void {
     const checked = e.target.checked
 
     if (typeof this.store.beforeCheck === 'function') {
@@ -363,7 +376,7 @@ export default class TreeNode {
     this.store._change(this)
   }
 
-  createText () {
+  createText (): HTMLElement {
     const slot = parseTemplate('name', this)
     if (slot) {
       return slot
@@ -375,7 +388,7 @@ export default class TreeNode {
     return dom
   }
 
-  createIcon () {
+  createIcon (): HTMLElement {
     const icon = document.createElement('span')
     icon.className = (this.isLeaf && !this.childNodes.length) ? 'vs-icon-leaf' : 'vs-icon-parent'
     if (this.data.icon) {
@@ -389,7 +402,7 @@ export default class TreeNode {
     return icon
   }
 
-  setData (data: any) {
+  setData (data: any): void {
     this.store.dataMap.set(data.id, this)
     this.store.nodeMap.set(this.id, this)
     this.data = data
@@ -417,7 +430,7 @@ export default class TreeNode {
     }
   }
 
-  insertChild (child: any, index = -1) {
+  insertChild (child: any, index = -1): TreeNode {
     if (!(child instanceof TreeNode)) {
       Object.assign(child, {
         parent: this,
@@ -425,8 +438,6 @@ export default class TreeNode {
       })
       child = new TreeNode(child)
     }
-
-    child.level = this.level + 1
 
     if (typeof index === 'undefined' || index < 0) {
       this.childNodes.push(child)
@@ -436,7 +447,7 @@ export default class TreeNode {
     return child
   }
 
-  insertBefore (child: any, ref: TreeNode) {
+  insertBefore (child: any, ref: TreeNode): void {
     let index
     if (ref) {
       index = this.childNodes.indexOf(ref)
@@ -444,7 +455,7 @@ export default class TreeNode {
     this.insertChild(child, index)
   }
 
-  insertAfter (child: any, ref: TreeNode) {
+  insertAfter (child: any, ref: TreeNode): void {
     let index
     if (ref) {
       index = this.childNodes.indexOf(ref)
@@ -454,21 +465,15 @@ export default class TreeNode {
   }
 
   // 设置展开状态
-  updateExpand (expand = false) {
-    if (this.childNodes.length) {
-      this.childNodes.forEach(v => {
-        if (expand && this.expanded) {
-          v.visbile = true
-        } else {
-          v.visbile = false
-        }
-        v.updateExpand(expand)
-      })
-    }
+  updateExpand (expand = false): void {
+    this.childNodes.map(v => {
+      v.visbile = expand && this.expanded
+      v.updateExpand(expand)
+    })
   }
 
   // 更新本身及子节点状态
-  updateChecked (check = false, isInitDefault = false) {
+  updateChecked (check = false, isInitDefault = false): void {
     if ((!isInitDefault && this.disabled)) return
     if (!this.store.showCheckbox) return
     // if (this.disabled) return
@@ -494,7 +499,7 @@ export default class TreeNode {
   }
 
   // 更新父节点状态
-  updateCheckedParent (_checked = false, isInitDefault = false) {
+  updateCheckedParent (_checked = false, isInitDefault = false): void {
     if ((!isInitDefault && this.disabled)) return
     if (!this.store.showCheckbox) return
     if (!this.store.allowEmit(_checked, 'p')) {
@@ -502,14 +507,14 @@ export default class TreeNode {
     }
 
     if (!this.parent || this.store.nocheckParent) return
-    const allChecked = this.parent.childNodes.every(v => v.checked)
-    const someChecked = this.parent.childNodes.some(v => v.checked || v.indeterminate)
-    if (allChecked) {
+    const isAll = this.parent.childNodes.every(v => v.checked)
+    const isSome = this.parent.childNodes.some(v => v.checked || v.indeterminate)
+    if (isAll) {
       this.parent.checked = true
       this.parent.indeterminate = false
       this.parent.checkboxNode && (this.parent.checkboxNode.checked = true)
       this.parent.dom && this.parent.dom.classList.remove('is-indeterminate')
-    } else if (someChecked) {
+    } else if (isSome) {
       this.parent.checked = false
       this.parent.indeterminate = true
       this.parent.checkboxNode && (this.parent.checkboxNode.checked = false)
@@ -525,7 +530,7 @@ export default class TreeNode {
   }
 
   // 更新单选节点选中
-  updateRadioChecked (checked = false, isInitDefault = false) {
+  updateRadioChecked (checked = false, isInitDefault = false): void {
     if ((!isInitDefault && this.disabled)) return
 
     if (this.store.nocheckParent && (this.childNodes.length || !this.isLeaf)) return
@@ -547,7 +552,7 @@ export default class TreeNode {
   }
 
   // 设置是否选中
-  setChecked (checked = false, isInitDefault = false) {
+  setChecked (checked = false, isInitDefault = false): void {
     if (checked && this.store.checkMaxNodes(this)) {
       this.store.limitAlert()
       return
@@ -566,7 +571,7 @@ export default class TreeNode {
   }
 
   // 设置禁止选中
-  setDisabled (disabled = true) {
+  setDisabled (disabled = true): void {
     this.disabled = disabled
     this.checkboxEl && (this.checkboxEl.disabled = disabled)
   }
@@ -596,7 +601,7 @@ export default class TreeNode {
     }
   }
 
-  storeUpdate () {
+  storeUpdate (): void {
     if (this.store.animation) {
       this.createAnimation()
     } else {
@@ -605,7 +610,7 @@ export default class TreeNode {
   }
 
   // 创建动画
-  createAnimation () {
+  createAnimation (): void {
     this.transitionNode && this.transitionNode.parentNode && this.transitionNode.parentNode.removeChild(this.transitionNode)
     const tg = document.createElement('div')
     tg.className = 'vs-transition'
@@ -648,7 +653,7 @@ export default class TreeNode {
   }
 
   // 创建拖拽
-  createDragable (dom: HTMLElement) {
+  createDragable (dom: HTMLElement): void {
     dom.draggable = true
 
     dom.addEventListener('dragstart', (e) => {
@@ -745,7 +750,7 @@ export default class TreeNode {
   }
 
   // 更新手风琴状态
-  setAccordion (expand: boolean) {
+  setAccordion (expand: boolean): void {
     if (this.store.accordion && this.parent && expand) {
       const preExpand = this.store.expandMap[this.parent.id]
       if (preExpand === this) return
@@ -757,7 +762,7 @@ export default class TreeNode {
   }
 
   // 加载数据
-  loadData (callback: Function) {
+  loadData (callback: Function): void {
     if (this.loading) return
     this.loading = true
     if (this.expandEl) {
@@ -795,7 +800,7 @@ export default class TreeNode {
   }
 
   // 删除节点
-  remove () {
+  remove (): void {
     const parent = this.parent
     if (!parent) return
     const children = parent.childNodes || []
@@ -807,7 +812,7 @@ export default class TreeNode {
   }
 
   // 添加节点
-  append (data: any) {
+  append (data: any): void {
     if (!data || typeof data !== 'object') return
     let olddom = this.dom
     if (this.childNodes.length !== 0) {
