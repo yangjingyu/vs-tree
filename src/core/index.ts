@@ -239,6 +239,7 @@ export default class Tree {
         data: this.rootData,
         max: ops.max,
         slots: slotsMap,
+        async: ops.async,
         breadcrumb: this.$$breadcrumb || null,
         strictLeaf: ops.strictLeaf || false,
         showCount: this.showCount,
@@ -304,13 +305,7 @@ export default class Tree {
       this.store.setDefaultChecked()
     }
 
-    if (ops.async) {
-      setTimeout(() => {
-        start()
-      }, 0)
-    } else {
-      start()
-    }
+    start()
   }
 
   private _init (): void {

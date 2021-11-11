@@ -108,7 +108,14 @@ export default class TreeNode {
     }
 
     if (this.data) {
-      this.setData(this.data)
+      if (this.store.async && this.parent?.level === 0 && this.parent?.data?.children.length < 100) {
+        setTimeout(() => {
+          this.setData(this.data)
+          this.store.updateNodes()
+        }, 0);
+      } else {
+        this.setData(this.data)
+      }
     }
 
     this.initData()
@@ -140,7 +147,7 @@ export default class TreeNode {
     dom.setAttribute('vs-index', `${this.id}`)
     if (this.indeterminate) dom.classList.add('is-indeterminate')
 
-    !this.isLeaf && this.childNodes.length && dom.setAttribute('vs-child', `${true}`)
+    !this.isLeaf && this.data.children?.length && dom.setAttribute('vs-child', `${true}`)
 
     dom.appendChild(this.createInner())
 
@@ -218,7 +225,7 @@ export default class TreeNode {
       if (this.store.strictLeaf) {
         expandDom = !this.isLeaf ? this.createExpand() : this.createExpandEmpty()
       } else {
-        expandDom = (this.childNodes?.length || this.store.lazy) && !this.isLeaf ? this.createExpand() : this.createExpandEmpty()
+        expandDom = (this.data.children?.length || this.store.lazy) && !this.isLeaf ? this.createExpand() : this.createExpandEmpty()
       }
       dom.appendChild(expandDom)
     } else {
@@ -228,13 +235,13 @@ export default class TreeNode {
     }
 
     if (this.store.showCheckbox || this.store.showRadio) {
-      if ((!this.store.nocheckParent) || (this.isLeaf && !this.childNodes.length)) {
+      if ((!this.store.nocheckParent) || (this.isLeaf && !this.data.children?.length)) {
         dom.appendChild(this.createCheckbox())
       }
     }
 
     if (this.store.showIcon) {
-      if (!this.store.onlyShowLeafIcon || (!this.childNodes.length || this.isLeaf)) {
+      if (!this.store.onlyShowLeafIcon || (!this.data.children?.length || this.isLeaf)) {
         dom.appendChild(this.createIcon())
       }
     }
@@ -414,9 +421,9 @@ export default class TreeNode {
       this.isLeaf = true
     }
 
-    let children
+    let children: any[]
     if (this.level === 0 && this.data instanceof TreeNode) {
-      children = this.data
+      children = [this.data]
     } else {
       children = this.data.children || []
     }
@@ -425,9 +432,12 @@ export default class TreeNode {
       this.loaded = true
     }
 
-    for (let i = 0, j = children.length; i < j; i++) {
-      this.insertChild({ data: children[i] })
+    const next = () => {
+      for (let i = 0, j = children.length; i < j; i++) {
+        this.insertChild({ data: children[i] })
+      }
     }
+    next()
   }
 
   insertChild (child: any, index = -1): TreeNode {
