@@ -35,6 +35,7 @@ export default (VsTree) => {
         expandClass: String,
         theme: String,
         breadcrumb: Object,
+        virtual: Object,
         expandLevel: {
           type: Number,
           default: 1
