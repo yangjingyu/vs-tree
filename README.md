@@ -201,7 +201,7 @@ export default {
 
 | options    | Desc                 | 默认 |
 | ---------- | -------------------- | ---- |
-| showCount  | 试图内展示多少条数据 | 30   |
+| showCount  | 视图内展示多少条数据 | 20   |
 | itemHeight | 每条的高度           | 26   |
 
 ### breadcrumb
