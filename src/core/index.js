@@ -4,7 +4,7 @@ import Breadcrumb from '../breadcrumb'
 
 const noop = () => { }
 export default class Tree {
-  constructor (selector, ops) {
+  constructor(selector, ops) {
     if (typeof selector === 'string') {
       this.$el = document.querySelector(selector)
     } else {
@@ -163,7 +163,7 @@ export default class Tree {
     }
   }
 
-  _init () {
+  _init() {
     this.vlist = new Vlist({
       root: this.$el,
       data: [],
@@ -176,21 +176,27 @@ export default class Tree {
     this.ready && this.ready(this)
   }
 
-  _render (update = true) {
+  _render(update = true) {
     if (this.$$breadcrumb) {
       const { current } = this.$$breadcrumb
       this.data = this.nodes.filter(v => v.parent && v.parent.id === current.id)
+      // 当前仅过滤面包屑当前层级
+      this._keywordFilter(this.data)
       this.$$breadcrumb.renderBreadcrumb()
     } else {
-      this.data = this.nodes.filter(v => {
-        // 过滤隐藏节点 ｜ 隐藏root节点
-        return this._hasKeyword(v) && v.visbile && !(this.store.hideRoot && v.level === 0)
-      })
+      this._keywordFilter(this.nodes)
     }
     update && this.vlist.update(this.data)
   }
 
-  _hasKeyword (v) {
+  _keywordFilter(data) {
+    this.data = data.filter(v => {
+      // 过滤隐藏节点 ｜ 隐藏root节点
+      return this._hasKeyword(v) && v.visbile && !(this.store.hideRoot && v.level === 0)
+    })
+  }
+
+  _hasKeyword(v) {
     if (!this.keyword) return true
     let boo = this._checkFilter(v)
     if (!boo) {
@@ -205,7 +211,7 @@ export default class Tree {
     return boo
   }
 
-  _checkFilter (v) {
+  _checkFilter(v) {
     if (!this.keyword) return
     if (typeof this.searchFilter === 'function') {
       return this.searchFilter(this.keyword, v, v.data)
@@ -214,9 +220,8 @@ export default class Tree {
   }
 
   // 过滤节点
-  filter (keyword = '', onlySearchLeaf) {
+  filter(keyword = '', onlySearchLeaf) {
     this.keyword = keyword
-
     this.store.onlySearchLeaf = onlySearchLeaf && !!keyword
     this.store.isSearch = !!keyword
     if (this.store.onlySearchLeaf) {
@@ -238,22 +243,22 @@ export default class Tree {
   }
 
   // 根据ID获取节点
-  getNodeById (id) {
+  getNodeById(id) {
     return this.store.getNodeById(id)
   }
 
   // 获取选中节点
-  getCheckedNodes () {
+  getCheckedNodes() {
     return this.store.getCheckedNodes(...arguments)
   }
 
   // 设置最大可选
-  setMaxValue (value = 0) {
+  setMaxValue(value = 0) {
     this.store.max = value
   }
 
   // 滚动到索引位置
-  scrollToIndex (index = 0) {
+  scrollToIndex(index = 0) {
     this.vlist.scrollToIndex(index)
   }
 
