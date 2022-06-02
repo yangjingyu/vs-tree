@@ -10,6 +10,7 @@
 </head>
 
 <body>
+  <input id="search" type="text" autocomplete="off" placeholder="输入关键字进行过滤">
   <div id="breadcrumb"></div>
   <div id="tree"></div>
   <script src="../dist/vs-tree.js"></script>
@@ -65,7 +66,7 @@
           return node.originData.name
         },
         change: function (dom, breads) {
-          console.log(dom);
+          // console.log(dom);
         }
       },
       format: function (data, node) {
@@ -79,6 +80,10 @@
       }
     });
     console.timeEnd('render:tree');
+
+    document.getElementById('search').addEventListener('input', (e) => {
+      tree.filter(e.target.value)
+    })
   </script>
 </body>
 

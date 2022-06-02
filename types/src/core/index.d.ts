@@ -17,6 +17,7 @@ export default class Tree {
     _init(): void;
     vlist: Vlist | undefined;
     _render(update?: boolean): void;
+    _keywordFilter(data: any): void;
     _hasKeyword(v: any): any;
     _checkFilter(v: any): any;
     filter(keyword: string | undefined, onlySearchLeaf: any): any[];
