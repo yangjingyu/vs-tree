@@ -268,7 +268,11 @@ export default class Node {
     checkbox.name = label === 'radio' ? 'vs-radio' + (this.store.radioParentoOnly && this.parent ? this.parent.id : '') : 'vs-checkbox'
 
     if (label === 'radio') {
-      checkbox.name = 'vs-radio' + (this.store.radioParentoOnly && this.parent ? this.parent.id : '')
+      if (this.store.radioParentoOnly === 'level') {
+        checkbox.name = 'vs-radio' + (this.store.radioParentoOnly && this.parent ? this.parent.id : '')
+      } else {
+        checkbox.name = 'vs-radio'
+      }
       this.radioNode = checkbox
     } else {
       checkbox.name = 'vs-checkbox'
@@ -285,11 +289,13 @@ export default class Node {
 
     // 点击回调
     checkbox.addEventListener('click', (e) => {
+      console.log('==========')
       this.store.check(e, this)
     }, { passive: false })
 
     checkbox.addEventListener('change', (e) => {
       e.stopPropagation()
+      console.log('handleCheckChange', e)
       this.handleCheckChange(e)
     })
 
@@ -490,13 +496,14 @@ export default class Node {
 
     if (this.store.nocheckParent && (this.childNodes.length || !this.isLeaf)) return
     // 父节点下唯一
-    if (this.store.radioParentoOnly) {
+    if (this.store.radioParentoOnly === 'level') {
       if (this.store.radioMap[this.parent.id]) {
         this.store.radioMap[this.parent.id].checked = false
       }
       this.store.radioMap[this.parent.id] = this
     } else {
       if (this.store.radioNode) {
+        this.store.radioNode.checked = false
         this.store.radioNode = false
       }
       this.store.radioNode = this
