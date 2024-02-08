@@ -113,7 +113,7 @@ export default class Tree {
         dropable: ops.dropable || false,
         lazy: ops.lazy || false,
         sort: ops.sort || false,
-        indent: ops.indent || 10,
+        indent: ops.indent ?? 10,
         checkedKeys: ops.checkedKeys || [],
         expandKeys: ops.expandKeys || [],
         disabledKeys: ops.disabledKeys || [],
